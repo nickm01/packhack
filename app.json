@@ -1,0 +1,6 @@
+{
+  "name": "Schopping",
+  "description": "A simple schopping list",
+  "keywords": ["shop"],
+  "image": "heroku/nodejs"
+}

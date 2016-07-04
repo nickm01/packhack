@@ -1,0 +1,26 @@
+{
+  "name": "schop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cool-ascii-faces": "1.3.4",
+    "ejs": "2.4.1",
+    "express": "4.13.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://nickm01@github.com/nickm01/schop.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nickm01/schop/issues"
+  },
+  "homepage": "https://github.com/nickm01/schop#readme"
+}
