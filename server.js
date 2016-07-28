@@ -40,6 +40,7 @@ router.route("/types")
         console.log(req.body.itemKey);
         console.log(req.body.itemName);
         console.log(req.body);
+        comsole.log("helloxxx");
         db.itemKey = req.body.itemKey; 
         db.itemName = req.body.itemName;
         db.save(function(err){
@@ -54,6 +55,7 @@ router.route("/types")
         });
     });
 
+// this trnaslates to: https://salty-wave-20858.herokuapp.com/types/4
 router.route("/types/:id")
     .get(function(req,res){
         var response = {};
