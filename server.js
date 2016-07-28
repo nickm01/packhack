@@ -1,4 +1,4 @@
-// Next Steps: Try CRUD!!!
+// Next Steps: Add to heroku
 
 
 var express = require('express');
@@ -12,11 +12,12 @@ var router = express.Router();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
 
-//app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 5000));
 
 router.get("/",function(req,res){
-    res.json({"error" : false,"message" : "Hello World XXX"});
+    res.json({"error" : false,"message" : "Hello World 123"});
 });
+
 
 router.route("/types")
     .get(function(req,res){
@@ -98,8 +99,8 @@ router.route("/types/:id")
 
 app.use('/',router);
 
-app.listen(3000);
-console.log("Listening to PORT 3000");
+//app.listen(3000);
+//console.log("Listening to PORT 3000");
 
 /*
 MongoClient.connect("mongodb://heroku_b8s72bwg:vf37fvdjf2lp6kb742q35da40b@ds011311.mlab.com:11311/heroku_b8s72bwg", function(err, db) {
