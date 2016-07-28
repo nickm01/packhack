@@ -40,7 +40,7 @@ router.route("/types")
         console.log(req.body.itemKey);
         console.log(req.body.itemName);
         console.log(req.body);
-        comsole.log("helloxxx");
+        console.log("helloxxx");  
         db.itemKey = req.body.itemKey; 
         db.itemName = req.body.itemName;
         db.save(function(err){
