@@ -107,12 +107,13 @@ router.route("/twilio")
         var bodyText = req.param('Body');
         var fromPhoneNumber = req.param('From');
 
-        mongoOp.Lists.find({}, 'itemKey', function(err, lists){
+        mongoOp.Lists.find({}, 'listKey', function(err, lists){
           if(err){
             console.log(err);
           } else{
             var concatText = "";
             console.log('---Count:' + lists.length);
+            console.log('---ListName:' + lists[0]);
             lists.forEach(function(value){
               concatText =+ value + '\n';
             });
