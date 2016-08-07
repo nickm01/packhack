@@ -102,7 +102,9 @@ router.route("/types/:id")
 router.route("/twilio")
     .get(function(req,res){
         var response = {};
-        consolte.log('From Twilio' + req.query.from + " message:" + req.requiry.body)
+        console.log('From Twilio' + req.query.from + " message:" + req.requiry.body)
+        response = {"success": true}
+        res.json(response)''
       });
 
 app.use('/',router);
