@@ -8,6 +8,7 @@ var app = express();
 var currentDB;
 var mongoOp = require("./model/mongo");
 var router = express.Router();
+var twilio = require('twilio');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
@@ -101,11 +102,14 @@ router.route("/types/:id")
 
 router.route("/twilio")
     .get(function(req,res){
-        var response = {};
         console.log('----Twilio From: ' + req.param('From'));
         console.log('----Twilio Message: ' + req.param('Body'));
         var bodyText = req.param('body');
-        response = {"success": bodyText};
+        var fromPhoneNumber = req.param('From');
+        var resp = new twilio.TwimlResponse();
+        resp.message(function() {
+          this.body(`${fromPhoneNumber}\n${bodyText}`);
+        });
         res.json(response);
       });
 
