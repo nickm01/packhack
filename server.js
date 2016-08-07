@@ -107,10 +107,8 @@ router.route("/twilio")
         var bodyText = req.param('body');
         var fromPhoneNumber = req.param('From');
         var resp = new twilio.TwimlResponse();
-        resp.message(function() {
-          this.body(`${fromPhoneNumber}\n${bodyText}`);
-        });
-        res.json(response);
+        resp.message('Hello:'+ fromPhoneNumber+ '\n' + bodyText);
+        res.send(resp.toString());
       });
 
 app.use('/',router);
