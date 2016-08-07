@@ -99,6 +99,12 @@ router.route("/types/:id")
         });
       });
 
+router.route("/twilio")
+    .get(function(req,res){
+        var response = {};
+        consolte.log('From Twilio' + req.query.from + " message:" + req.requiry.body)
+      });
+
 app.use('/',router);
 
 //app.listen(3000);
