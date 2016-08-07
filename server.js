@@ -114,8 +114,8 @@ router.route("/twilio")
             var concatText = "";
             console.log('---Count:' + lists.length);
             console.log('---ListName:' + lists[0]);
-            lists.forEach(function(value){
-              concatText =+ value + '\n';
+            lists.forEach(function(list){
+              concatText =+ list.listKey + '\n';
             });
             var resp = new twilio.TwimlResponse();
             resp.message('Lists:'+ concatText);
