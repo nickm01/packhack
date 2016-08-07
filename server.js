@@ -106,9 +106,21 @@ router.route("/twilio")
         console.log('----Twilio Message: ' + req.param('Body'));
         var bodyText = req.param('Body');
         var fromPhoneNumber = req.param('From');
-        var resp = new twilio.TwimlResponse();
-        resp.message('Hello:'+ fromPhoneNumber+ '\n' + bodyText);
-        res.send(resp.toString());
+
+        mongoOp.Lists.find({}, 'itemKey', function(err, lists){
+          if(err){
+            console.log(err);
+          } else{
+            var concatText = "";
+            lists.forEach(function(value){
+              concatText =+ value + '\n';
+            });
+            var resp = new twilio.TwimlResponse();
+            resp.message('Lists:'+ concatText);
+            res.send(resp.toString());
+          }
+        })
+
       });
 
 app.use('/',router);
