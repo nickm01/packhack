@@ -118,7 +118,7 @@ router.route("/twilio")
               concatText =+ list.listKey + '\n';
               console.log('---concat:' + concatText);
               console.log('---list:' + list);
-              console.log('---listKey:' + listKey);
+              console.log('---listKey:' + list.listKey);
             });
             var resp = new twilio.TwimlResponse();
             resp.message('Lists:'+ concatText);
