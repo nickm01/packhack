@@ -14,9 +14,23 @@ var typeSchema  = mongoose.Schema({
     "itemKey" : Number,
     "itemName" : String
 }, {
+	// Removes the "__v":0 from newly created rows
 	versionKey: false
 });
+var ItemTypes = mongoose.model('ItemTypes',typeSchema, 'ItemTypes');
+
+var listSchema  = mongoose.Schema({
+    "listKey" : String,
+    "listDescription" : String
+}, {
+	// Removes the "__v":0 from newly created rows
+	versionKey: false
+});
+var Lists = mongoose.model('ItemTypes',typeSchema, 'ItemTypes');
 // create model if not exists.
 // Third param is the preexisting collection name
 //module.exports allows this to "find" in previous
-module.exports = mongoose.model('ItemTypes',typeSchema, 'ItemTypes');  
+module.exports = {
+    ItemTypes: ItemTypes,
+    Lists: Lists,
+};

@@ -23,7 +23,7 @@ router.get("/",function(req,res){
 router.route("/types")
     .get(function(req,res){
         var response = {};
-        mongoOp.find({},function(err,data){
+        mongoOp.ItemTypes.find({},function(err,data){
         // Mongo command to fetch all data from collection.
             if(err) {
                 response = {"error" : true,"message" : "Error fetching data"};
@@ -42,9 +42,9 @@ router.route("/types")
         console.log(req.body.itemName);
         console.log(req.body);
         console.log("helloxxx");  
-        db.itemKey = req.body.itemKey; 
-        db.itemName = req.body.itemName;
-        db.save(function(err){
+        db.ItemTypes.itemKey = req.body.itemKey; 
+        db.ItemTypes.itemName = req.body.itemName;
+        db.ItemTypes.save(function(err){
         // save() will run insert() command of MongoDB.
         // it will add new data in collection.
             if(err) {
@@ -62,7 +62,7 @@ router.route("/types/:id")
         var response = {};
         //mongoOp.findById(req.params.id,function(err,data){
         // Use FindOne of findById because wanted to pick a key
-        mongoOp.findOne({ 'itemKey': req.params.id},function(err,data){
+        mongoOp.ItemTypes.findOne({ 'itemKey': req.params.id},function(err,data){
         // This will run Mongo Query to fetch data based on ID.
             if(err) {
                 response = {"error" : true,"message" : "Error fetching data"};
@@ -76,7 +76,7 @@ router.route("/types/:id")
         var response = {};
         // first find out record exists or not
         // if it does then update the record
-        mongoOp.findOne({ 'itemKey': req.params.id},function(err,data){
+        mongoOp.ItemTypes.findOne({ 'itemKey': req.params.id},function(err,data){
             if(err) {
                 response = {"error" : true,"message" : "Error fetching data"};
             } else {
