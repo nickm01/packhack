@@ -113,12 +113,11 @@ router.route("/twilio")
           } else{
             var concatText = "";
             console.log('---Count:' + lists.length);
-            console.log('---ListName:' + lists[0]);
             lists.forEach(function(list){
-              concatText = concatText.concat(list.listKey + '\n');
-              console.log('---concat:' + concatText);
-              console.log('---list:' + list);
-              console.log('---listKey:' + list.listKey);
+              concatText = concatText.concat('\n' + list.listKey);
+              // console.log('---concat:' + concatText);
+              // console.log('---list:' + list);
+              // console.log('---listKey:' + list.listKey);
             });
             var resp = new twilio.TwimlResponse();
             resp.message('Lists:'+ concatText);
