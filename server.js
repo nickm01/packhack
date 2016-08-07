@@ -103,8 +103,9 @@ router.route("/twilio")
     .get(function(req,res){
         var response = {};
         console.log('From Twilio ' + req.param('from'));
-        console.log('----message:' + req.param('stuff'));
-        response = {"success": true};
+        console.log('----message:' + req.param('body'));
+        var bodyText = req.param('body');
+        response = {"success": bodyText};
         res.json(response);
       });
 
