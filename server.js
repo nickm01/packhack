@@ -104,7 +104,7 @@ router.route("/twilio")
     .get(function(req,res){
         console.log('----Twilio From: ' + req.param('From'));
         console.log('----Twilio Message: ' + req.param('Body'));
-        var bodyText = req.param('body');
+        var bodyText = req.param('Body');
         var fromPhoneNumber = req.param('From');
         var resp = new twilio.TwimlResponse();
         resp.message('Hello:'+ fromPhoneNumber+ '\n' + bodyText);
