@@ -128,7 +128,7 @@ router.route("/twilio")
 
         //now general twilio response and send it back
         var twilioResponse = new twilio.TwimlResponse();
-        twilioResponse.message(responseText;
+        twilioResponse.message(responseText);
         res.send(twilioResponse.toString());
 
       });          
