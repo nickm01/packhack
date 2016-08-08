@@ -107,7 +107,7 @@ router.route("/twilio")
         var bodyText = req.param('Body');
         var fromPhoneNumber = req.param('From');
 
-        if (string2.toUpperCase() === "get lists") {
+        if (bodyText.toUpperCase() === "get lists") {
           mongoOp.Lists.find({}, 'listKey', function(err, lists){
             if(err){
              console.log(err);
