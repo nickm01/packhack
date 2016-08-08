@@ -127,6 +127,7 @@ router.route("/twilio")
           });
 
         } else if (bodyText.toLowerCase().startsWith("get #")) {
+          response = true;
           var listName = bodyText.substr(5);
 
           mongoOp.ListItems.find({'itemKey':listName}, function(err, lists){
