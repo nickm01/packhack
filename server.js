@@ -122,9 +122,14 @@ router.route("/twilio")
               responseText = '\nLists:'+ concatText;
             }
           });
-        } else {
+        } 
+
+        //Fallback to if nothing hits
+        if (responseText === "") {
           responseText = "Sorry, come again?"
         }
+
+        console.log('----ResponseText: ' + responseText);
 
         //now general twilio response and send it back
         var twilioResponse = new twilio.TwimlResponse();
