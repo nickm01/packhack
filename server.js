@@ -136,7 +136,7 @@ router.route("/twilio")
              console.log(err);
             } else{
               var concatText = "";
-              console.log('*** Count Items:' + lists.length);
+              console.log('*** Count Items:' + listItems.length);
               listItems.forEach(function(listItem){
                 concatText = concatText.concat('\n- ' + listItem.listItemName);
               });
