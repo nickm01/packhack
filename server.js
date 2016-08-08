@@ -119,7 +119,9 @@ router.route("/twilio")
               lists.forEach(function(list){
                 concatText = concatText.concat('\n' + list.listKey);
               });
-              sendSMSResponse('\nLists:'+ concatText, res);
+              var twilioResponse = new twilio.TwimlResponse();
+              twilioResponse.message('\nLists:'+ concatText);
+              res.send(twilioResponse.toString());
               response = true;
             }
           });
@@ -127,7 +129,9 @@ router.route("/twilio")
 
         //Fallback to if nothing hits
         if (response == false) {
-          sendSMSResponse("Sorry, come again?", res);
+          var twilioResponse = new twilio.TwimlResponse();
+          twilioResponse.message("Sorry, come again?");
+          res.send(twilioResponse.toString());
         }
         //now general twilio response and send it back
 
