@@ -106,7 +106,7 @@ router.route("/twilio")
         console.log('----Twilio Message: ' + req.param('Body'));
         var bodyText = req.param('Body');
         var fromPhoneNumber = req.param('From');
-        var responseText = "";
+        var response = false
     
 
         if (bodyText.toLowerCase() === "get lists") {
@@ -119,22 +119,17 @@ router.route("/twilio")
               lists.forEach(function(list){
                 concatText = concatText.concat('\n' + list.listKey);
               });
-              responseText = '\nLists:'+ concatText;
+              sendSMSResponse('\nLists:'+ concatText);
+              response = true;
             }
           });
         } 
 
         //Fallback to if nothing hits
-        if (responseText === "") {
-          responseText = "Sorry, come again?"
+        if (response == false) {
+          sendSMSResponse("Sorry, come again?");
         }
-
-        console.log('----ResponseText: ' + responseText);
-
         //now general twilio response and send it back
-        var twilioResponse = new twilio.TwimlResponse();
-        twilioResponse.message(responseText);
-        res.send(twilioResponse.toString());
 
       });          
 
@@ -182,3 +177,11 @@ app.get('/types', function(request, response) {
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
+
+function sendSMSResponse(messageText) {
+  var twilioResponse = new twilio.TwimlResponse();
+  twilioResponse.message(messageText);
+  res.send(twilioResponse.toString());
+  console.log('----SendSMSResponse Text: ' + messageText);
+
+}
