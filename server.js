@@ -131,14 +131,14 @@ router.route("/twilio")
           response = true;
           var listName = bodyText.substr(5);
 
-          mongoOp.ListItems.find({'itemKey':listName}, function(err, lists){
+          mongoOp.ListItems.find({'itemKey':listName}, function(err, listItems){
             if(err){
              console.log(err);
             } else{
               var concatText = "";
               console.log('*** Count Items:' + lists.length);
-              lists.forEach(function(list){
-                concatText = concatText.concat('\n- ' + list.listKey);
+              listItems.forEach(function(listItem){
+                concatText = concatText.concat('\n- ' + listItem.listItemName);
               });
               var twilioResponse = new twilio.TwimlResponse();
               twilioResponse.message('\n'+ listName + ':' + concatText);
