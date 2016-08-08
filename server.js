@@ -131,7 +131,7 @@ router.route("/twilio")
           response = true;
           var listName = bodyText.substr(5);
 
-          mongoOp.ListItems.find({'itemKey':listName}, function(err, listItems){
+          mongoOp.ListItems.find({'listKey':listName}, function(err, listItems){
             if(err){
              console.log(err);
             } else{
