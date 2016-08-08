@@ -108,22 +108,20 @@ router.route("/twilio")
         var fromPhoneNumber = req.param('From');
 
         if (string2.toUpperCase() === "get lists") {
-        mongoOp.Lists.find({}, 'listKey', function(err, lists){
-          if(err){
-            console.log(err);
-          } else{
-            var concatText = "";
-            console.log('---Count:' + lists.length);
-            lists.forEach(function(list){
-              concatText = concatText.concat('\n' + list.listKey);
-              // console.log('---concat:' + concatText);
-              // console.log('---list:' + list);
-              // console.log('---listKey:' + list.listKey);
-            });
-            var resp = new twilio.TwimlResponse();
-            resp.message('Lists:'+ concatText);
-            res.send(resp.toString());
-          }
+          mongoOp.Lists.find({}, 'listKey', function(err, lists){
+            if(err){
+             console.log(err);
+            } else{
+              var concatText = "";
+              console.log('---Count:' + lists.length);
+              lists.forEach(function(list){
+                concatText = concatText.concat('\n' + list.listKey);
+              });
+              var resp = new twilio.TwimlResponse();
+              resp.message('Lists:'+ concatText);
+              res.send(resp.toString());
+            }
+          });
         }
       });          
 
