@@ -110,6 +110,7 @@ router.route("/twilio")
     
 
         if (bodyText.toLowerCase() === "get lists") {
+          response = true;
           mongoOp.Lists.find({}, 'listKey', function(err, lists){
             if(err){
              console.log(err);
@@ -122,7 +123,6 @@ router.route("/twilio")
               var twilioResponse = new twilio.TwimlResponse();
               twilioResponse.message('\nLists:'+ concatText);
               res.send(twilioResponse.toString());
-              response = true;
             }
           });
         } 
