@@ -116,7 +116,7 @@ router.route("/twilio")
              console.log(err);
             } else{
               var concatText = "";
-              console.log('---Count:' + lists.length);
+                
               lists.forEach(function(list){
                 concatText = concatText.concat('\n' + list.listKey);
               });
@@ -127,6 +127,7 @@ router.route("/twilio")
           });
 
         } else if (bodyText.toLowerCase().startsWith("get #")) {
+          console.log('*** get list!!!!');
           response = true;
           var listName = bodyText.substr(5);
 
