@@ -7,9 +7,7 @@ db.once('open', function() {
 	console.log("connected!!!---!!!");
 });
 
-// create instance of Schema
-//var mongoSchema =   mongoose.Schema;
-// create schema
+// Item Types
 var typeSchema  = mongoose.Schema({
     "itemKey" : Number,
     "itemName" : String
@@ -19,18 +17,26 @@ var typeSchema  = mongoose.Schema({
 });
 var ItemTypes = mongoose.model('ItemTypes',typeSchema, 'ItemTypes');
 
+// Lists
 var listsSchema  = mongoose.Schema({
     "listKey" : String,
     "listDescription" : String
-}, {
-	// Removes the "__v":0 from newly created rows
-	versionKey: false
-});
+}, { versionKey: false });
 var Lists = mongoose.model('Lists',listsSchema, 'Lists');
+
+// ListItems
+var listItemsSchema  = mongoose.Schema({
+    "listKey" : String,
+    "listItemName" : String
+}, { versionKey: false });
+var ListItems = mongoose.model('ListItems',listItemsSchema, 'ListItems');
+
+
 // create model if not exists.
 // Third param is the preexisting collection name
 //module.exports allows this to "find" in previous
 module.exports = {
     ItemTypes: ItemTypes,
     Lists: Lists,
+    ListItems: ListItems
 };

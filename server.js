@@ -125,7 +125,26 @@ router.route("/twilio")
               res.send(twilioResponse.toString());
             }
           });
-        } 
+
+        } else if (bodyText.toLowerCase().startsWith("get #")) {
+          var listName = bodyText.substr(5);
+
+          mongoOp.ListItems.find({'itemKey':listName}, function(err, lists){
+            if(err){
+             console.log(err);
+            } else{
+              var concatText = "";
+              console.log('*** Count Items:' + lists.length);
+              lists.forEach(function(list){
+                concatText = concatText.concat('\n- ' + list.listKey);
+              });
+              var twilioResponse = new twilio.TwimlResponse();
+              twilioResponse.message('\n'+ listName + ':' + concatText);
+              res.send(twilioResponse.toString());
+            }
+          });
+
+        }
 
         //Fallback to if nothing hits
         if (response == false) {
