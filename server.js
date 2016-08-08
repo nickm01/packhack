@@ -126,7 +126,7 @@ router.route("/twilio")
             }
           });
 
-        } else if (bodyText.toLowerCase().startsWith("get #")) {
+        } else if (bodyText.toLowerCase().startsWith("get+#")) {
           console.log('*** get list!!!!');
           response = true;
           var listName = bodyText.substr(5);
