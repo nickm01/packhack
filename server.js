@@ -119,7 +119,7 @@ router.route("/twilio")
               lists.forEach(function(list){
                 concatText = concatText.concat('\n' + list.listKey);
               });
-              sendSMSResponse('\nLists:'+ concatText);
+              sendSMSResponse('\nLists:'+ concatText, res);
               response = true;
             }
           });
@@ -127,7 +127,7 @@ router.route("/twilio")
 
         //Fallback to if nothing hits
         if (response == false) {
-          sendSMSResponse("Sorry, come again?");
+          sendSMSResponse("Sorry, come again?", res);
         }
         //now general twilio response and send it back
 
@@ -178,10 +178,10 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-function sendSMSResponse(messageText) {
+function sendSMSResponse(messageText,response) {
   var twilioResponse = new twilio.TwimlResponse();
   twilioResponse.message(messageText);
-  res.send(twilioResponse.toString());
+  response.send(twilioResponse.toString());
   console.log('----SendSMSResponse Text: ' + messageText);
 
 }
