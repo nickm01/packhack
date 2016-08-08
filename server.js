@@ -107,6 +107,7 @@ router.route("/twilio")
         var bodyText = req.param('Body');
         var fromPhoneNumber = req.param('From');
 
+        if (string2.toUpperCase() === "get lists") {
         mongoOp.Lists.find({}, 'listKey', function(err, lists){
           if(err){
             console.log(err);
@@ -123,9 +124,9 @@ router.route("/twilio")
             resp.message('Lists:'+ concatText);
             res.send(resp.toString());
           }
-        })
+        }
+      });          
 
-      });
 
 app.use('/',router);
 
