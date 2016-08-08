@@ -106,8 +106,10 @@ router.route("/twilio")
         console.log('----Twilio Message: ' + req.param('Body'));
         var bodyText = req.param('Body');
         var fromPhoneNumber = req.param('From');
+        var responseText = "";
+    
 
-        if (bodyText.toUpperCase() === "get lists") {
+        if (bodyText.toLowerCase() === "get lists") {
           mongoOp.Lists.find({}, 'listKey', function(err, lists){
             if(err){
              console.log(err);
@@ -117,12 +119,18 @@ router.route("/twilio")
               lists.forEach(function(list){
                 concatText = concatText.concat('\n' + list.listKey);
               });
-              var resp = new twilio.TwimlResponse();
-              resp.message('Lists:'+ concatText);
-              res.send(resp.toString());
+              responseText = '\nLists:'+ concatText;
             }
           });
+        } else {
+          responseText = "Sorry, come again?"
         }
+
+        //now general twilio response and send it back
+        var twilioResponse = new twilio.TwimlResponse();
+        twilioResponse.message(responseText;
+        res.send(twilioResponse.toString());
+
       });          
 
 
