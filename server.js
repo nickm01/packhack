@@ -129,7 +129,7 @@ router.route("/twilio")
         } else if (bodyText.toLowerCase().startsWith("get #")) {
           console.log('*** get list!!!!');
           response = true;
-          var listName = bodyText.substr(5);
+          var listName = bodyText.substr(5).toLowerCase();
 
           mongoOp.ListItems.find({'listKey':listName}, function(err, listItems){
             if(err){
@@ -137,8 +137,10 @@ router.route("/twilio")
             } else{
               var concatText = "";
               console.log('*** Count Items:' + listItems.length);
+              var itemNumber = 0;
               listItems.forEach(function(listItem){
-                concatText = concatText.concat('\n- ' + listItem.listItemName);
+                itemNumber++;
+                concatText = concatText.concat('\n' + itemNumber + '. ' + listItem.listItemName);
               });
               var twilioResponse = new twilio.TwimlResponse();
               twilioResponse.message('\n'+ listName + ':' + concatText);
