@@ -1,5 +1,5 @@
 {
-  "name": "schop",
+  "name": "flockplatform",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -19,13 +19,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://nickm01@github.com/nickm01/schop.git"
+    "url": "git+https://github.com/nickm01/flockplatform.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nickm01/schop/issues"
+    "url": "https://github.com/nickm01/flockplatform/issues"
   },
-  "homepage": "https://github.com/nickm01/schop#readme"
+  "homepage": "https://github.com/nickm01/flockplatform#readme"
 }

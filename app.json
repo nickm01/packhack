@@ -1,5 +1,5 @@
 {
-  "name": "Schopping",
+  "name": "Flock",
   "description": "A simple schopping list",
   "keywords": ["shop"],
   "image": "heroku/nodejs"
