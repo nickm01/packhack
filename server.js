@@ -22,51 +22,61 @@ router.route("/twilio")
         console.log('----Twilio Message: ' + req.param('Body'));
         var bodyText = req.param('Body');
         var fromPhoneNumber = req.param('From');
-        var response = false
-    
-        if (bodyText.toLowerCase() === "get lists") {
-          response = true;
-          mongoOp.Lists.find({}, 'listKey', function(err, lists){
-            if(err){
-             console.log(err);
-            } else{
-              var concatText = "";
+        var response = false;
+        var familyID = 0;
+
+        //Check FamilyID
+        mongoOp.FamilyMembers.findOne({ 'fromPhoneNumber': fromPhoneNumber }, function (err, familyMember) {
+          if (err) {
+            var twilioResponse = new twilio.TwimlResponse();
+            twilioResponse.message('Not a member of a family.');
+            res.send(twilioResponse.toString());
+          } else {
+            familyID = familyMember.familyID
+
+            if (bodyText.toLowerCase() === "get lists") {
+              response = true;
+              mongoOp.Lists.find({'familyID':familyID}, 'listKey', function(err, lists){
+                if(err){
+                 console.log(err);
+               } else{
+                var concatText = "";
                 
-              lists.forEach(function(list){
-                concatText = concatText.concat('\n' + list.listKey);
-              });
-              var twilioResponse = new twilio.TwimlResponse();
-              twilioResponse.message('\nLists:'+ concatText);
-              res.send(twilioResponse.toString());
-            }
-          });
-
-        } else if (bodyText.toLowerCase().startsWith("get #")) {
-          console.log('*** get list!!!!');
-          response = true;
-          var listName = bodyText.substr(5).toLowerCase();
-
-          mongoOp.ListItems.find({'listKey':listName}, function(err, listItems){
-            if(err){
-             console.log(err);
-            } else{
-              var concatText = "";
-              console.log('*** Count Items:' + listItems.length);
-              var itemNumber = 0;
-              listItems.forEach(function(listItem){
-                itemNumber++;
-                concatText = concatText.concat('\n' + itemNumber + '. ' + listItem.listItemName);
-              });
-              if (itemNumber == 0) {
-                concatText = concatText.concat(' No items in list.');
+                lists.forEach(function(list){
+                  concatText = concatText.concat('\n' + list.listKey);
+                });
+                var twilioResponse = new twilio.TwimlResponse();
+                twilioResponse.message('\nLists:'+ concatText);
+                res.send(twilioResponse.toString());
               }
-              var twilioResponse = new twilio.TwimlResponse();
-              twilioResponse.message('\n'+ listName + ':' + concatText);
-              res.send(twilioResponse.toString());
-            }
-          });
+            });
 
-        }
+            } else if (bodyText.toLowerCase().startsWith("get #")) {
+              console.log('*** get list!!!!');
+              response = true;
+              var listName = bodyText.substr(5).toLowerCase();
+
+              mongoOp.ListItems.find({'listKey':listName}, function(err, listItems){
+                if(err){
+                 console.log(err);
+               } else{
+                var concatText = "";
+                console.log('*** Count Items:' + listItems.length);
+                var itemNumber = 0;
+                listItems.forEach(function(listItem){
+                  itemNumber++;
+                  concatText = concatText.concat('\n' + itemNumber + '. ' + listItem.listItemName);
+                });
+                if (itemNumber == 0) {
+                  concatText = concatText.concat(' No items in list.');
+                }
+                var twilioResponse = new twilio.TwimlResponse();
+                twilioResponse.message('\n'+ listName + ':' + concatText);
+                res.send(twilioResponse.toString());
+              }
+            });
+
+            }
 
         //Fallback to if nothing hits
         if (response == false) {
@@ -74,9 +84,11 @@ router.route("/twilio")
           twilioResponse.message("Sorry, come again?");
           res.send(twilioResponse.toString());
         }
-        //now general twilio response and send it back
 
-      });          
+      }
+    })
+
+});          
 
 
 app.use('/',router);

@@ -8,20 +8,11 @@ db.once('open', function() {
 	console.log("connected!!!---!!!");
 });
 
-// Item Types
-var typeSchema  = mongoose.Schema({
-    "itemKey" : Number,
-    "itemName" : String
-}, {
-	// Removes the "__v":0 from newly created rows
-	versionKey: false
-});
-var ItemTypes = mongoose.model('ItemTypes',typeSchema, 'ItemTypes');
-
 // Lists
 var listsSchema  = mongoose.Schema({
     "listKey" : String,
-    "listDescription" : String
+    "listDescription" : String,
+    "familyId" : Number
 }, { versionKey: false });
 var Lists = mongoose.model('Lists',listsSchema, 'Lists');
 
@@ -32,12 +23,18 @@ var listItemsSchema  = mongoose.Schema({
 }, { versionKey: false });
 var ListItems = mongoose.model('ListItems',listItemsSchema, 'ListItems');
 
+// FamilyMembers
+var familyMemberSchema  = mongoose.Schema({
+    "id": Number,
+    "familyId": Number,
+    "name": String,
+    "phoneNumber": String,
+    "description": String
+}, { versionKey: false });
+var FamilyMembers = mongoose.model('FamilyMembers',familyMemberSchema, 'FamilyMembers');
 
-// create model if not exists.
-// Third param is the preexisting collection name
-//module.exports allows this to "find" in previous
 module.exports = {
-    ItemTypes: ItemTypes,
     Lists: Lists,
-    ListItems: ListItems
+    ListItems: ListItems,
+    FamilyMembers: FamilyMembers
 };
