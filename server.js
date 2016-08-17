@@ -57,7 +57,7 @@ router.route("/twilio")
                 itemNumber++;
                 concatText = concatText.concat('\n' + itemNumber + '. ' + listItem.listItemName);
               });
-              if itemNumber == 0 {
+              if (itemNumber == 0) {
                 concatText = concatText.concat(' No items in list.');
               }
               var twilioResponse = new twilio.TwimlResponse();
