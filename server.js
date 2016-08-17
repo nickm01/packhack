@@ -23,10 +23,10 @@ router.route("/twilio")
         var bodyText = req.param('Body');
         var fromPhoneNumber = req.param('From');
         var response = false;
-        var familyID = 0;
+        var familyId = 0;
 
-        //Check FamilyID
-        mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyID', function (err, familyMember) {
+        //Check FamilyId
+        mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
           console.log('----familyMember start');
           if (err) {
             var twilioResponse = new twilio.TwimlResponse();
@@ -34,12 +34,12 @@ router.route("/twilio")
             res.send(twilioResponse.toString());
           } else {
             console.log('----familyMember: ' + familyMember);
-            familyID = familyMember.familyID;
-            console.log('----familyID: ' + familyID);
+            familyId = familyMember.familyId;
+            console.log('----familyId: ' + familyId);
 
             if (bodyText.toLowerCase() === "get lists") {
               response = true;
-              mongoOp.Lists.find({'familyID':familyID}, 'listKey', function(err, lists){
+              mongoOp.Lists.find({'familyId':familyId}, 'listKey', function(err, lists){
                 if(err){
                  console.log(err);
                } else{
