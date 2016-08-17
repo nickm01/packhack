@@ -33,8 +33,8 @@ router.route("/twilio")
             res.send(twilioResponse.toString());
           } else {
             console.log('----familyMember: ' + familyMember);
-            familyID = familyMember.familyID
-            console.log('----familyID: ' familyID);
+            familyID = familyMember.familyID;
+            console.log('----familyID: ' + familyID);
 
             if (bodyText.toLowerCase() === "get lists") {
               response = true;
