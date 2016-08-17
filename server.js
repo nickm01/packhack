@@ -28,7 +28,7 @@ router.route("/twilio")
         //Check FamilyId
         mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
           console.log('----familyMember start');
-          if (err) {
+          if (familyMember == null) {
             var twilioResponse = new twilio.TwimlResponse();
             twilioResponse.message('Not a member of a family.');
             res.send(twilioResponse.toString());
