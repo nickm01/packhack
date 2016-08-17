@@ -30,7 +30,7 @@ router.route("/twilio")
           console.log('----familyMember start');
           if (familyMember == null) {
             var twilioResponse = new twilio.TwimlResponse();
-            twilioResponse.message('Not a member of a family.');
+            twilioResponse.message("Sorry, don't see you as a member of a family.");
             res.send(twilioResponse.toString());
           } else {
             console.log('----familyMember: ' + familyMember);
