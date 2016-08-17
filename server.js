@@ -32,7 +32,7 @@ router.route("/twilio")
             twilioResponse.message('Not a member of a family.');
             res.send(twilioResponse.toString());
           } else {
-            console.log('----familyMember: ' familyMember);
+            console.log('----familyMember: ' + familyMember);
             familyID = familyMember.familyID
             console.log('----familyID: ' familyID);
 
