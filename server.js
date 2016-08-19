@@ -81,16 +81,16 @@ router.route("/twilio")
             } else if (bodyText.toLowerCase().startsWith("#")) {
 
               var listName = getFirstWord(bodyText).substr(1);
-              mongoOp.Lists.findOne({'listKey': listName }, 'listKey', function (err, list) {
+              mongoOp.Lists.findOne({'listKey': listName}, 'listKey', function(err, list) {
                 console.log('----list found' + list);
 
                 if (list == null) {
                   var twilioResponse = new twilio.TwimlResponse();
                   twilioResponse.message('Unknown list!');
                   res.send(twilioResponse.toString());
-                } else {
+                } //else {
                 //db.users.insert({ name : 'Arvind', gender : 'male'});
-                }
+                //}
               });
           }
 
@@ -107,7 +107,7 @@ router.route("/twilio")
       }
     })
 
-            });          
+});          
 
 
 app.use('/',router);
