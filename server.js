@@ -93,6 +93,15 @@ router.route("/twilio")
             if (bodyText.startsWith(addVerbPhrase)) {
               var listItemName = bodyText.substr(addVerbPhrase.length);
               console.log('----add found for ' + listItemName);
+
+              var newItem = new mongoOp.ListItems({
+                "listKey" : listName,
+                "listItemName" : listItemName
+              });
+              newItem.save(function (err, data) {
+                if (err) console.log(err);
+                else console.log('Saved ', data );
+              });
               //db.users.insert({ name : 'Arvind', gender : 'male'});
             }
           }
