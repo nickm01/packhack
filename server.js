@@ -20,7 +20,7 @@ router.route("/twilio")
 .get(function(req,res){
   console.log('----Twilio From: ' + req.param('From'));
   console.log('----Twilio Message: ' + req.param('Body'));
-  var bodyText = req.param('Body');
+  var bodyText = req.param('Body').toLowerCase();
   var fromPhoneNumber = req.param('From');
   var familyId = 0;
 
@@ -35,7 +35,7 @@ router.route("/twilio")
       console.log('----familyId: ' + familyId);
 
       //MAIN LOGIC
-      if (bodyText.toLowerCase() === "get lists") {
+      if (bodyText === "get lists") {
         response = true;
         mongoOp.Lists.find({'familyId':familyId}, 'listKey', function(err, lists) {
           if(err){
@@ -52,10 +52,10 @@ router.route("/twilio")
           }
         });
 
-      } else if (bodyText.toLowerCase().startsWith("get #")) {
+      } else if (bodyText.startsWith("get #")) {
         console.log('*** get list!!!!');
         response = true;
-        var listName = bodyText.substr(5).toLowerCase();
+        var listName = bodyText.substr(5);
 
         mongoOp.ListItems.find({'listKey':listName}, function(err, listItems){
           if(err){
@@ -78,7 +78,7 @@ router.route("/twilio")
           }
         });
 
-      } else if (bodyText.toLowerCase().startsWith('#')) {
+      } else if (bodyText.startsWith('#')) {
 
         var listName = getFirstWord(bodyText).substr(1);
         mongoOp.Lists.findOne({'listKey': listName}, 'listKey', function(err, list) {
@@ -88,9 +88,14 @@ router.route("/twilio")
             var twilioResponse = new twilio.TwimlResponse();
             twilioResponse.message('Unknown list!');
             res.send(twilioResponse.toString());
-          } //else {
-                //db.users.insert({ name : 'Arvind', gender : 'male'});
-                //}
+          } else {
+            var addVerbPhrase = '#' + listName + ' add '
+            if (bodyText.startsWith(addVerbPhrase)) {
+              var listItemName = bodyText.substr(addVerbPhrase.length);
+              console.log('----add found for ' + listItemName);
+              //db.users.insert({ name : 'Arvind', gender : 'male'});
+            }
+          }
         });
       }
 
