@@ -22,91 +22,80 @@ router.route("/twilio")
   console.log('----Twilio Message: ' + req.param('Body'));
   var bodyText = req.param('Body');
   var fromPhoneNumber = req.param('From');
-  var response = false;
   var familyId = 0;
 
-        //Check FamilyId
-        mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
-          if (familyMember == null) {
-            var twilioResponse = new twilio.TwimlResponse();
-            twilioResponse.message("Sorry, don't see you as a member of a family.");
-            res.send(twilioResponse.toString());
+  //Check FamilyId
+  mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
+    if (familyMember == null) {
+      var twilioResponse = new twilio.TwimlResponse();
+      twilioResponse.message("Sorry, don't see you as a member of a family.");
+      res.send(twilioResponse.toString());
+    } else {
+      familyId = familyMember.familyId;
+      console.log('----familyId: ' + familyId);
+
+      //MAIN LOGIC
+      if (bodyText.toLowerCase() === "get lists") {
+        response = true;
+        mongoOp.Lists.find({'familyId':familyId}, 'listKey', function(err, lists) {
+          if(err){
+            console.log(err);
           } else {
-            familyId = familyMember.familyId;
-            console.log('----familyId: ' + familyId);
-
-            if (bodyText.toLowerCase() === "get lists") {
-              response = true;
-              mongoOp.Lists.find({'familyId':familyId}, 'listKey', function(err, lists){
-                if(err){
-                 console.log(err);
-               } else{
-                var concatText = "";
+            var concatText = "";
                 
-                lists.forEach(function(list){
-                  concatText = concatText.concat('\n' + list.listKey);
-                });
-                var twilioResponse = new twilio.TwimlResponse();
-                twilioResponse.message('\nLists:'+ concatText);
-                res.send(twilioResponse.toString());
-              }
+            lists.forEach(function(list){
+              concatText = concatText.concat('\n' + list.listKey);
             });
+            var twilioResponse = new twilio.TwimlResponse();
+            twilioResponse.message('\nLists:'+ concatText);
+            res.send(twilioResponse.toString());
+          }
+        });
 
-            } else if (bodyText.toLowerCase().startsWith("get #")) {
-              console.log('*** get list!!!!');
-              response = true;
-              var listName = bodyText.substr(5).toLowerCase();
+      } else if (bodyText.toLowerCase().startsWith("get #")) {
+        console.log('*** get list!!!!');
+        response = true;
+        var listName = bodyText.substr(5).toLowerCase();
 
-              mongoOp.ListItems.find({'listKey':listName}, function(err, listItems){
-                if(err){
-                  //TODO; Better error checking
-                  console.log(err);
-                } else {
-                  var concatText = "";
-                  console.log('*** Count Items:' + listItems.length);
-                  var itemNumber = 0;
-                  listItems.forEach(function(listItem){
-                    itemNumber++;
-                    concatText = concatText.concat('\n' + itemNumber + '. ' + listItem.listItemName);
-                  });
-                  if (itemNumber == 0) {
-                    concatText = concatText.concat(' No items in list.');
-                  }
-                  var twilioResponse = new twilio.TwimlResponse();
-                  twilioResponse.message('\n'+ listName + ':' + concatText);
-                  res.send(twilioResponse.toString());
-                }
-              });
+        mongoOp.ListItems.find({'listKey':listName}, function(err, listItems){
+          if(err){
+            //TODO; Better error checking
+            console.log(err);
+          } else {
+            var concatText = "";
+            console.log('*** Count Items:' + listItems.length);
+            var itemNumber = 0;
+            listItems.forEach(function(listItem){
+              itemNumber++;
+              concatText = concatText.concat('\n' + itemNumber + '. ' + listItem.listItemName);
+            });
+            if (itemNumber == 0) {
+              concatText = concatText.concat(' No items in list.');
+            }
+            var twilioResponse = new twilio.TwimlResponse();
+            twilioResponse.message('\n'+ listName + ':' + concatText);
+            res.send(twilioResponse.toString());
+          }
+        });
 
-            } else if (bodyText.toLowerCase().startsWith("#")) {
+      } else if (bodyText.toLowerCase().startsWith('#')) {
 
-              var listName = getFirstWord(bodyText).substr(1);
-              mongoOp.Lists.findOne({'listKey': listName}, 'listKey', function(err, list) {
-                console.log('----list found' + list);
+        var listName = getFirstWord(bodyText).substr(1);
+        mongoOp.Lists.findOne({'listKey': listName}, 'listKey', function(err, list) {
+          console.log('----list found' + list);
 
-                if (list == null) {
-                  var twilioResponse = new twilio.TwimlResponse();
-                  twilioResponse.message('Unknown list!');
-                  res.send(twilioResponse.toString());
-                } //else {
+          if (list == null) {
+            var twilioResponse = new twilio.TwimlResponse();
+            twilioResponse.message('Unknown list!');
+            res.send(twilioResponse.toString());
+          } //else {
                 //db.users.insert({ name : 'Arvind', gender : 'male'});
                 //}
-              });
-          }
-
-
-        }
-
-        //Fallback to if nothing hits
-        if (response == false) {
-          var twilioResponse = new twilio.TwimlResponse();
-          twilioResponse.message("Sorry, come again?");
-          res.send(twilioResponse.toString());
-        }
-
+        });
       }
-    })
 
+    } 
+  });
 });          
 
 
