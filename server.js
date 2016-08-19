@@ -13,17 +13,17 @@ app.use(bodyParser.urlencoded({"extended" : false}));
 app.set('port', (process.env.PORT || 5000));
 
 router.get("/",function(req,res){
-    res.json({"error" : false,"message" : "available"});
+  res.json({"error" : false,"message" : "available"});
 });
 
 router.route("/twilio")
-    .get(function(req,res){
-        console.log('----Twilio From: ' + req.param('From'));
-        console.log('----Twilio Message: ' + req.param('Body'));
-        var bodyText = req.param('Body');
-        var fromPhoneNumber = req.param('From');
-        var response = false;
-        var familyId = 0;
+.get(function(req,res){
+  console.log('----Twilio From: ' + req.param('From'));
+  console.log('----Twilio Message: ' + req.param('Body'));
+  var bodyText = req.param('Body');
+  var fromPhoneNumber = req.param('From');
+  var response = false;
+  var familyId = 0;
 
         //Check FamilyId
         mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
@@ -82,18 +82,20 @@ router.route("/twilio")
 
               var listName = getFirstWord(bodyText).substr(1);
               mongoOp.Lists.findOne({'listKey': listName }, 'listKey', function (err, list) {
-              console.log('----list found' + list);
+                console.log('----list found' + list);
 
-              if (list == null) {
-                var twilioResponse = new twilio.TwimlResponse();
-                twilioResponse.message('Unknown list!');
-                res.send(twilioResponse.toString());
-              } else {
-            //db.users.insert({ name : 'Arvind', gender : 'male'});
-              }
+                if (list == null) {
+                  var twilioResponse = new twilio.TwimlResponse();
+                  twilioResponse.message('Unknown list!');
+                  res.send(twilioResponse.toString());
+                } else {
+                //db.users.insert({ name : 'Arvind', gender : 'male'});
+                }
+              });
+          }
 
 
-            }
+        }
 
         //Fallback to if nothing hits
         if (response == false) {
@@ -105,7 +107,7 @@ router.route("/twilio")
       }
     })
 
-});          
+            });          
 
 
 app.use('/',router);
