@@ -101,7 +101,12 @@ router.route("/twilio")
               });
               newItem.save(function (err, data) {
                 if (err) console.log(err);
-                else console.log('Saved ', data );
+                else {
+                  console.log('Saved ', data );
+                  var twilioResponse = new twilio.TwimlResponse();
+                  twilioResponse.message('Got it! ❤️FLOCK');
+                  res.send(twilioResponse.toString());
+                }
               });
             }
           }
@@ -124,7 +129,12 @@ router.route("/twilio")
             });
             newList.save(function (err, data) {
               if (err) console.log(err);
-              else console.log('Saved ', data );
+              else {
+                console.log('Saved ', data );
+                var twilioResponse = new twilio.TwimlResponse();
+                twilioResponse.message('Got it! ❤️FLOCK');
+                res.send(twilioResponse.toString());                
+              }
             });
           }
 
