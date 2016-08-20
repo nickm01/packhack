@@ -81,7 +81,7 @@ router.route("/twilio")
       } else if (bodyText.startsWith('#')) {
 
         var listName = getFirstWord(bodyText).substr(1);
-        mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
+        mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
           console.log('----list found' + list);
 
           if (list == null) {
