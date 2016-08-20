@@ -94,6 +94,7 @@ router.route("/twilio")
               var listItemName = bodyText.substr(addVerbPhrase.length);
               console.log('----add found for ' + listItemName);
 
+              //TODO: Something is deprecated... mongoose promise library.
               var newItem = new mongoOp.ListItems({
                 "listKey" : listName,
                 "listItemName" : listItemName
@@ -102,9 +103,31 @@ router.route("/twilio")
                 if (err) console.log(err);
                 else console.log('Saved ', data );
               });
-              //db.users.insert({ name : 'Arvind', gender : 'male'});
             }
           }
+        });
+
+      } else if (bodyText.startsWith('create #')) {
+        var newListName = bodyText.substr(8)
+        mongoOp.Lists.findOne({'listKey': newListName}, 'listKey', function(err, list) {
+
+          if (list != null) {
+            var twilioResponse = new twilio.TwimlResponse();
+            twilioResponse.message('List already exists!');
+            res.send(twilioResponse.toString());
+          } else {
+            //TODO: Something is deprecated... mongoose promise library.
+            var newList = new mongoOp.Lists({
+              "listKey" : newListName,
+              "listDescription" : "",
+              "familyId" : familyId
+            });
+            newList.save(function (err, data) {
+              if (err) console.log(err);
+              else console.log('Saved ', data );
+            });
+          }
+
         });
       }
 
