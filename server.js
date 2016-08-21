@@ -82,9 +82,18 @@ router.route("/twilio")
           if (list == null) {
             sendSMSResponse('Unknown list!', res);
           } else {
-            var addVerbPhrase = '#' + listName + ' add '
+            var addVerbPhrase = '#' + listName + ' add ';
+            var removeVerbPhrase = '#' + listName + ' remove ';
+
+            //Add list
             if (bodyText.startsWith(addVerbPhrase)) {
               var listItemName = bodyText.substr(addVerbPhrase.length);
+
+              if (listItemName.includes(' ')) {
+                sendSMSResponse("Sorry, but please don't include spaces in list names.", res);  
+                return;
+              }
+              
               console.log('----add found for ' + listItemName);
 
               //TODO: Something is deprecated... mongoose promise library.
@@ -99,6 +108,10 @@ router.route("/twilio")
                   sendSMSResponse('Got it! ❤️FLOCK', res);  
                 }
               });
+
+            //Remove list
+            } else if (bodyText.startsWith(removeVerbPhrase)) {
+
             }
           }
         });
