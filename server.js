@@ -88,12 +88,6 @@ router.route("/twilio")
             //Add list
             if (bodyText.startsWith(addVerbPhrase)) {
               var listItemName = bodyText.substr(addVerbPhrase.length);
-
-              if (listItemName.includes(' ')) {
-                sendSMSResponse("Sorry, but please don't include spaces in list names.", res);  
-                return;
-              }
-              
               console.log('----add found for ' + listItemName);
 
               //TODO: Something is deprecated... mongoose promise library.
@@ -123,7 +117,12 @@ router.route("/twilio")
           if (list != null) {
             sendSMSResponse('List already exists!', res);  
           } else {
-            //TODO: Something is deprecated... mongoose promise library.
+
+            if (newListName.includes(' ')) {
+              sendSMSResponse("Sorry, but please don't include spaces in list names.", res);  
+              return;
+            }
+            
             var newList = new mongoOp.Lists({
               "listKey" : newListName,
               "listDescription" : "",
