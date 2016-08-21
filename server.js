@@ -24,11 +24,11 @@ router.route("/twilio")
   var fromPhoneNumber = req.query['From'];
   var familyId = 0;
 
-  var cachedListName;
-  if (req.cookies.listName !== undefined && !isNaN(body)) {
-    cachedListName = req.cookies.listName;
-    console.log('----Cached: ' + cachedListName);
-  }
+  // var cachedListName;
+  // if (req.cookies.listName !== undefined && !isNaN(body)) {
+  //   cachedListName = req.cookies.listName;
+  //   console.log('----Cached: ' + cachedListName);
+  // }
 
   //Check FamilyId
   mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
