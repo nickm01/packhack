@@ -90,7 +90,6 @@ router.route("/twilio")
               var listItemName = bodyText.substr(addVerbPhrase.length);
               console.log('----add found for ' + listItemName);
 
-              //TODO: Something is deprecated... mongoose promise library.
               var newItem = new mongoOp.ListItems({
                 "listKey" : listName,
                 "listItemName" : listItemName
@@ -105,8 +104,18 @@ router.route("/twilio")
 
             //Remove list
             } else if (bodyText.startsWith(removeVerbPhrase)) {
+              var listItemName = bodyText.substr(addVerbPhrase.length);
+              console.log('----remove found for ' + listItemName);
 
+              mongoOp.ListItems.remove({"listKey" : listName,"listItemName" : listItemName}, function(err) {
+                if (err) {
+                  sendSMSResponse("The item doesn't exist."); 
+                } else {
+                  sendSMSResponse('Got it! ❤️FLOCK', res);  
+                }
+              });
             }
+
           }
         });
 
@@ -122,7 +131,7 @@ router.route("/twilio")
               sendSMSResponse("Sorry, but please don't include spaces in list names.", res);  
               return;
             }
-            
+
             var newList = new mongoOp.Lists({
               "listKey" : newListName,
               "listDescription" : "",
