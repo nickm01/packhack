@@ -20,10 +20,15 @@ router.route("/twilio")
 .get(function(req,res){
   console.log('----Twilio From: ' + req.query['From']);
   console.log('----Twilio Message: ' + req.query['Body']);
-  //var bodyText = req.param('Body').toLowerCase();
   var bodyText = req.query['Body'].toLowerCase();
   var fromPhoneNumber = req.query['From'];
   var familyId = 0;
+
+  var cachedListName;
+  if (req.cookies.listName !== undefined && !isNaN(body)) {
+    cachedListName = req.cookies.listName;
+    console.log('----Cached: ' + cachedListName);
+  }
 
   //Check FamilyId
   mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
@@ -59,6 +64,7 @@ router.route("/twilio")
             //TODO; Better error checking
             console.log(err);
           } else {
+            cacheListName(listName,res);
             var concatText = "";
             console.log('*** Count Items:' + listItems.length);
             var itemNumber = 0;
@@ -170,6 +176,10 @@ function sendSMSResponse(messageText,response) {
   twilioResponse.message(messageText);
   response.send(twilioResponse.toString());
   //console.log('----SendSMSResponse Text: ' + messageText);
+};
+
+function cacheListName(listName,response) {
+  respone.cookie('listName', listName, { maxAge: 1000 * 60 * 60 });
 };
 
 function getFirstWord(str) {
