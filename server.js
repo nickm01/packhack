@@ -107,13 +107,13 @@ router.route("/twilio")
               var listItemName = bodyText.substr(removeVerbPhrase.length);
               console.log('----remove found for ' + listItemName);
 
-              mongoOp.ListItems.remove({"listKey" : listName,"listItemName" : listItemName}, function(err, numberRemoved) {
+              mongoOp.ListItems.remove({"listKey" : listName,"listItemName" : listItemName}, function(err, removeResult) {
                 if (err) {
                   console.log(err);
                   return;
                 }
-                console.log('----removed ' + listItemName + ' ' + numberRemoved);
-                if (numberRemoved == 0) {
+                console.log('----removed ' + listItemName + ' ' + removeResult.result.n);
+                if (removeResult.result.n == 0) {
                   sendSMSResponse("The item doesn't exist."); 
                 } else {
                   sendSMSResponse('Got it! ❤️FLOCK', res);  
