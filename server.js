@@ -104,10 +104,9 @@ router.route("/twilio")
 
             //Remove list
             } else if (bodyText.startsWith(removeVerbPhrase)) {
-              var listItemName = bodyText.substr(addVerbPhrase.length);
+              var listItemName = bodyText.substr(removeVerbPhrase.length);
               console.log('----remove found for ' + listItemName);
-
-              mon
+              
               mongoOp.ListItems.remove({"listKey" : listName,"listItemName" : listItemName}, function(err, numberRemoved) {
                 if (err) {
                   console.log(err);
