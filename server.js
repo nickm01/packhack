@@ -113,8 +113,8 @@ router.route("/twilio")
                   return;
                 }
                 console.log('----removed ' + listItemName + ' ' + removeResult.result.n);
-                if (removeResult.result.n == 0) {
-                  sendSMSResponse("The item doesn't exist."); 
+                if (removeResult.result.n === 0) {
+                  sendSMSResponse("The item doesn't exist.", res); 
                 } else {
                   sendSMSResponse('Got it! ❤️FLOCK', res);  
                 }
