@@ -18,10 +18,11 @@ router.get("/",function(req,res){
 
 router.route("/twilio")
 .get(function(req,res){
-  console.log('----Twilio From: ' + req.param('From'));
-  console.log('----Twilio Message: ' + req.param('Body'));
-  var bodyText = req.param('Body').toLowerCase();
-  var fromPhoneNumber = req.param('From');
+  console.log('----Twilio From: ' + req.query['From']);
+  console.log('----Twilio Message: ' + req.query['Body']);
+  //var bodyText = req.param('Body').toLowerCase();
+  var bodyText = req.query['Body'].toLowerCase();
+  var fromPhoneNumber = req.query['From'];
   var familyId = 0;
 
   //Check FamilyId
@@ -42,7 +43,7 @@ router.route("/twilio")
             var concatText = "";
                 
             lists.forEach(function(list){
-              concatText = concatText.concat('\n- #' + list.listKey);
+              concatText = concatText.concat('\n#' + list.listKey);
             });
             sendSMSResponse('\nLists:'+ concatText, res);
           }
