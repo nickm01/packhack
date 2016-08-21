@@ -46,9 +46,10 @@ router.route("/twilio")
             lists.forEach(function(list){
               concatText = concatText.concat('\n' + list.listKey);
             });
-            var twilioResponse = new twilio.TwimlResponse();
-            twilioResponse.message('\nLists:'+ concatText);
-            res.send(twilioResponse.toString());
+            sendSMSResponse('\nLists:'+ concatText, res);
+            //var twilioResponse = new twilio.TwimlResponse();
+            //twilioResponse.message('\nLists:'+ concatText);
+            //res.send(twilioResponse.toString());
           }
         });
 
