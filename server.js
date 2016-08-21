@@ -27,9 +27,7 @@ router.route("/twilio")
   //Check FamilyId
   mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
     if (familyMember == null) {
-      var twilioResponse = new twilio.TwimlResponse();
-      twilioResponse.message("Sorry, don't see you as a member of a family.");
-      res.send(twilioResponse.toString());
+      sendSMSResponse("Sorry, don't see you as a member of a family.", res);  
     } else {
       familyId = familyMember.familyId;
       console.log('----familyId: ' + familyId);
@@ -44,12 +42,9 @@ router.route("/twilio")
             var concatText = "";
                 
             lists.forEach(function(list){
-              concatText = concatText.concat('\n' + list.listKey);
+              concatText = concatText.concat('\n- #' + list.listKey);
             });
             sendSMSResponse('\nLists:'+ concatText, res);
-            //var twilioResponse = new twilio.TwimlResponse();
-            //twilioResponse.message('\nLists:'+ concatText);
-            //res.send(twilioResponse.toString());
           }
         });
 
@@ -73,9 +68,7 @@ router.route("/twilio")
             if (itemNumber == 0) {
               concatText = concatText.concat(' No items in list.');
             }
-            var twilioResponse = new twilio.TwimlResponse();
-            twilioResponse.message('\n'+ listName + ':' + concatText);
-            res.send(twilioResponse.toString());
+            sendSMSResponse('\n'+ listName + ':' + concatText, res);
           }
         });
 
@@ -86,9 +79,7 @@ router.route("/twilio")
           console.log('----list found' + list);
 
           if (list == null) {
-            var twilioResponse = new twilio.TwimlResponse();
-            twilioResponse.message('Unknown list!');
-            res.send(twilioResponse.toString());
+            sendSMSResponse('Unknown list!', res);
           } else {
             var addVerbPhrase = '#' + listName + ' add '
             if (bodyText.startsWith(addVerbPhrase)) {
@@ -104,9 +95,7 @@ router.route("/twilio")
                 if (err) console.log(err);
                 else {
                   console.log('Saved ', data );
-                  var twilioResponse = new twilio.TwimlResponse();
-                  twilioResponse.message('Got it! ❤️FLOCK');
-                  res.send(twilioResponse.toString());
+                  sendSMSResponse('Got it! ❤️FLOCK', res);  
                 }
               });
             }
@@ -118,9 +107,7 @@ router.route("/twilio")
         mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
 
           if (list != null) {
-            var twilioResponse = new twilio.TwimlResponse();
-            twilioResponse.message('List already exists!');
-            res.send(twilioResponse.toString());
+            sendSMSResponse('List already exists!', res);  
           } else {
             //TODO: Something is deprecated... mongoose promise library.
             var newList = new mongoOp.Lists({
@@ -132,9 +119,7 @@ router.route("/twilio")
               if (err) console.log(err);
               else {
                 console.log('Saved ', data );
-                var twilioResponse = new twilio.TwimlResponse();
-                twilioResponse.message('Got it! ❤️FLOCK');
-                res.send(twilioResponse.toString());                
+                sendSMSResponse('Got it! ❤️FLOCK', res);  
               }
             });
           }
@@ -157,7 +142,7 @@ function sendSMSResponse(messageText,response) {
   var twilioResponse = new twilio.TwimlResponse();
   twilioResponse.message(messageText);
   response.send(twilioResponse.toString());
-  console.log('----SendSMSResponse Text: ' + messageText);
+  //console.log('----SendSMSResponse Text: ' + messageText);
 };
 
 function getFirstWord(str) {
