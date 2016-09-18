@@ -10,7 +10,9 @@ var cookieParser = require('cookie-parser')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
-app.use(cookieParser())
+
+var app = express();
+app.use(cookieParser());
 
 app.set('port', (process.env.PORT || 5000));
 
