@@ -67,7 +67,6 @@ router.route("/twilio")
             //TODO; Better error checking
             console.log(err);
           } else {
-            cacheListName(listName,res);
             var concatText = "";
             console.log('*** Count Items:' + listItems.length);
             var itemNumber = 0;
@@ -79,6 +78,7 @@ router.route("/twilio")
               concatText = concatText.concat(' No items in list.');
             }
             sendSMSResponse('\n'+ listName + ':' + concatText, res);
+            cacheListName(listName,res);
           }
         });
 
