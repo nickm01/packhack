@@ -9,6 +9,7 @@ var twilio = require('twilio');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
+app.use(express.cookieParser());
 
 app.set('port', (process.env.PORT || 5000));
 
