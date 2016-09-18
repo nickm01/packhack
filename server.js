@@ -6,7 +6,7 @@ var currentDB;
 var mongoOp = require("./model/mongo");
 var router = express.Router();
 var twilio = require('twilio');
-var cookieParser = require('cookie-parser')
+var cookieParser = require('cookie-parser');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
