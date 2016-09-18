@@ -187,7 +187,7 @@ function sendSMSResponse(messageText,response) {
 
 function cacheListName(listName,response) {
   console.log("attempting to set cookie")
-  respone.cookie('listName', listName, { maxAge: 1000 * 60 * 60 });
+  response.cookie('listName', listName, { maxAge: 1000 * 60 * 60 });
   console.log("finished setting cookie")
 };
 
