@@ -115,6 +115,7 @@ router.route("/twilio")
                 if (err) console.log(err);
                 else {
                   console.log('Saved ', data );
+                  cacheListName(listName,res);
                   sendSMSResponse('Got it! ❤️FLOCK', res);  
                 }
               });
@@ -163,6 +164,7 @@ router.route("/twilio")
               if (err) console.log(err);
               else {
                 console.log('Saved ', data );
+                cacheListName(newListName,res);
                 sendSMSResponse('Got it! ❤️FLOCK', res);  
               }
             });
