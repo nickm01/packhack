@@ -81,8 +81,8 @@ router.route("/twilio")
             if (itemNumber == 0) {
               concatText = concatText.concat(' No items in list.');
             }
-            sendSMSResponse('\n'+ listName + ':' + concatText, res);
             cacheListName(listName,res);
+            sendSMSResponse('\n'+ listName + ':' + concatText, res);
           }
         });
 
