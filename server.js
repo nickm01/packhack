@@ -25,8 +25,9 @@ router.route("/twilio")
   var familyId = 0;
 
   console.log('Attempting To Read Cache');
+  console.log(req.cookies);
   var cachedListName;
-  if (req.cookies.listName !== undefined && !isNaN(body)) {
+  if (req.cookies !== undefined && req.cookies.listName !== undefined && !isNaN(body)) {
     cachedListName = req.cookies.listName;
     console.log('----Cached: ' + cachedListName);
   }
