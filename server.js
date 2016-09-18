@@ -31,7 +31,7 @@ router.route("/twilio")
   console.log('Attempting To Read Cache');
   console.log(req.cookies);
   var cachedListName;
-  if (req.cookies !== undefined && req.cookies.listName !== undefined && !isNaN(body)) {
+  if (req.cookies !== undefined && req.cookies.listName !== undefined) {
     cachedListName = req.cookies.listName;
     console.log('----Cached: ' + cachedListName);
   }
