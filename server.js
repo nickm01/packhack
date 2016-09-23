@@ -124,7 +124,7 @@ router.route("/twilio")
               var newItem = new mongoOp.ListItems({
                 "listKey" : listName,
                 "listItemName" : listItemName,
-                "family" : familyId
+                "familyId" : familyId
               });
               newItem.save(function (err, data) {
                 if (err) console.log(err);
