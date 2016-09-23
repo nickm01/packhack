@@ -66,7 +66,7 @@ router.route("/twilio")
         });
 
       } else if (bodyText === "fix")  {
-        mongoOp.ListItems.findOne({'listItemName': 'Bananas'},function(err,listItem) {
+        mongoOp.ListItems.find({},function(err,listItem) {
           listItem.familyId = 1;
           listItem.save(function(err){
             if(err) {
