@@ -20,7 +20,8 @@ var Lists = mongoose.model('Lists',listsSchema, 'Lists');
 // ListItems
 var listItemsSchema  = mongoose.Schema({
     "listKey" : String,
-    "listItemName" : String
+    "listItemName" : String,
+    "familyId" : Number
 }, { versionKey: false });
 var ListItems = mongoose.model('ListItems',listItemsSchema, 'ListItems');
 
