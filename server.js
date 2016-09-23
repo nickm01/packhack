@@ -66,14 +66,16 @@ router.route("/twilio")
         });
 
       } else if (bodyText === "fix")  {
-        mongoOp.ListItems.find({},function(err,listItem) {
-          listItem.familyId = 1;
-          listItem.save(function(err){
-            if(err) {
-              console.log('---->>>> fix error');
-            } else {
-              console.log('---->>>> fix SUCCESS!!!!');
-            }
+        mongoOp.ListItems.find({},function(err,listItems) {
+          listItems.forEach(function(listItem){
+            listItem.familyId = 1;
+            listItem.save(function(err){
+              if(err) {
+                console.log('---->>>> fix error');
+              } else {
+                console.log('---->>>> fix SUCCESS!!!!');
+              }
+            });
           });
         });
 
