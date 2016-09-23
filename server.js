@@ -34,7 +34,7 @@ router.route("/twilio")
   if (req.cookies !== undefined && req.cookies.listName !== undefined) {
     cachedListName = req.cookies.listName;
     console.log('----Cached: ' + cachedListName);
-    if (bodyText.startsWith("add ")) {
+    if (bodyText.startsWith("add ") || bodyText.startsWith("remove ")) {
       bodyText = '#' + cachedListName + ' ' + bodyText;
       console.log('add command changed to ' + bodyText);
     }
