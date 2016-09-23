@@ -65,19 +65,19 @@ router.route("/twilio")
           }
         });
 
-      } else if (bodyText === "fix")  {
-        mongoOp.ListItems.find({},function(err,listItems) {
-          listItems.forEach(function(listItem){
-            listItem.familyId = 1;
-            listItem.save(function(err){
-              if(err) {
-                console.log('---->>>> fix error');
-              } else {
-                console.log('---->>>> fix SUCCESS!!!!');
-              }
-            });
-          });
-        });
+      // } else if (bodyText === "fix")  {
+      //   mongoOp.ListItems.find({},function(err,listItems) {
+      //     listItems.forEach(function(listItem){
+      //       listItem.familyId = 1;
+      //       listItem.save(function(err){
+      //         if(err) {
+      //           console.log('---->>>> fix error');
+      //         } else {
+      //           console.log('---->>>> fix SUCCESS!!!!');
+      //         }
+      //       });
+      //     });
+      //   });
 
       } else if (bodyText.startsWith("get #")) {
         console.log('*** get list!!!!');
@@ -116,14 +116,15 @@ router.route("/twilio")
             var addVerbPhrase = '#' + listName + ' add ';
             var removeVerbPhrase = '#' + listName + ' remove ';
 
-            //Add list
+            //Add item
             if (bodyText.startsWith(addVerbPhrase)) {
               var listItemName = bodyText.substr(addVerbPhrase.length);
               console.log('----add found for ' + listItemName);
 
               var newItem = new mongoOp.ListItems({
                 "listKey" : listName,
-                "listItemName" : listItemName
+                "listItemName" : listItemName,
+                "family" : familyId
               });
               newItem.save(function (err, data) {
                 if (err) console.log(err);
@@ -139,7 +140,7 @@ router.route("/twilio")
               var listItemName = bodyText.substr(removeVerbPhrase.length);
               console.log('----remove found for ' + listItemName);
 
-              mongoOp.ListItems.remove({"listKey" : listName,"listItemName" : listItemName}, function(err, removeResult) {
+              mongoOp.ListItems.remove({"listKey" : listName,"listItemName" : listItemName, 'familyId': familyId}, function(err, removeResult) {
                 if (err) {
                   console.log(err);
                   return;
@@ -156,6 +157,7 @@ router.route("/twilio")
           }
         });
 
+      //create list
       } else if (bodyText.startsWith('create #')) {
         var newListName = bodyText.substr(8)
         mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
