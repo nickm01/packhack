@@ -65,12 +65,24 @@ router.route("/twilio")
           }
         });
 
+      } else if (bodyText === "fix")  {
+        mongoOp.ListItems.findOne({ 'listItemName': 'Bananas'},function(err,listItem) {
+          listItem.familyId = 1;
+          listItem.save(function(err){
+            if(err) {
+              console.log('---->>>> fix error');
+            } else {
+              console.log('---->>>> fix SUCCESS!!!!');
+            }
+          }
+        }
+
       } else if (bodyText.startsWith("get #")) {
         console.log('*** get list!!!!');
         response = true;
         var listName = bodyText.substr(5);
 
-        mongoOp.ListItems.find({'listKey':listName}, function(err, listItems){
+        mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
           if(err){
             //TODO; Better error checking
             console.log(err);
