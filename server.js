@@ -80,22 +80,27 @@ router.route("/twilio")
         response = true;
         var listName = bodyText.substr(5);
 
-        mongoOp.ListItems.findOne({'listKey':listName, 'familyId': familyId}, function(err, listItems){
-          if(err){
-            //TODO; Better error checking
-            logError(fromPhoneNumber, familyId, bodyText, err);
+        mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
+          if (list == null) {
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, listName + 'does not exist.', res);
           } else {
-            var concatText = "";
-            var itemNumber = 0;
-            listItems.forEach(function(listItem){
-              itemNumber++;
-              concatText = concatText.concat('\n• ' + listItem.listItemName);
+            mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
+              if(err){
+                logError(fromPhoneNumber, familyId, bodyText, err);
+              } else {
+                var concatText = "";
+                var itemNumber = 0;
+                listItems.forEach(function(listItem){
+                  itemNumber++;
+                  concatText = concatText.concat('\n• ' + listItem.listItemName);
+                });
+                if (itemNumber == 0) {
+                  concatText = concatText.concat(' No items in list.');
+                }
+                cacheListName(listName,res);
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, '\n#'+ listName + ':' + concatText, res);
+             }
             });
-            if (itemNumber == 0) {
-              concatText = concatText.concat(' No items in list.');
-            }
-            cacheListName(listName,res);
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, '\n#'+ listName + ':' + concatText, res);
           }
         });
 
@@ -105,7 +110,7 @@ router.route("/twilio")
         mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
 
           if (list == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Unknown list!', res);
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, listName + 'does not exist.', res);
           } else {
             var addVerbPhrase = '#' + listName + ' add ';
             var removeVerbPhrase = '#' + listName + ' remove ';
