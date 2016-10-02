@@ -54,7 +54,8 @@ router.route("/twilio")
       var newLog = new mongoOp.Logs({
         "phoneNumber" : fromPhoneNumber,
         "familyId" : familyId,
-        "message" : bodyText
+        "message" : bodyText,
+        "dateTime" : Date()
       });
       newLog.save(function (err, data) {
         if (err) console.log(err);

@@ -39,7 +39,8 @@ var FamilyMembers = mongoose.model('FamilyMembers',familyMemberSchema, 'FamilyMe
 var logsSchema  = mongoose.Schema({
     "phoneNumber" : String,
     "familyId" : Number,
-    "message" : String
+    "message" : String,
+    "datetime" : String
 }, { versionKey: false });
 var Logs = mongoose.model('Logs',logsSchema, 'Logs');
 
