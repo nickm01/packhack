@@ -50,7 +50,7 @@ router.route("/twilio")
       console.log('----familyId: ' + familyId);
 
       //MAIN LOGIC
-      if (bodyText === "get lists") {
+      if (bodyText === "get lists" || bodyTest === "get") {
         response = true;
         mongoOp.Lists.find({'familyId':familyId}, 'listKey', function(err, lists) {
           if(err){
@@ -79,6 +79,7 @@ router.route("/twilio")
       //     });
       //   });
 
+      // Get list items
       } else if (bodyText.startsWith("get #")) {
         console.log('*** get list!!!!');
         response = true;
@@ -198,16 +199,38 @@ router.route("/twilio")
 
             mongoOp.ListItems.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
               if (err) {
-                  console.log(err);
-                  return;
-                }
-                console.log('----cleared ' + list.listKey + ' ' + removeResult.result.n);
-                if (removeResult.result.n === 0) {
-                  sendSMSResponse("#" + list.listKey + " already empty.", res); 
-                } else {
-                  sendSMSResponse('Got it! ❤️FLOCK', res);  
-                }
-              });
+                console.log(err);
+                return;
+              }
+              console.log('----cleared ' + list.listKey + ' ' + removeResult.result.n);
+              if (removeResult.result.n === 0) {
+                sendSMSResponse("#" + list.listKey + " already empty.", res); 
+              } else {
+                sendSMSResponse('Got it! ❤️FLOCK', res);  
+              }
+            });
+
+          }
+
+        });
+
+      // delete list.
+      } else if (bodyText.startsWith('delete #')) {
+        var newListName = bodyText.substr(8)
+        
+        mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
+          if (list == null) {
+            sendSMSResponse('List does not exist', res);  
+          } else {
+            
+            mongoOp.List.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
+              if (err) {
+                console.log(err);
+                return;
+              }
+              console.log('----deleted ' + list.listKey + ' ' + removeResult.result.n);
+              sendSMSResponse('Got it! ❤️FLOCK', res);    
+            });
 
           }
 
