@@ -49,17 +49,7 @@ router.route("/twilio")
       familyId = familyMember.familyId;
       console.log('----familyId: ' + familyId);
 
-      //Logging
-
-      var newLog = new mongoOp.Logs({
-        "phoneNumber" : fromPhoneNumber,
-        "familyId" : familyId,
-        "message" : bodyText,
-        "dateTime" : Date()
-      });
-      newLog.save(function (err, data) {
-        if (err) console.log(err);
-      });
+      log(fromPhoneNumber, familyId, bodyText, "request", "");
 
       //MAIN LOGIC
       if (bodyText === "get lists" || bodyText === "get") {
@@ -271,6 +261,20 @@ function cacheListName(listName,response) {
   console.log("attempting to set cookie")
   response.cookie('listName', listName, { maxAge: 1000 * 60 * 60 });
   console.log("finished setting cookie")
+};
+
+function log(phoneNumber, familyId, message, type, response) {
+  var newLog = new mongoOp.Logs({
+    "phoneNumber" : phoneNumber,
+    "familyId" : familyId,
+    "message" : message,
+    "dateTime" : Date(),
+    "type" : type,
+    "response" : response
+  });
+  newLog.save(function (err, data) {
+    if (err) console.log(err);
+  });
 };
 
 function getFirstWord(str) {

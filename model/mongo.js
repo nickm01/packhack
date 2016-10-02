@@ -40,7 +40,9 @@ var logsSchema  = mongoose.Schema({
     "phoneNumber" : String,
     "familyId" : Number,
     "message" : String,
-    "dateTime" : String
+    "dateTime" : String,
+    "type" : String,
+    "response": String
 }, { versionKey: false });
 var Logs = mongoose.model('Logs',logsSchema, 'Logs');
 
