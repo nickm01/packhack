@@ -186,11 +186,11 @@ router.route("/twilio")
 
       // Clear list.
       } else if (bodyText.startsWith('clear #')) {
-        var newListName = bodyText.substr(7)
-        mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
+        var listName = bodyText.substr(7)
+        mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
 
           if (list == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'List does not exist', res);  
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
           } else {
 
             mongoOp.ListItems.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
@@ -212,11 +212,11 @@ router.route("/twilio")
 
       // delete list.
       } else if (bodyText.startsWith('delete #')) {
-        var newListName = bodyText.substr(8)
+        var listName = bodyText.substr(8)
         
-        mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
+        mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
           if (list == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'List does not exist', res);  
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
           } else {
             
             mongoOp.Lists.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
