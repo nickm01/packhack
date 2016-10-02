@@ -254,7 +254,7 @@ function sendSMSResponse(phoneNumber, familyId, inMessage, outMessage, response)
   var twilioResponse = new twilio.TwimlResponse();
   twilioResponse.message(outMessage);
   response.send(twilioResponse.toString());
-  log(phoneNumber, familyId, inMessage, "response", response);
+  log(phoneNumber, familyId, inMessage, "response", outMessage);
 };
 
 function cacheListName(listName,response) {
