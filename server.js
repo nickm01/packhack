@@ -94,7 +94,7 @@ router.route("/twilio")
             var itemNumber = 0;
             listItems.forEach(function(listItem){
               itemNumber++;
-              concatText = concatText.concat('\n' + itemNumber + '. ' + listItem.listItemName);
+              concatText = concatText.concat('\n• ' + listItem.listItemName);
             });
             if (itemNumber == 0) {
               concatText = concatText.concat(' No items in list.');
@@ -135,7 +135,7 @@ router.route("/twilio")
                 }
               });
 
-            //Remove list
+            //Remove list item
             } else if (bodyText.startsWith(removeVerbPhrase)) {
               var listItemName = bodyText.substr(removeVerbPhrase.length);
               console.log('----remove found for ' + listItemName);
@@ -157,7 +157,7 @@ router.route("/twilio")
           }
         });
 
-      //create list
+      // Create list.
       } else if (bodyText.startsWith('create #')) {
         var newListName = bodyText.substr(8)
         mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
@@ -184,6 +184,31 @@ router.route("/twilio")
                 sendSMSResponse('Got it! ❤️FLOCK', res);  
               }
             });
+          }
+        });
+
+      // Clear list.
+      } else if (bodyText.startsWith('clear #')) {
+        var newListName = bodyText.substr(7)
+        mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
+
+          if (list == null) {
+            sendSMSResponse('List does not exist', res);  
+          } else {
+
+            mongoOp.ListItems.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
+              if (err) {
+                  console.log(err);
+                  return;
+                }
+                console.log('----cleared ' + list.listKey + ' ' + removeResult.result.n);
+                if (removeResult.result.n === 0) {
+                  sendSMSResponse(list.listKey + " already empty.", res); 
+                } else {
+                  sendSMSResponse('Got it! ❤️FLOCK', res);  
+                }
+              });
+
           }
 
         });
