@@ -82,7 +82,7 @@ router.route("/twilio")
 
         mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
           if (list == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, listName + 'does not exist.', res);
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
           } else {
             mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
               if(err){
@@ -95,7 +95,7 @@ router.route("/twilio")
                   concatText = concatText.concat('\n• ' + listItem.listItemName);
                 });
                 if (itemNumber == 0) {
-                  concatText = concatText.concat(' No items in list.');
+                  concatText = concatText.concat('No items in #' + listName + '.');
                 }
                 cacheListName(listName,res);
                 sendSMSResponse(fromPhoneNumber, familyId, bodyText, '\n#'+ listName + ':' + concatText, res);
@@ -110,7 +110,7 @@ router.route("/twilio")
         mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
 
           if (list == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, listName + 'does not exist.', res);
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
           } else {
             var addVerbPhrase = '#' + listName + ' add ';
             var removeVerbPhrase = '#' + listName + ' remove ';
