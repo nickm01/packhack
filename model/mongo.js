@@ -39,13 +39,13 @@ var FamilyMembers = mongoose.model('FamilyMembers',familyMemberSchema, 'FamilyMe
 var logsSchema  = mongoose.Schema({
     "phoneNumber" : String,
     "familyId" : Number,
-    "text" : String
+    "message" : String
 }, { versionKey: false });
 var Logs = mongoose.model('Logs',logsSchema, 'Logs');
 
 module.exports = {
     Lists: Lists,
     ListItems: ListItems,
-    FamilyMembers: FamilyMembers
+    FamilyMembers: FamilyMembers,
     Logs: Logs
 };
