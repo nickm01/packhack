@@ -223,7 +223,7 @@ router.route("/twilio")
             sendSMSResponse('List does not exist', res);  
           } else {
             
-            mongoOp.List.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
+            mongoOp.Lists.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
               if (err) {
                 console.log(err);
                 return;
