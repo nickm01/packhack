@@ -61,7 +61,7 @@ router.route("/twilio")
             lists.forEach(function(list){
               concatText = concatText.concat('\n#' + list.listKey);
             });
-            sendSMSResponse('\nLists:'+ concatText, res);
+            sendSMSResponse(concatText, res);
           }
         });
 
