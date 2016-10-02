@@ -44,7 +44,7 @@ router.route("/twilio")
   //Check FamilyId
   mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
     if (familyMember == null) {
-      sendSMSResponse("Sorry, don't see you as a member of a family.", res);  
+      sendSMSResponse(fromPhoneNumber, 0, bodyText, "Sorry, don't see you as a member of a family.", res);  
     } else {
       familyId = familyMember.familyId;
       console.log('----familyId: ' + familyId);
@@ -63,7 +63,7 @@ router.route("/twilio")
             lists.forEach(function(list){
               concatText = concatText.concat('\n#' + list.listKey);
             });
-            sendSMSResponse(concatText, res);
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, concatText, res);
           }
         });
 
@@ -103,7 +103,7 @@ router.route("/twilio")
               concatText = concatText.concat(' No items in list.');
             }
             cacheListName(listName,res);
-            sendSMSResponse('\n#'+ listName + ':' + concatText, res);
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, '\n#'+ listName + ':' + concatText, res);
           }
         });
 
@@ -114,7 +114,7 @@ router.route("/twilio")
           console.log('----list found' + list);
 
           if (list == null) {
-            sendSMSResponse('Unknown list!', res);
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Unknown list!', res);
           } else {
             var addVerbPhrase = '#' + listName + ' add ';
             var removeVerbPhrase = '#' + listName + ' remove ';
@@ -134,7 +134,7 @@ router.route("/twilio")
                 else {
                   console.log('Saved ', data );
                   cacheListName(listName,res);
-                  sendSMSResponse('Got it! ❤️FLOCK', res);  
+                  sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
                 }
               });
 
@@ -150,9 +150,9 @@ router.route("/twilio")
                 }
                 console.log('----removed ' + listItemName + ' ' + removeResult.result.n);
                 if (removeResult.result.n === 0) {
-                  sendSMSResponse(listItemName + " doesn't exist in #" + listName + ".", res); 
+                  sendSMSResponse(fromPhoneNumber, familyId, bodyText, listItemName + " doesn't exist in #" + listName + ".", res); 
                 } else {
-                  sendSMSResponse('Got it! ❤️FLOCK', res);  
+                  sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
                 }
               });
             }
@@ -166,11 +166,11 @@ router.route("/twilio")
         mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
 
           if (list != null) {
-            sendSMSResponse('List already exists!', res);  
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'List already exists!', res);  
           } else {
 
             if (newListName.includes(' ')) {
-              sendSMSResponse("Sorry, but please don't include spaces in list names.", res);  
+              sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Sorry, but please don't include spaces in list names.", res);  
               return;
             }
 
@@ -184,7 +184,7 @@ router.route("/twilio")
               else {
                 console.log('Saved ', data );
                 cacheListName(newListName,res);
-                sendSMSResponse('Got it! ❤️FLOCK', res);  
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
               }
             });
           }
@@ -196,7 +196,7 @@ router.route("/twilio")
         mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
 
           if (list == null) {
-            sendSMSResponse('List does not exist', res);  
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'List does not exist', res);  
           } else {
 
             mongoOp.ListItems.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
@@ -206,9 +206,9 @@ router.route("/twilio")
               }
               console.log('----cleared ' + list.listKey + ' ' + removeResult.result.n);
               if (removeResult.result.n === 0) {
-                sendSMSResponse("#" + list.listKey + " already empty.", res); 
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, "#" + list.listKey + " already empty.", res); 
               } else {
-                sendSMSResponse('Got it! ❤️FLOCK', res);  
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
               }
             });
 
@@ -222,7 +222,7 @@ router.route("/twilio")
         
         mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
           if (list == null) {
-            sendSMSResponse('List does not exist', res);  
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'List does not exist', res);  
           } else {
             
             mongoOp.Lists.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
@@ -231,7 +231,7 @@ router.route("/twilio")
                 return;
               }
               console.log('----deleted ' + list.listKey + ' ' + removeResult.result.n);
-              sendSMSResponse('Got it! ❤️FLOCK', res);    
+              sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);    
             });
 
           }
@@ -250,11 +250,11 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-function sendSMSResponse(messageText,response) {
+function sendSMSResponse(phoneNumber, familyId, inMessage, outMessage, response) {
   var twilioResponse = new twilio.TwimlResponse();
-  twilioResponse.message(messageText);
+  twilioResponse.message(outMessage);
   response.send(twilioResponse.toString());
-  //console.log('----SendSMSResponse Text: ' + messageText);
+  log(phoneNumber, familyId, inMessage, "response", response);
 };
 
 function cacheListName(listName,response) {
