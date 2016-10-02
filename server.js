@@ -22,24 +22,19 @@ router.get("/",function(req,res){
 
 router.route("/twilio")
 .get(function(req,res){
-  console.log('----Twilio From: ' + req.query['From']);
-  console.log('----Twilio Message: ' + req.query['Body']);
+  console.log('----Twilio From: ' + req.query['From'] + ' Message ' + req.query['Body']);
   var bodyText = req.query['Body'].toLowerCase();
   var fromPhoneNumber = req.query['From'];
   var familyId = 0;
 
-  console.log('Attempting To Read Cache');
-  console.log(req.cookies);
   var cachedListName;
   if (req.cookies !== undefined && req.cookies.listName !== undefined) {
     cachedListName = req.cookies.listName;
-    console.log('----Cached: ' + cachedListName);
     if (bodyText.startsWith("add ") || bodyText.startsWith("remove ")) {
       bodyText = '#' + cachedListName + ' ' + bodyText;
       console.log('add command changed to ' + bodyText);
     }
   }
-  console.log('Finished reading Cache');
 
   //Check FamilyId
   mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
@@ -47,8 +42,6 @@ router.route("/twilio")
       sendSMSResponse(fromPhoneNumber, 0, bodyText, "Sorry, don't see you as a member of a family.", res);  
     } else {
       familyId = familyMember.familyId;
-      console.log('----familyId: ' + familyId);
-
       log(fromPhoneNumber, familyId, bodyText, "request", "");
 
       //MAIN LOGIC
@@ -56,7 +49,7 @@ router.route("/twilio")
         response = true;
         mongoOp.Lists.find({'familyId':familyId}, 'listKey', function(err, lists) {
           if(err){
-            console.log(err);
+            logError(fromPhoneNumber, familyId, bodyText, err);
           } else {
             var concatText = "";
                 
@@ -90,10 +83,9 @@ router.route("/twilio")
         mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
           if(err){
             //TODO; Better error checking
-            console.log(err);
+            logError(fromPhoneNumber, familyId, bodyText, err);
           } else {
             var concatText = "";
-            console.log('*** Count Items:' + listItems.length);
             var itemNumber = 0;
             listItems.forEach(function(listItem){
               itemNumber++;
@@ -111,7 +103,6 @@ router.route("/twilio")
 
         var listName = getFirstWord(bodyText).substr(1);
         mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
-          console.log('----list found' + list);
 
           if (list == null) {
             sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Unknown list!', res);
@@ -122,17 +113,16 @@ router.route("/twilio")
             //Add item
             if (bodyText.startsWith(addVerbPhrase)) {
               var listItemName = bodyText.substr(addVerbPhrase.length);
-              console.log('----add found for ' + listItemName);
-
+              
               var newItem = new mongoOp.ListItems({
                 "listKey" : listName,
                 "listItemName" : listItemName,
                 "familyId" : familyId
               });
               newItem.save(function (err, data) {
-                if (err) console.log(err);
+                if (err) logError(fromPhoneNumber, familyId, bodyText, err);
                 else {
-                  console.log('Saved ', data );
+                  console.log('----saved ', data );
                   cacheListName(listName,res);
                   sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
                 }
@@ -141,11 +131,10 @@ router.route("/twilio")
             //Remove list item
             } else if (bodyText.startsWith(removeVerbPhrase)) {
               var listItemName = bodyText.substr(removeVerbPhrase.length);
-              console.log('----remove found for ' + listItemName);
 
               mongoOp.ListItems.remove({"listKey" : listName,"listItemName" : listItemName, 'familyId': familyId}, function(err, removeResult) {
                 if (err) {
-                  console.log(err);
+                  logError(fromPhoneNumber, familyId, bodyText, err);
                   return;
                 }
                 console.log('----removed ' + listItemName + ' ' + removeResult.result.n);
@@ -180,9 +169,9 @@ router.route("/twilio")
               "familyId" : familyId
             });
             newList.save(function (err, data) {
-              if (err) console.log(err);
+              if (err) logError(fromPhoneNumber, familyId, bodyText, err);
               else {
-                console.log('Saved ', data );
+                console.log('----saved ', data );
                 cacheListName(newListName,res);
                 sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
               }
@@ -201,7 +190,7 @@ router.route("/twilio")
 
             mongoOp.ListItems.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
               if (err) {
-                console.log(err);
+                logError(fromPhoneNumber, familyId, bodyText, err);
                 return;
               }
               console.log('----cleared ' + list.listKey + ' ' + removeResult.result.n);
@@ -227,7 +216,7 @@ router.route("/twilio")
             
             mongoOp.Lists.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
               if (err) {
-                console.log(err);
+                logError(fromPhoneNumber, familyId, bodyText, err);
                 return;
               }
               console.log('----deleted ' + list.listKey + ' ' + removeResult.result.n);
@@ -258,10 +247,13 @@ function sendSMSResponse(phoneNumber, familyId, inMessage, outMessage, response)
 };
 
 function cacheListName(listName,response) {
-  console.log("attempting to set cookie")
   response.cookie('listName', listName, { maxAge: 1000 * 60 * 60 });
-  console.log("finished setting cookie")
 };
+
+function logError(phoneNumber, familyId, message, err) {
+  log(phoneNumber, familyId, inMessage, "error", err);  
+  console.log(err);
+}
 
 function log(phoneNumber, familyId, message, type, response) {
   var newLog = new mongoOp.Logs({
