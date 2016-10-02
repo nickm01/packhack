@@ -80,7 +80,7 @@ router.route("/twilio")
         response = true;
         var listName = bodyText.substr(5);
 
-        mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
+        mongoOp.ListItems.findOne({'listKey':listName, 'familyId': familyId}, function(err, listItems){
           if(err){
             //TODO; Better error checking
             logError(fromPhoneNumber, familyId, bodyText, err);
