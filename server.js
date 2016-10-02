@@ -49,6 +49,17 @@ router.route("/twilio")
       familyId = familyMember.familyId;
       console.log('----familyId: ' + familyId);
 
+      //Logging
+
+      var newLog = new mongoOp.Logs({
+        "phoneNumber" : fromPhoneNumber,
+        "familyId" : familyId,
+        "message" : bodyText
+      });
+      newLog.save(function (err, data) {
+        if (err) console.log(err);
+      });
+
       //MAIN LOGIC
       if (bodyText === "get lists" || bodyText === "get") {
         response = true;

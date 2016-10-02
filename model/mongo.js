@@ -35,8 +35,17 @@ var familyMemberSchema  = mongoose.Schema({
 }, { versionKey: false });
 var FamilyMembers = mongoose.model('FamilyMembers',familyMemberSchema, 'FamilyMembers');
 
+// Logs
+var logsSchema  = mongoose.Schema({
+    "phoneNumber" : String,
+    "familyId" : Number,
+    "text" : String
+}, { versionKey: false });
+var Logs = mongoose.model('Logs',logsSchema, 'Logs');
+
 module.exports = {
     Lists: Lists,
     ListItems: ListItems,
     FamilyMembers: FamilyMembers
+    Logs: Logs
 };
