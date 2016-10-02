@@ -100,7 +100,7 @@ router.route("/twilio")
               concatText = concatText.concat(' No items in list.');
             }
             cacheListName(listName,res);
-            sendSMSResponse('\n'+ listName + ':' + concatText, res);
+            sendSMSResponse('\n#'+ listName + ':' + concatText, res);
           }
         });
 
@@ -147,7 +147,7 @@ router.route("/twilio")
                 }
                 console.log('----removed ' + listItemName + ' ' + removeResult.result.n);
                 if (removeResult.result.n === 0) {
-                  sendSMSResponse("The item doesn't exist.", res); 
+                  sendSMSResponse(listItemName + " doesn't exist in #" + listName + ".", res); 
                 } else {
                   sendSMSResponse('Got it! ❤️FLOCK', res);  
                 }
@@ -203,7 +203,7 @@ router.route("/twilio")
                 }
                 console.log('----cleared ' + list.listKey + ' ' + removeResult.result.n);
                 if (removeResult.result.n === 0) {
-                  sendSMSResponse(list.listKey + " already empty.", res); 
+                  sendSMSResponse("#" + list.listKey + " already empty.", res); 
                 } else {
                   sendSMSResponse('Got it! ❤️FLOCK', res);  
                 }
