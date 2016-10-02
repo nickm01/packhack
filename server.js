@@ -231,6 +231,14 @@ router.route("/twilio")
           }
 
         });
+
+      // help
+      } else if (bodyText === 'help') {
+        sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Welcome to ❤️FLOCK\nThe Family Operating System\n\nUse the following commands:\n• get or get lists\n• create #list\n• #list add item -OR - just add item if already selected list\n• #list remove item -OR- just remove item\n• clear #list\n• delete #list', res);
+
+      // catch all        
+      } else {
+        sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Sorry, don't understand.  Type 'help' for more info.", res);    
       }
 
     } 
