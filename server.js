@@ -50,7 +50,7 @@ router.route("/twilio")
       console.log('----familyId: ' + familyId);
 
       //MAIN LOGIC
-      if (bodyText === "get lists" || bodyTest === "get") {
+      if (bodyText === "get lists" || bodyText === "get") {
         response = true;
         mongoOp.Lists.find({'familyId':familyId}, 'listKey', function(err, lists) {
           if(err){
