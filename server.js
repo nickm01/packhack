@@ -82,8 +82,7 @@ router.route("/twilio")
         console.log('*** Send welcome');
         response = true;
         var welcomeSendPhoneNumber = bodyText.substr(10);
-        admin.sendSms('+13476979750','Welcome to FLOCK!\nYou now have the power to crowdsource your family lists. Learn more - text the word “flock” to this number to see a list of available commands.\nHave fun!\n❤️FLOCK
-');
+        admin.sendSms('+13476979750','Welcome to FLOCK!\nYou now have the power to crowdsource your family lists. Learn more - text the word “flock” to this number to see a list of available commands.\nHave fun!\n❤️FLOCK');
 
       // Get list items
       } else if (bodyText.startsWith("get #")) {
