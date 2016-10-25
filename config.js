@@ -27,7 +27,7 @@ var cfg = {};
 
 cfg.accountSid = 'ACa4428c20c2064813618957dbece7ef34';
 cfg.authToken = '63b9107ef3983ed2869fb402955369aa';
-cfg.sendingNumber = '+19148195134'
+cfg.sendingNumber = '+19148195134';
 
 //var requiredConfig = [cfg.accountSid, cfg.authToken, cfg.sendingNumber];
 //var isConfigured = requiredConfig.every(function(configValue) {

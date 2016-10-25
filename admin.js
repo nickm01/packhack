@@ -11,6 +11,8 @@ module.exports.sendSms = function(to, message) {
     if (err) {
       console.error('Could not send message');
       console.error(err);
-    } 
+    } else {
+      console.error('SMS');
+    }
   });
 };
