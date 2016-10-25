@@ -81,7 +81,7 @@ router.route("/twilio")
       } else if (bodyText.startsWith("** welcome ")) {
         console.log('*** Send welcome');
         response = true;
-        var welcomeSendUserId = bodyText.substr(12);
+        var welcomeSendUserId = bodyText.substr(11);
         mongoOp.FamilyMembers.findOne({'id': welcomeSendUserId}, 'phoneNumber', function(err, familyMember) {
         console.log('send to ' + welcomeSendUserId + 'phone number is ' + familyMember.phoneNumber);
           admin.sendSms(familyMember.phoneNumber,'Welcome to FLOCK!\nYou now have the power to crowdsource your family lists. \nLearn more - text the word “flock” to this number to see a list of available commands.\nHave fun!\n❤️FLOCK');
