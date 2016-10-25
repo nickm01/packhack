@@ -83,7 +83,9 @@ router.route("/twilio")
         var welcomeSendUserId = bodyText.substr(11);
         console.log('*** Send welcome to ' + welcomeSendUserId);
         mongoOp.FamilyMembers.findOne({'id': welcomeSendUserId}, 'phoneNumber', function(err, familyMember) {
-        console.log('send to ' + welcomeSendUserId + 'phone number is ' + familyMember.phoneNumber);
+          console.log('found one!');
+          console.log(familyMember);
+          console.log('send to ' + welcomeSendUserId + 'phone number is ' + familyMember.phoneNumber);
           admin.sendSms(familyMember.phoneNumber,'Welcome to FLOCK!\nYou now have the power to crowdsource your family lists. \nLearn more - text the word “flock” to this number to see a list of available commands.\nHave fun!\n❤️FLOCK');
           sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Welcome sent to ' + familyMember.phoneNumber, res);
         });
