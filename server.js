@@ -5,7 +5,9 @@ var app = express();
 var currentDB;
 var mongoOp = require("./model/mongo");
 var router = express.Router();
+var config = require('./config');
 var twilio = require('twilio');
+var admin = require('./admin');
 var cookieParser = require('cookie-parser');
 
 app.use(bodyParser.json());
@@ -73,6 +75,14 @@ router.route("/twilio")
       //       });
       //     });
       //   });
+
+
+      // Basic welcome message
+      } else if (bodyText.startsWith("** welcome")) {
+        console.log('*** Send welcome');
+        response = true;
+        var welcomeSendPhoneNumber = bodyText.substr(10);
+        admin.sendSms('+13476979750','Welcome!');
 
       // Get list items
       } else if (bodyText.startsWith("get #")) {
