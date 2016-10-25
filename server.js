@@ -82,7 +82,7 @@ router.route("/twilio")
         response = true;
         var welcomeSendUserId = bodyText.substr(11);
         console.log('*** Send welcome to ' + welcomeSendUserId);
-        mongoOp.FamilyMembers.findOne({'id': welcomeSendUserId}, 'phoneNumber', function(err, familyMember) {
+        mongoOp.FamilyMembers.findOne({'userId': welcomeSendUserId}, 'phoneNumber', function(err, familyMember) {
           console.log('found one!');
           console.log(familyMember);
           console.log(err);

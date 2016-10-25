@@ -27,7 +27,7 @@ var ListItems = mongoose.model('ListItems',listItemsSchema, 'ListItems');
 
 // FamilyMembers
 var familyMemberSchema  = mongoose.Schema({
-    "id": Number,
+    "userId": Number,
     "familyId": Number,
     "name": String,
     "phoneNumber": String,
