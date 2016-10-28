@@ -247,7 +247,7 @@ router.route("/twilio")
       } else if (bodyText.startsWith('send @')) {
         var messageCommandRemoved = bodyText.substr(6);
         var userName = getFirstWord(messageCommandRemoved);
-        var listName = bodyText.substr(6 + user.length + 1); //will strip out #
+        var listName = bodyText.substr(6 + userName.length + 1); //will strip out #
         console.log('send message to ' + userName + ' list: ' + listName);
         mongoOp.FamilyMembers.findOne({'name': userName, 'familyId': familyId}, 'phoneNumber', function(err, familyMember) {
           if (err) {
