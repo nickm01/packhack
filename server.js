@@ -271,6 +271,7 @@ router.route("/twilio")
                   cacheListName(listName,res);
                   admin.sendSms(familyMember.phoneNumber, "\nYou have been sent #"+ listName + ":" + concatText + "\nType get #" + listName + " to retrieve later.");
                   sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
+                }
               });
             }
           });
