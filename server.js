@@ -264,6 +264,7 @@ router.route("/twilio")
                 if(err){
                   logError(fromPhoneNumber, familyId, bodyText, err);
                 } else {
+                  console.log(familyMember);
                   var concatText = "";
                   listItems.forEach(function(listItem){
                     concatText = concatText.concat('\n• ' + listItem.listItemName);
