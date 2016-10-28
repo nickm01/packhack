@@ -255,26 +255,33 @@ router.route("/twilio")
             return;
           }
 
-          // Centralize!
-          mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
-            if (list == null) {
-              sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
-            } else {
-              mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
-                if(err){
-                  logError(fromPhoneNumber, familyId, bodyText, err);
-                } else {
-                  console.log(familyMember);
-                  var concatText = "";
-                  listItems.forEach(function(listItem){
-                    concatText = concatText.concat('\n• ' + listItem.listItemName);
-                  });
-                  cacheListName(listName,res);
-                  admin.sendSms(familyMember.phoneNumber, "\nYou have been sent #"+ listName + ":" + concatText + "\nType get #" + listName + " to retrieve later.");
-                  sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
-                }
-              });
+          mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber, 'familyId': familyId}, 'name', function(err, fromFamilyMember) {
+            if (err) {
+              logError(fromPhoneNumber, familyId, bodyText, err);
+              return;
             }
+
+            // Centralize!
+            mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
+              if (list == null) {
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
+              } else {
+                mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
+                  if(err){
+                    logError(fromPhoneNumber, familyId, bodyText, err);
+                  } else {
+                    console.log(familyMember);
+                    var concatText = "";
+                    listItems.forEach(function(listItem){
+                      concatText = concatText.concat('\n• ' + listItem.listItemName);
+                    });
+                    cacheListName(listName,res);
+                    admin.sendSms(familyMember.phoneNumber, "\n@" + fromFamilyMember.name + " sent you #"+ listName + ":" + concatText + "\nType 'get #" + listName + "'' to retrieve later.");
+                    sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
+                  }
+                });
+              }
+            });
           });
         });
 
