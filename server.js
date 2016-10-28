@@ -240,9 +240,40 @@ router.route("/twilio")
               console.log('----deleted ' + list.listKey + ' ' + removeResult.result.n);
               sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);    
             });
+          }
+        });
 
+      // send list
+      } else if (bodyText.startsWith('send @')) {
+        var messageCommandRemoved = bodyText.substr(6);
+        var userName = messageCommandRemoved.getFirstWord();
+        var listName = bodyText.substr(6 + user.length + 1); //will strip out #
+        console.log('send message to ' + userName + ' list: ' + listName);
+        mongoOp.FamilyMembers.findOne({'name': userName, 'familyId': familyId}, 'phoneNumber', function(err, familyMember) {
+          if (err) {
+            logError(fromPhoneNumber, familyId, bodyText, err);
+            return;
           }
 
+          // Centralize!
+          mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
+          if (list == null) {
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
+          } else {
+            mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
+              if(err){
+                logError(fromPhoneNumber, familyId, bodyText, err);
+              } else {
+                var concatText = "";
+                listItems.forEach(function(listItem){
+                  concatText = concatText.concat('\n• ' + listItem.listItemName);
+                });
+                cacheListName(listName,res);
+                admin.sendSms(familyMember.phoneNumber, "\nYou have been sent #"+ listName + ":" + concatText + "\nType get #" + listName + " to retrieve later.");
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
+              }
+            });
+          }
         });
 
       // help
