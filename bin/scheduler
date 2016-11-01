@@ -1,6 +1,10 @@
 #!/usr/bin/env node
+
+var admin = require('./admin');
+
 function sayHello() {
-  console.log('Hello');
+  console.log('Helloxxxx');
+  admin.sendSms("+13476979750", "from Scheduler");
 }
 sayHello();
 process.exit();
