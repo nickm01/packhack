@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 //var admin = require('../admin');
-var config = require('./config');
+var config = require('../config');
 var client = require('twilio')(config.accountSid, config.authToken);
 
 function sayHello() {
