@@ -1,11 +1,29 @@
 #!/usr/bin/env node
 
-var admin = require('../admin');
+//var admin = require('../admin');
+var config = require('./config');
+var client = require('twilio')(config.accountSid, config.authToken);
 
 function sayHello() {
   console.log('Helloxxxx');
-  admin.sendSms("+13476979750", "from Scheduler");
+  sendSms('+13476979750', 'from Scheduler');
   console.log('goodbye-xxxx');
 }
 sayHello();
 process.exit();
+
+function sendSms(to, message) {
+  client.messages.create({
+    body: message,
+    to: to,
+    from: config.sendingNumber
+    // mediaUrl: 'http://www.yourserver.com/someimage.png'
+  }, function(err, data) {
+    if (err) {
+      console.error('Could not send message');
+      console.error(err);
+    } else {
+      console.error('SMS');
+    }
+  });
+};
