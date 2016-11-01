@@ -5,6 +5,7 @@ var admin = require('../admin');
 function sayHello() {
   console.log('Helloxxxx');
   admin.sendSms("+13476979750", "from Scheduler");
+  console.log('goodbye-xxxx');
 }
 sayHello();
 process.exit();
