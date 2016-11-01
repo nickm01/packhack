@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var admin = require('./admin');
+var admin = require('../admin');
 
 function sayHello() {
   console.log('Helloxxxx');
