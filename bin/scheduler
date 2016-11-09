@@ -8,7 +8,7 @@ var sendSms = require('./sendsms');
 
 function sayHello() {
   console.log('Helloxxxx');
-  sendSms.sendSms('+13476979750', "from scheduler!", {
+  sendSms.sendSms('+13476979750', "from scheduler!", function(){
   	process.exit();
   });
 

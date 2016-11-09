@@ -82,7 +82,7 @@ router.route("/twilio")
         var welcomeSendUserId = bodyText.substr(11);
         console.log('*** Send welcome to ' + welcomeSendUserId);
         mongoOp.FamilyMembers.findOne({'userId': welcomeSendUserId}, 'phoneNumber', function(err, familyMember) {
-          sendSms.sendSms(familyMember.phoneNumber,'Welcome to FLOCK!\nYou now have the power to crowdsource your family lists. \nLearn more - text the word “flock” to this number to see a list of available commands.\nHave fun!\n❤️FLOCK', {});
+          sendSms.sendSms(familyMember.phoneNumber,'Welcome to FLOCK!\nYou now have the power to crowdsource your family lists. \nLearn more - text the word “flock” to this number to see a list of available commands.\nHave fun!\n❤️FLOCK', function(){});
           sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Welcome sent to ' + familyMember.phoneNumber, res);
         });
 
@@ -275,7 +275,7 @@ router.route("/twilio")
                       concatText = concatText.concat('\n• ' + listItem.listItemName);
                     });
                     cacheListName(listName,res);
-                    sendSms.sendSms(familyMember.phoneNumber, "\n@" + fromFamilyMember.name + " sent you #"+ listName + ":" + concatText + "\nType 'get #" + listName + "'' to retrieve later.", {});
+                    sendSms.sendSms(familyMember.phoneNumber, "\n@" + fromFamilyMember.name + " sent you #"+ listName + ":" + concatText + "\nType 'get #" + listName + "'' to retrieve later.", function(){});
                     sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
                   }
                 });
