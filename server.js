@@ -2,12 +2,11 @@ var express = require('express');
 var MongoClient = require('mongodb').MongoClient;
 var bodyParser = require('body-parser');
 var app = express();
-var currentDB;
 var mongoOp = require("./model/mongo");
 var router = express.Router();
 var config = require('./config');
 var twilio = require('twilio');
-var admin = require('./admin');
+var sendSms = require('./sendsms');
 var cookieParser = require('cookie-parser');
 
 app.use(bodyParser.json());
@@ -83,7 +82,7 @@ router.route("/twilio")
         var welcomeSendUserId = bodyText.substr(11);
         console.log('*** Send welcome to ' + welcomeSendUserId);
         mongoOp.FamilyMembers.findOne({'userId': welcomeSendUserId}, 'phoneNumber', function(err, familyMember) {
-          admin.sendSms(familyMember.phoneNumber,'Welcome to FLOCK!\nYou now have the power to crowdsource your family lists. \nLearn more - text the word “flock” to this number to see a list of available commands.\nHave fun!\n❤️FLOCK');
+          sendSms.sendSms(familyMember.phoneNumber,'Welcome to FLOCK!\nYou now have the power to crowdsource your family lists. \nLearn more - text the word “flock” to this number to see a list of available commands.\nHave fun!\n❤️FLOCK', {});
           sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Welcome sent to ' + familyMember.phoneNumber, res);
         });
 
@@ -276,7 +275,7 @@ router.route("/twilio")
                       concatText = concatText.concat('\n• ' + listItem.listItemName);
                     });
                     cacheListName(listName,res);
-                    admin.sendSms(familyMember.phoneNumber, "\n@" + fromFamilyMember.name + " sent you #"+ listName + ":" + concatText + "\nType 'get #" + listName + "'' to retrieve later.");
+                    sendSms.sendSms(familyMember.phoneNumber, "\n@" + fromFamilyMember.name + " sent you #"+ listName + ":" + concatText + "\nType 'get #" + listName + "'' to retrieve later.", {});
                     sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
                   }
                 });

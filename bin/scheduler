@@ -1,17 +1,26 @@
 #!/usr/bin/env node
 
 var config = require('../config');
-var client = require('twilio')(config.accountSid, config.authToken);
+var twilio = require('twilio')(config.accountSid, config.authToken);
+var MongoClient = require('mongodb').MongoClient;
+var mongoOp = require("./model/mongo");
+var sendSms = require('./sendsms');
 
 function sayHello() {
   console.log('Helloxxxx');
-  sendSms('+13476979750', 'from Scheduler');
+  sendSms.sendSms('+13476979750', "from scheduler!", {
+  	process.exit();
+  });
+
+  sendSms(, 'from Scheduler');
   console.log('goodbye-xxxx');
 }
+
 sayHello();
 
+/*
 function sendSms(to, message) {
-  client.messages.create({
+  twilio.messages.create({
     body: message,
     to: to,
     from: config.sendingNumber
@@ -25,3 +34,5 @@ function sendSms(to, message) {
     process.exit();
   });
 };
+*/
+
