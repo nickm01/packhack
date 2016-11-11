@@ -12,7 +12,7 @@ module.exports.sendSms = function(to, message, completion) {
       console.error('Could not send message');
       console.error(err);
     } else {
-      console.error('SMS');
+      //TODO: Logging?
     }
     completion();
   });

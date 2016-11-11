@@ -5,28 +5,25 @@ var twilio = require('twilio')(config.accountSid, config.authToken);
 var MongoClient = require('mongodb').MongoClient;
 var mongoOp = require("./model/mongo");
 var sendSms = require('./sendsms');
+var logging = require('./logging');
+var count = 0
 
 function processScheduler() {
 
-  mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
+  mongoOp.ListItems.find({'listKey':'reminder'}, function(err, listItems){
     if(err){
-      logError(fromPhoneNumber, familyId, bodyText, err);
-              } else {
-                var concatText = "";
-                var itemNumber = 0;
-                listItems.forEach(function(listItem){
-                  itemNumber++;
-                  concatText = concatText.concat('\n• ' + listItem.listItemName);
-                });
-                if (itemNumber == 0) {
-                  concatText = concatText.concat('No items in #' + listName + '.');
-                }
-                cacheListName(listName,res);
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, '\n#'+ listName + ':' + concatText, res);
-             }
-            });
-  sendSms.sendSms("+13476979750", "from scheduler!", function(){
-  	process.exit();
+      logging.logError('scheduler', '', '', err);
+    } else {
+      listItems.forEach(function(listItem){
+      	count++
+        sendSms.sendSms("+13476979750", "from scheduler!", function(){
+          count--
+          if (count == 0) {
+	  		  process.exit();   
+	  	  }  	
+        });
+      });
+    }
   });
 }
 
