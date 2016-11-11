@@ -25,7 +25,7 @@ function processScheduler() {
      	if (reminderDate < now) {     		
           mongoOp.FamilyMembers.findOne({'userId':listItem.reminderUserId}, 'familyId', function (err, familyMember) {
             count++;
-            console.log('Count++ ' + count);
+            console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber);
             sendSms.sendSms(familyMember.phoneNumber, "Reminder: listItemName" + listItem.listItemName, function(){
               count--
        	      console.log('Count-- ' + count);
