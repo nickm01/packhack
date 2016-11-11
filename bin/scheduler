@@ -22,7 +22,9 @@ function processScheduler() {
       	var reminderDate = new Date(listItem.reminderWhen);
       	var now = new Date()
       	console.log('Scheduler2:' + reminderDate);
-
+     	if (reminderDate < now) {     		
+      	  console.log('less than');
+     	}
       	count++;
         sendSms.sendSms("+13476979750", "from scheduler!", function(){
           count--
