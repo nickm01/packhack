@@ -21,7 +21,7 @@ function processScheduler() {
       listItems.forEach(function(listItem){
       	var reminderDate = new Date(listItem.reminderWhen);
       	var now = new Date();
-      	console.log('Scheduler2:' + reminderDate + ' userId:' + listItems.reminderUserId);
+      	console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId);
      	if (reminderDate < now) {     		
           mongoOp.FamilyMembers.findOne({'userId':listItem.reminderUserId}, 'familyId', function (err, familyMember) {
             count++;
