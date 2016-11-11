@@ -15,8 +15,9 @@ function processScheduler() {
     if(err){
       logging.logError('scheduler', '', '', err);
     } else {
+      console.log('Logging');
       listItems.forEach(function(listItem){
-      	count++
+      	count++;
         sendSms.sendSms("+13476979750", "from scheduler!", function(){
           count--
           if (count == 0) {
