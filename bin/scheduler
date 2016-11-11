@@ -6,17 +6,31 @@ var MongoClient = require('mongodb').MongoClient;
 var mongoOp = require("./model/mongo");
 var sendSms = require('./sendsms');
 
-function sayHello() {
-  console.log('Helloxxxx');
-  sendSms.sendSms('+13476979750', "from scheduler!", function(){
+function processScheduler() {
+
+  mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
+    if(err){
+      logError(fromPhoneNumber, familyId, bodyText, err);
+              } else {
+                var concatText = "";
+                var itemNumber = 0;
+                listItems.forEach(function(listItem){
+                  itemNumber++;
+                  concatText = concatText.concat('\n• ' + listItem.listItemName);
+                });
+                if (itemNumber == 0) {
+                  concatText = concatText.concat('No items in #' + listName + '.');
+                }
+                cacheListName(listName,res);
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, '\n#'+ listName + ':' + concatText, res);
+             }
+            });
+  sendSms.sendSms("+13476979750", "from scheduler!", function(){
   	process.exit();
   });
-
-  sendSms(, 'from Scheduler');
-  console.log('goodbye-xxxx');
 }
 
-sayHello();
+processScheduler();
 
 /*
 function sendSms(to, message) {
