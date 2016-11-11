@@ -21,7 +21,9 @@ var Lists = mongoose.model('Lists',listsSchema, 'Lists');
 var listItemsSchema  = mongoose.Schema({
     "listKey" : String,
     "listItemName" : String,
-    "familyId" : Number
+    "familyId" : Number,
+    "reminderWhen": String,
+    "reminderUserId": Number
 }, { versionKey: false });
 var ListItems = mongoose.model('ListItems',listItemsSchema, 'ListItems');
 

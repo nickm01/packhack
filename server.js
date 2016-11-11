@@ -47,7 +47,7 @@ router.route("/twilio")
       logging.log(fromPhoneNumber, familyId, bodyText, "request", "");
 
       //MAIN LOGIC
-      if (bodyText === "get lists" || bodyText === "get") {
+      if (bodyText === "get lists" || bodyText === "get" || bodyText === "lists") {
         response = true;
         mongoOp.Lists.find({'familyId':familyId}, 'listKey', function(err, lists) {
           if(err){
