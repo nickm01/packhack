@@ -18,3 +18,8 @@ function log(phoneNumber, familyId, message, type, response) {
     if (err) console.log(err);
   });
 };
+
+module.exports = {
+   logError,
+   log
+}
