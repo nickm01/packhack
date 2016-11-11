@@ -19,8 +19,10 @@ function processScheduler() {
     } else {
       console.log('Scheduler2');
       listItems.forEach(function(listItem){
-      	let reminderDate = Date(listItem.reminderWhen);
-      	console.log('Scheduler2');
+      	var reminderDate = new Date(listItem.reminderWhen);
+      	var now = new Date()
+      	console.log('Scheduler2:' + reminderDate);
+
       	count++;
         sendSms.sendSms("+13476979750", "from scheduler!", function(){
           count--
