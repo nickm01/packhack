@@ -14,7 +14,7 @@ function processScheduler() {
   console.log('Scheduler1');
 
   mongoOp.ListItems.find({'listKey':'reminders'}, function(err, listItems){
-    if(err){
+	    if(err){
       logging.logError('scheduler', '', '', err);
     } else {
       console.log('Scheduler2');
@@ -23,7 +23,7 @@ function processScheduler() {
       	var now = new Date();
       	console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName);
      	if (reminderDate < now) {     		
-          mongoOp.FamilyMembers.findOne({'userId':listItem.reminderUserId}, 'familyId', function (err, familyMember) {
+          mongoOp.FamilyMembers.findOne({'userId':listItem.reminderUserId}, function (err, familyMember) {
             count++;
             console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name);
             sendSms.sendSms(familyMember.phoneNumber, "Reminder: listItemName" + listItem.listItemName, function(){
