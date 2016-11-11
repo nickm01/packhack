@@ -10,13 +10,17 @@ var logging = require('../logging');
 var count = 0
 
 function processScheduler() {
+  
+  console.log('Scheduler1');
 
-  mongoOp.ListItems.find({'listKey':'reminder'}, function(err, listItems){
+  mongoOp.ListItems.find({'listKey':'reminders'}, function(err, listItems){
     if(err){
       logging.logError('scheduler', '', '', err);
     } else {
-      console.log('Logging');
+      console.log('Scheduler2');
       listItems.forEach(function(listItem){
+      	let reminderDate = Date(listItem.reminderWhen);
+      	console.log('Scheduler2');
       	count++;
         sendSms.sendSms("+13476979750", "from scheduler!", function(){
           count--
