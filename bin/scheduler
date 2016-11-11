@@ -23,10 +23,10 @@ function processScheduler() {
       	var now = new Date();
       	console.log('Scheduler2:' + reminderDate);
      	if (reminderDate < now) {     		
-          mongoOp.FamilyMembers.findOne({'userId': listItem.reminderUserId }, 'familyId', function (err, familyMember) {
+          mongoOp.FamilyMembers.findOne({'userId':listItem.reminderUserId}, 'familyId', function (err, familyMember) {
             count++;
             console.log('Count++ ' + count);
-            sendSms.sendSms(familyMember.phoneNumber, "Reminder: listItemName" + listItem., function(){
+            sendSms.sendSms(familyMember.phoneNumber, "Reminder: listItemName" + listItem.listItemName, function(){
               count--
        	      console.log('Count-- ' + count);
               if (count == 0) {
