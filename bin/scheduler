@@ -28,8 +28,8 @@ function processScheduler() {
       	count++;
       	console.log('Count++ ' + count);
         sendSms.sendSms("+13476979750", "from scheduler!", function(){
-       	  console.log('Count-- ' + count);
           count--
+       	  console.log('Count-- ' + count);
           if (count == 0) {
 	  		  process.exit();   
 	  	  }  	
