@@ -288,7 +288,7 @@ router.route("/twilio")
       // remind @nick some text date
       } else if (bodyText.startsWith('remind @')) {
         var remindText = bodyText.substr(8)
-        reminders.addReminders(remindText,familyId, function(err){
+        reminders.addReminder(remindText,familyId, function(err){
           if (err == null) {
             sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);            
           } else {
