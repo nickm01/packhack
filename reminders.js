@@ -5,7 +5,7 @@ var logging = require('./logging');
 var stringProcessor = require('./stringprocessor');
 
 function addReminder(inputText, familyID, callback) {
-  var sendTo = stringProcessor.getFirstWord(inputText);
+	var sendTo = stringProcessor.getFirstWord(inputText);
 	mongoOp.FamilyMembers.findOne({'name': sendTo, 'familyId':familyId}, function (err, familyMember) {
 		if (familyMember == null) {
 			callback('@' + sendTo + ' unkown sorry! 😕')			
@@ -27,25 +27,25 @@ function addReminder(inputText, familyID, callback) {
 
 				//create listItem
 				var newItem = new mongoOp.ListItems({
-    			"listKey" : config.remindersListKey,
-    			"listItemName" : "Reminder @" + inputText,
-    			"familyId" : familyId,
-    			"reminderWhen": "2012-04-23T18:25:43.511Z",
-    			"reminderUserId": sendToId
-    		});
-    		newItem.save(function (err, data) {
-    			if (err) callback('Error adding reminder 😦');
-    			else {
-    				console.log('----reminder saved', data );
-    				cacheListName(listName,res);
-    				sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
-    		}
-    	});
-
+					"listKey" : config.remindersListKey,
+					"listItemName" : "Reminder @" + inputText,
+					"familyId" : familyId,
+					"reminderWhen": "2012-04-23T18:25:43.511Z",
+					"reminderUserId": sendToId
+				});
+				newItem.save(function (err, data) {
+					if (err) callback('Error adding reminder 😦');
+					else {
+						console.log('----reminder saved', data );
+						cacheListName(listName,res);
+						sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
+					}
+				});
+			});
 		}
 	}
 }
 
 module.exports = {
-   addReminder
+	addReminder
 }
