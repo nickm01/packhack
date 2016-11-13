@@ -42,7 +42,7 @@ function addReminder(inputText, familyID, callback) {
 				});
 			});
 		}
-	}
+	});
 }
 
 module.exports = {
