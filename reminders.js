@@ -37,8 +37,7 @@ function addReminder(inputText, familyID, callback) {
 					if (err) callback('Error adding reminder 😦');
 					else {
 						console.log('----reminder saved', data );
-						cacheListName(listName,res);
-						sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
+						callback(null)
 					}
 				});
 			});
