@@ -4,7 +4,7 @@ var mongoOp = require('./model/mongo');
 var logging = require('./logging');
 var stringProcessor = require('./stringprocessor');
 
-function addReminder(inputText, familyID, callback) {
+function addReminder(inputText, familyId, callback) {
 	var sendTo = stringProcessor.getFirstWord(inputText);
 	mongoOp.FamilyMembers.findOne({'name': sendTo, 'familyId':familyId}, function (err, familyMember) {
 		if (familyMember == null) {
