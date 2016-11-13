@@ -8,6 +8,7 @@ var twilio = require('twilio');
 var sendSms = require('./sendsms');
 var cookieParser = require('cookie-parser');
 var logging = require('./logging');
+var reminders = require('./reminders');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
@@ -284,6 +285,17 @@ router.route("/twilio")
           });
         });
 
+      // remind @nick some text date
+      } else if (bodyText.startsWith('remind @')) {
+        var remindText = bodyText.substr(8)
+        reminders.addReminders(remindText,familyId, function(err){
+          if (err == null) {
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);            
+          } else {
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, err, res);                        
+          }
+        });
+
       // help
       } else if (bodyText === 'flock') {
         sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Welcome to ❤️FLOCK\nThe Family Operating System\n\nUse the following commands:\n• get -OR- get lists\n• create #list\n• get #list\n• #list add item -OR - just 'add item' if already got list\n• #list remove item -OR- just 'remove item' if already got list\n• clear #list\n• delete #list", res);
@@ -314,27 +326,6 @@ function sendSMSResponse(phoneNumber, familyId, inMessage, outMessage, response)
 function cacheListName(listName,response) {
   response.cookie('listName', listName, { maxAge: 1000 * 60 * 60 });
 };
-
-/*
-function logError(phoneNumber, familyId, message, err) {
-  log(phoneNumber, familyId, inMessage, "error", err);  
-  console.log(err);
-}
-
-function log(phoneNumber, familyId, message, type, response) {
-  var newLog = new mongoOp.Logs({
-    "phoneNumber" : phoneNumber,
-    "familyId" : familyId,
-    "message" : message,
-    "dateTime" : Date(),
-    "type" : type,
-    "response" : response
-  });
-  newLog.save(function (err, data) {
-    if (err) console.log(err);
-  });
-};
-*/
 
 function getFirstWord(str) {
   if (str.indexOf(' ') === -1)

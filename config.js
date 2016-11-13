@@ -29,6 +29,9 @@ cfg.accountSid = 'ACa4428c20c2064813618957dbece7ef34';
 cfg.authToken = '63b9107ef3983ed2869fb402955369aa';
 cfg.sendingNumber = '+19148195134';
 
+// Special Reserved ListNames
+cfg.remindersListKey = 'reminders'
+
 //var requiredConfig = [cfg.accountSid, cfg.authToken, cfg.sendingNumber];
 //var isConfigured = requiredConfig.every(function(configValue) {
 //  return configValue || false;

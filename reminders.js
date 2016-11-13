@@ -1,36 +1,51 @@
-#!/usr/bin/env node
 
-var config = require('../config');
-var mongoOp = require('../model/mongo');
-var sendSms = require('../sendsms');
-var logging = require('../logging');
+var config = require('./config');
+var mongoOp = require('./model/mongo');
+var logging = require('./logging');
+var stringProcessor = require('./stringprocessor');
 
-var listName = getFirstWord(bodyText).substr(1);
+function addReminder(inputText, familyID, callback) {
+  var sendTo = stringProcessor.getFirstWord(inputText);
+	mongoOp.FamilyMembers.findOne({'name': sendTo, 'familyId':familyId}, function (err, familyMember) {
+		if (familyMember == null) {
+			callback('@' + sendTo + ' unkown sorry! 😕')			
+		} else {
+			var sendToId = familyMember.userId
 
-function addReminder(inputText, ) {
+			//check lists and create if necessary
+			mongoOp.Lists.findOne({'listKey': config.remindersListKey, 'familyId':familyId}, function(err, list) {
+				if (list == null) {
+					var newList = new mongoOp.Lists({
+						"listKey" : config.remindersListKey,
+						"listDescription" : config.remindersListKey,
+						"familyId" : familyId
+					});
+					newList.save(function (err, data) {
+						if (err) callback('Error creating reminder list 😦');
+					});
+				}
 
-mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
-
-	if (list == null) {
-		sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
-	} else {
-		var addVerbPhrase = '#' + listName + ' add ';
-		var removeVerbPhrase = '#' + listName + ' remove ';
-
-    //Add item
-    if (bodyText.startsWith(addVerbPhrase)) {
-    	var listItemName = bodyText.substr(addVerbPhrase.length);
-
-    	var newItem = new mongoOp.ListItems({
-    		"listKey" : listName,
-    		"listItemName" : listItemName,
-    		"familyId" : familyId
-    	});
-    	newItem.save(function (err, data) {
-    		if (err) logging.logError(fromPhoneNumber, familyId, bodyText, err);
-    		else {
-    			console.log('----saved ', data );
-    			cacheListName(listName,res);
-    			sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
+				//create listItem
+				var newItem = new mongoOp.ListItems({
+    			"listKey" : config.remindersListKey,
+    			"listItemName" : "Reminder @" + inputText,
+    			"familyId" : familyId,
+    			"reminderWhen": "2012-04-23T18:25:43.511Z",
+    			"reminderUserId": sendToId
+    		});
+    		newItem.save(function (err, data) {
+    			if (err) callback('Error adding reminder 😦');
+    			else {
+    				console.log('----reminder saved', data );
+    				cacheListName(listName,res);
+    				sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
     		}
     	});
+
+		}
+	}
+}
+
+module.exports = {
+   addReminder
+}

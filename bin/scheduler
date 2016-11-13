@@ -12,7 +12,7 @@ function processScheduler() {
   
   console.log('Scheduler1');
 
-  mongoOp.ListItems.find({'listKey':'reminders'}, function(err, listItems){
+  mongoOp.ListItems.find({'listKey':config.remindersListKey}, function(err, listItems){
 	    if(err){
       logging.logError('scheduler', '', '', err);
     } else {
