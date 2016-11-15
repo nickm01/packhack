@@ -9,57 +9,45 @@ var logging = require('../logging');
 var count = 0
 
 function processScheduler() {
-  
-  console.log('Scheduler1');
 
-  mongoOp.ListItems.find({'listKey':config.remindersListKey}, function(err, listItems){
-	    if(err){
-      logging.logError('scheduler', '', '', err);
-    } else {
-      console.log('Scheduler2');
-      listItems.forEach(function(listItem){
-      	var reminderDate = new Date(listItem.reminderWhen);
-      	var now = new Date();
-        console.log("now: " + now);
-      	console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName);
-     	//TODO: UTC
-     	//TODO: Removal once complete
-     	if (reminderDate < now) {     		
-          mongoOp.FamilyMembers.findOne({'userId':listItem.reminderUserId}, function (err, familyMember) {
+console.log('Scheduler1');
+
+mongoOp.ListItems.find({'listKey':config.remindersListKey}, function(err, listItems) {
+  if(err) {
+    logging.logError('scheduler', '', '', err);
+  } else {
+    console.log('Scheduler2');
+    listItems.forEach(function(listItem) {
+      var reminderDate = new Date(listItem.reminderWhen);
+      var now = new Date();
+      console.log("now: " + now);
+      console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName);
+   	  //TODO: UTC
+   	  //TODO: Removal once complete
+   	  if (reminderDate < now) {     		
+        mongoOp.FamilyMembers.findOne({'userId':listItem.reminderUserId}, function (err, familyMember) {
+          mongoOp.ListItems.remove({"listKey" : listItem.listName,"listItemName" : listItem.listItemName, 'familyId': listItem.familyId, 'reminderWhen': listItem.reminderWhen, 'reminderUserId': listItem.reminderUserId}, function(err, removeResult) {
+            if (err) {
+              logging.logError(fromPhoneNumber, familyId, bodyText, err);
+              return;
+            }
             count++;
             console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name);
             sendSms.sendSms(familyMember.phoneNumber, "Reminder: " + listItem.listItemName, function(){
-              count--
-       	      console.log('Count-- ' + count);
-              if (count == 0) {
-	  		    process.exit();   
-	  	      }  	
-            });   
-          });
-        }
-
+            count--
+            console.log('Count-- ' + count);
+            if (count == 0) {
+              process.exit();
+            }    
+          });   
+        });
+      }
       });
     }
+
   });
+}
+});
 }
 
 processScheduler();
-
-/*
-function sendSms(to, message) {
-  twilio.messages.create({
-    body: message,
-    to: to,
-    from: config.sendingNumber
-  }, function(err, data) {
-    if (err) {
-      console.error('Could not send message');
-      console.error(err);
-    } else {
-      console.error('SMS');
-    }
-    process.exit();
-  });
-};
-*/
-

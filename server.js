@@ -9,6 +9,7 @@ var sendSms = require('./sendsms');
 var cookieParser = require('cookie-parser');
 var logging = require('./logging');
 var reminders = require('./reminders');
+var listItems = require('./listitems');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
@@ -149,18 +150,8 @@ router.route("/twilio")
             //Remove list item
             } else if (bodyText.startsWith(removeVerbPhrase)) {
               var listItemName = bodyText.substr(removeVerbPhrase.length);
-
-              mongoOp.ListItems.remove({"listKey" : listName,"listItemName" : listItemName, 'familyId': familyId}, function(err, removeResult) {
-                if (err) {
-                  logging.logError(fromPhoneNumber, familyId, bodyText, err);
-                  return;
-                }
-                console.log('----removed ' + listItemName + ' ' + removeResult.result.n);
-                if (removeResult.result.n === 0) {
-                  sendSMSResponse(fromPhoneNumber, familyId, bodyText, listItemName + " doesn't exist in #" + listName + ".", res); 
-                } else {
-                  sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
-                }
+              listItems.deleteListItemByName(familyId, listName, listItemName, function(err){
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, err ? err : config.successText, res); 
               });
             }
 
@@ -224,6 +215,8 @@ router.route("/twilio")
         });
 
       // delete list.
+      // TODO: can also use the word remove
+      // TODO: Needs to delete items too
       } else if (bodyText.startsWith('delete #')) {
         var listName = bodyText.substr(8)
         
