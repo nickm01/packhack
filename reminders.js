@@ -5,7 +5,7 @@ var stringProcessor = require('./stringprocessor');
 
 function addReminder(inputText, familyId, callback) {
 	var sendTo = stringProcessor.getFirstWord(inputText);
-	var dateText = stringProcessor.removeFirstWord(sendTo);
+	var dateText = stringProcessor.removeFirstWord(inputText);
 	mongoOp.FamilyMembers.findOne({'name': sendTo, 'familyId':familyId}, function (err, familyMember) {
 		if (familyMember == null) {
 			callback('@' + sendTo + ' unkown sorry! 😕')			
