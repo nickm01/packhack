@@ -27,13 +27,16 @@ function processScheduler() {
    	    //TODO: UTC
 
    	    if (reminderDate < now) {     		
+        console.log("1x");
           mongoOp.FamilyMembers.findOne({'familyId': familyId, 'userId':listItem.reminderUserId}, function (err, familyMember) {
             if (err) {
               logging.logError('0', familyId, bodyText, err);
               return;
             }
+            console.log("2x");
             // Remove listItem
             listItemFunctions.deleteListItemByName(familyId, listItem.listKey, listItem.ItemName, function(err) {
+              console.log("3x");
               if (err) {
                 return;
               } else {
