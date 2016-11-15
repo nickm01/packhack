@@ -6,7 +6,7 @@ function getFirstWord(str) {
 };
 
 function removeFirstWord(str) {
-	return original.substr(original.indexOf(" ") + 1);
+  return str.substr(str.indexOf(" ") + 1);
 }
 
 module.exports = {

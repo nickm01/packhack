@@ -1,4 +1,3 @@
-
 var config = require('./config');
 var mongoOp = require('./model/mongo');
 var logging = require('./logging');
@@ -6,6 +5,7 @@ var stringProcessor = require('./stringprocessor');
 
 function addReminder(inputText, familyId, callback) {
 	var sendTo = stringProcessor.getFirstWord(inputText);
+	var dateText = stringProcessor.removeFirstWord(sendTo);
 	mongoOp.FamilyMembers.findOne({'name': sendTo, 'familyId':familyId}, function (err, familyMember) {
 		if (familyMember == null) {
 			callback('@' + sendTo + ' unkown sorry! 😕')			
@@ -30,13 +30,13 @@ function addReminder(inputText, familyId, callback) {
 					"listKey" : config.remindersListKey,
 					"listItemName" : "Remind: @" + inputText,
 					"familyId" : familyId,
-					"reminderWhen": "2012-04-23T18:25:43.511Z",
+					"reminderWhen": new Date(dateText),
 					"reminderUserId": sendToId
 				});
 				newItem.save(function (err, data) {
 					if (err) callback('Error adding reminder 😦');
 					else {
-						console.log('----reminder saved', data );
+						console.log('----reminder saved: ' + inputText + ' Date:' + new Date(dateText));
 						callback(null)
 					}
 				});
