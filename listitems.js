@@ -12,7 +12,7 @@ function deleteListItemByName(familyId, listKey, listItemName, callback) {
 	  }
 	  console.log('----removed ' + listItemName + ' ' + removeResult.result.n);
 	  if (removeResult.result.n === 0) {
-	    callback(listItemName + " doesn't exist in #" + listName + " 😦."); 
+	    callback(listItemName + " doesn't exist in #" + listKey + " 😦."); 
 	  } else {
 	  	callback(null);
 	  }
