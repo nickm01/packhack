@@ -30,12 +30,12 @@ function processScheduler() {
           mongoOp.FamilyMembers.findOne({'familyId': familyId, 'userId':listItem.reminderUserId}, function (err, familyMember) {
             if (err) {
               logging.logError('0', familyId, bodyText, err);
-              break;
+              return;
             }
             // Remove listItem
             listItems.deleteListItemByName(familyId, listItem.listKey, listItem.ItemName, function(err) {
               if (err) {
-                break;
+                return;
               } else {
                 count++;
                 console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name);
