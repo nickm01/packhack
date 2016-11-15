@@ -40,21 +40,19 @@ function processScheduler() {
                 count++;
                 console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name);
                 sendSms.sendSms(familyMember.phoneNumber, "Reminder: " + listItem.listItemName, function(){
-                count--
-                console.log('Count-- ' + count);
-                if (count == 0) {
-                  process.exit();
-                }    
+                  count--
+                  console.log('Count-- ' + count);
+                  if (count == 0) {
+                    process.exit();
+                  }    
+                });
               }
             });   
           });
         }
       });
-      }
-
-    });
-}
-});
+    }
+  });
 }
 
 processScheduler();
