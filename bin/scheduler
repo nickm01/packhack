@@ -5,7 +5,7 @@ var twilio = require('twilio')(config.accountSid, config.authToken);
 var mongoOp = require('../model/mongo');
 var sendSms = require('../sendsms');
 var logging = require('../logging');
-var listItems = require('../listitems');
+var listItemFunctions = require('../listitems');
 
 var count = 0
 
@@ -33,7 +33,7 @@ function processScheduler() {
               return;
             }
             // Remove listItem
-            listItems.deleteListItemByName(familyId, listItem.listKey, listItem.ItemName, function(err) {
+            listItemFunctions.deleteListItemByName(familyId, listItem.listKey, listItem.ItemName, function(err) {
               if (err) {
                 return;
               } else {
