@@ -25,11 +25,10 @@ function processScheduler() {
         console.log("now: " + now);
         console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName);
    	    //TODO: UTC
-   	    //TODO: Removal once complete
 
    	    if (reminderDate < now) {     		
           mongoOp.FamilyMembers.findOne({'familyId': familyId, 'userId':listItem.reminderUserId}, function (err, familyMember) {
-            if err {
+            if (err) {
               logging.logError('0', familyId, bodyText, err);
               break;
             }

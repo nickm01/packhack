@@ -5,6 +5,11 @@ function getFirstWord(str) {
     return str.substr(0, str.indexOf(' '));
 };
 
+function removeFirstWord(str) {
+	return original.substr(original.indexOf(" ") + 1);
+}
+
 module.exports = {
-   getFirstWord
+   getFirstWord,
+   removeFirstWord
 }
