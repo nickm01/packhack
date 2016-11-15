@@ -35,7 +35,7 @@ function processScheduler() {
             }
             console.log("2x");
             // Remove listItem
-            listItemFunctions.deleteListItemByName(familyId, listItem.listKey, listItem.ItemName, function(err) {
+            listItemFunctions.deleteListItemByName(familyId, listItem.listKey, listItem.itemName, function(err) {
               console.log("3x");
               if (err) {
                 return;
