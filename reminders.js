@@ -36,7 +36,7 @@ function addReminder(inputText, familyId, callback) {
 				newItem.save(function (err, data) {
 					if (err) callback('Error adding reminder 😦');
 					else {
-						console.log('----reminder saved: ' + inputText + ' Date:' + new Date(dateText));
+						console.log('----reminder saved: ' + inputText + ' Date:' + new Date(dateText) + ' < ' + dateText);
 						callback(null)
 					}
 				});
