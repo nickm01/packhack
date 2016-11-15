@@ -5,47 +5,55 @@ var twilio = require('twilio')(config.accountSid, config.authToken);
 var mongoOp = require('../model/mongo');
 var sendSms = require('../sendsms');
 var logging = require('../logging');
+var listItems = require('../listitems');
 
 var count = 0
 
 function processScheduler() {
 
-console.log('Scheduler1');
+  console.log('Scheduler1');
 
-mongoOp.ListItems.find({'listKey':config.remindersListKey}, function(err, listItems) {
-  if(err) {
-    logging.logError('scheduler', '', '', err);
-  } else {
-    console.log('Scheduler2');
-    listItems.forEach(function(listItem) {
-      var reminderDate = new Date(listItem.reminderWhen);
-      var now = new Date();
-      console.log("now: " + now);
-      console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName);
-   	  //TODO: UTC
-   	  //TODO: Removal once complete
-   	  if (reminderDate < now) {     		
-        mongoOp.FamilyMembers.findOne({'userId':listItem.reminderUserId}, function (err, familyMember) {
-          mongoOp.ListItems.remove({"listKey" : listItem.listName,"listItemName" : listItem.listItemName, 'familyId': listItem.familyId, 'reminderWhen': listItem.reminderWhen, 'reminderUserId': listItem.reminderUserId}, function(err, removeResult) {
-            if (err) {
-              logging.logError(fromPhoneNumber, familyId, bodyText, err);
-              return;
+  mongoOp.ListItems.find({'listKey':config.remindersListKey}, function(err, listItems) {
+    if(err) {
+      logging.logError('scheduler', '', '', err);
+    } else {
+      console.log('Scheduler2');
+      listItems.forEach(function(listItem) {
+        var familyId = listItem.familyId;
+        var reminderDate = new Date(listItem.reminderWhen);
+        var now = new Date();
+        console.log("now: " + now);
+        console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName);
+   	    //TODO: UTC
+   	    //TODO: Removal once complete
+
+   	    if (reminderDate < now) {     		
+          mongoOp.FamilyMembers.findOne({'familyId': familyId, 'userId':listItem.reminderUserId}, function (err, familyMember) {
+            if err {
+              logging.logError('0', familyId, bodyText, err);
+              break;
             }
-            count++;
-            console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name);
-            sendSms.sendSms(familyMember.phoneNumber, "Reminder: " + listItem.listItemName, function(){
-            count--
-            console.log('Count-- ' + count);
-            if (count == 0) {
-              process.exit();
-            }    
-          });   
-        });
-      }
+            // Remove listItem
+            listItems.deleteListItemByName(familyId, listItem.listKey, listItem.ItemName, function(err) {
+              if (err) {
+                break;
+              } else {
+                count++;
+                console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name);
+                sendSms.sendSms(familyMember.phoneNumber, "Reminder: " + listItem.listItemName, function(){
+                count--
+                console.log('Count-- ' + count);
+                if (count == 0) {
+                  process.exit();
+                }    
+              }
+            });   
+          });
+        }
       });
-    }
+      }
 
-  });
+    });
 }
 });
 }
