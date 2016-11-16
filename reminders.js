@@ -32,7 +32,7 @@ function addReminder (inputText, familyId, callback) {
 					"listKey" : config.remindersListKey,
 					"listItemName" : "Remind: @" + inputText,
 					"familyId" : familyId,
-					"reminderWhen": new Date(dateText),
+					"reminderWhen": convertedUTCDate,
 					"reminderUserId": sendToId
 				});
 				newItem.save(function (err, data) {
