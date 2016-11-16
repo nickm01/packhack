@@ -31,6 +31,7 @@ cfg.sendingNumber = '+19148195134';
 
 // Special Reserved ListNames
 cfg.remindersListKey = 'reminders'
+cfg.successText = 'Got it! ❤️FLOCK'
 
 //var requiredConfig = [cfg.accountSid, cfg.authToken, cfg.sendingNumber];
 //var isConfigured = requiredConfig.every(function(configValue) {
