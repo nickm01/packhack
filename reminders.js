@@ -1,14 +1,16 @@
-var config = require('./config');
-var mongoOp = require('./model/mongo');
-var logging = require('./logging');
-var stringProcessor = require('./stringprocessor');
+var config = require('./config')
+var mongoOp = require('./model/mongo')
+var stringProcessor = require('./stringprocessor')
+var dates = require('./dates')
 
-function addReminder(inputText, familyId, callback) {
-	var sendTo = stringProcessor.getFirstWord(inputText);
-	var dateText = stringProcessor.removeFirstWord(inputText);
+function addReminder (inputText, familyId, callback) {
+  var sendTo = stringProcessor.getFirstWord(inputText)
+  var dateText = stringProcessor.removeFirstWord(inputText)
+  var convertedUTCDate = dates.createDateFromText(dateText)
+
 	mongoOp.FamilyMembers.findOne({'name': sendTo, 'familyId':familyId}, function (err, familyMember) {
 		if (familyMember == null) {
-			callback('@' + sendTo + ' unkown sorry! 😕')			
+			callback('@' + sendTo + ' unkown sorry! 😕')
 		} else {
 			var sendToId = familyMember.userId
 
@@ -36,7 +38,7 @@ function addReminder(inputText, familyId, callback) {
 				newItem.save(function (err, data) {
 					if (err) callback('Error adding reminder 😦');
 					else {
-						console.log('----reminder saved: ' + inputText + ' Date:' + new Date(dateText) + ' < ' + dateText);
+						console.log('----reminder saved: ' + inputText + ' Date:' + convertedUTCDate + ' < ' + dateText);
 						callback(null)
 					}
 				});
