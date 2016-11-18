@@ -14,13 +14,18 @@ function processDateAndTitleFromText (inputText, callback) {
   var nowLocalString = nowLocal.format()
   var nowLocalTrimmed = nowLocalString.substring(0, nowLocalString.length - 6)
   var nowLocalDate = new Date(nowLocalTrimmed)
+  console.log('NOW:' + now + ' nowLocal:' + nowLocal.format() + ' nowLocalDate:' + nowLocalDate)
   sherlock._setNow(nowLocalDate)
   var sherlocked = sherlock.parse(inputText)
-  console.log('NOW:' + now + ' nowLocal:' + nowLocal.format() + ' nowLocalDate:' + nowLocalDate)
+  var startDateString = '' + sherlocked.startDate
+  var startDateTrimmed = startDateString.substring(0, startDateString.length - 15)
+  var startDateLocal = moment.tz(startDateTrimmed, 'America/Chicago')
+  var startDateGMT = new Date(startDateLocal)
+  console.log('startDateTrimmed:' + startDateTrimmed + ' startDateLocal:' + startDateLocal.format() + ' startDateGMT:' + startDateGMT)
   if (sherlocked.startDate == null) {
     callback("Couldn't work out that time sorry. 😕", null, null)
   }
-  callback(null, sherlocked.startDate, sherlocked.eventTitle)
+  callback(null, startDateGMT, sherlocked.eventTitle)
 }
 
 module.exports = {
