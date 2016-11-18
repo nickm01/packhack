@@ -11,6 +11,9 @@ function createDateFromText (inputText) {
 function processDateAndTitleFromText (inputText, callback) {
   var sherlocked = sherlock.parse(inputText)
   var now = new Date()
+  var nowLocal = moment.tz(now, 'UTC').tz('America/Chicago')
+  var nowLocalDate = new Date(nowLocal.format())
+  sherlock._setNow(nowLocalDate)
   console.log('NOW:' + now)
   if (sherlocked.startDate == null) {
     callback("Couldn't work out that time sorry. 😕", null, null)
