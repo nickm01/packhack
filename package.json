@@ -13,7 +13,7 @@
     "twilio": "^2.8.0",
     "cookie-parser": "^1.4.3",
     "moment-timezone": "^0.5.9",
-    "sherlockjs": "https://github.com/neilgupta/Sherlock.git"
+    "sherlock": "https://github.com/neilgupta/Sherlock.git"
   },
   "devDependencies": {
     "eslint": "^3.10.2",
