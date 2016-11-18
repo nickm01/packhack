@@ -26,7 +26,7 @@ function processDateAndTitleFromText (inputText, callback) {
   if (sherlocked.startDate == null) {
     callback("Couldn't work out that time sorry. 😕", null, null)
   }
-  callback(null, startDateGMT, startDateReported + sherlocked.eventTitle)
+  callback(null, startDateGMT, startDateReported + ' ' + sherlocked.eventTitle)
 }
 
 module.exports = {
