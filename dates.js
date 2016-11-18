@@ -19,7 +19,7 @@ function processDateAndTitleFromText (inputText, callback) {
   var sherlocked = sherlock.parse(inputText)
   var startDateString = '' + sherlocked.startDate
   var startDateTrimmed = startDateString.substring(0, startDateString.length - 15) + ' GMT-0006 (UTC)'
-  var startDateLocal = moment.tz(startDateTrimmed, 'America/Chicago')
+  var startDateLocal = moment(startDateTrimmed)
   var startDateGMT = new Date(startDateLocal)
   console.log('startDateTrimmed:' + startDateTrimmed + ' startDateLocal:' + startDateLocal.format() + ' startDateGMT:' + startDateGMT)
   if (sherlocked.startDate == null) {
