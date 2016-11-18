@@ -18,7 +18,8 @@ function processDateAndTitleFromText (inputText, callback) {
   sherlock._setNow(nowLocalDate)
   var sherlocked = sherlock.parse(inputText)
   var startDateString = '' + sherlocked.startDate
-  var startDateTrimmed = startDateString.substring(0, startDateString.length - 15) + ' GMT-06:00 (UTC)'
+  var startDateReported = startDateString.substring(0, startDateString.length - 15)
+  var startDateTrimmed =  startDateReported + ' GMT-06:00 (UTC)'
   var startDateLocal = moment(startDateTrimmed)
   var startDateGMT = new Date(startDateLocal)
   console.log('startDateTrimmed:' + startDateTrimmed + ' startDateLocal:' + startDateLocal.format() + ' startDateGMT:' + startDateGMT)
