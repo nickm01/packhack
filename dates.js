@@ -10,7 +10,7 @@ function createDateFromText (inputText) {
 
 function processDateAndTitleFromText (inputText, callback) {
   var now = new Date()
-  var nowLocal = moment(now).tz('America/Chicago')
+  var nowLocal = moment.tz(now, 'America/Chicago')
   var nowLocalDate = new Date(nowLocal.format())
   sherlock._setNow(nowLocal.format())
   var sherlocked = sherlock.parse(inputText)
