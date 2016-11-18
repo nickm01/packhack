@@ -12,7 +12,7 @@ function processDateAndTitleFromText (inputText, callback) {
   var now = new Date()
   var nowLocal = moment.tz(now, 'America/Chicago')
   var nowLocalDate = new Date(nowLocal.format())
-  sherlock._setNow(nowLocal.format())
+  sherlock._setNow(nowLocalDate)
   var sherlocked = sherlock.parse(inputText)
   console.log('NOW:' + now + ' nowLocal:' + nowLocal.format() + ' nowLocalDate:' + nowLocalDate)
   if (sherlocked.startDate == null) {
