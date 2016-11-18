@@ -1,5 +1,5 @@
 var moment = require('moment-timezone')
-var sherlock = require('sherlock')
+var sherlock = require('./other_modules/sherlock/sherlock')
 
 function createDateFromText (inputText) {
   var convertedToUTC = moment.tz(inputText, 'America/Chicago').tz('UTC')
