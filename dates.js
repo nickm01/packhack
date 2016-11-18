@@ -1,4 +1,5 @@
 var moment = require('moment-timezone')
+var sherlock = require('sherlockjs')
 
 function createDateFromText (inputText) {
   var convertedToUTC = moment.tz(inputText, 'America/Chicago').tz('UTC')
@@ -7,6 +8,15 @@ function createDateFromText (inputText) {
   return utcDate
 }
 
+function processDateAndTitleFromText (inputText, callback) {
+  var sherlocked = sherlock.parse(inputText)
+  if (sherlocked.startDate == null) {
+    callback("Couldn't work out that time sorry. 😕", null, null)
+  }
+  callback(null, sherlocked.startDate, sherlocked.eventTitle)
+}
+
 module.exports = {
-  createDateFromText
+  createDateFromText,
+  processDateAndTitleFromText
 }
