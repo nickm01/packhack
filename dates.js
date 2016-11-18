@@ -10,7 +10,7 @@ function createDateFromText (inputText) {
 
 function processDateAndTitleFromText (inputText, callback) {
   var sherlocked = sherlock.parse(inputText)
-  let now = new Date()
+  var now = new Date()
   console.log('NOW:' + now)
   if (sherlocked.startDate == null) {
     callback("Couldn't work out that time sorry. 😕", null, null)
