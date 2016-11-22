@@ -285,6 +285,7 @@ router.route("/twilio")
       // remind @nick some text date
       } else if (bodyText.startsWith('remind @')) {
         var remindText = bodyText.substr(8)
+        console.log('%%%% timezone ' + timeZone)
         reminders.addReminder(remindText, familyId, timeZone, function (err, additionalMessage) {
           if (err == null) {
             sendSMSResponse(fromPhoneNumber, familyId, bodyText, additionalMessage + ' ❤️FLOCK', res)
