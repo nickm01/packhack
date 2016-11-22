@@ -32,7 +32,7 @@ function processDateAndTitleFromText (inputText, callback) {
     console.log(' ----> sherlocked.startDate:' + sherlocked.startDate)
     var startDateGMT = convertDateToLiteralTimezoneEquivalent(sherlocked.startDate, zoneName, true)
     console.log(' ----> startDateGMT:' + startDateGMT)
-    var userDateText = timezonedDateText(startDateGMT, zoneName)
+    var userDateText = timezonedDateText(sherlocked.startDate)
     console.log(' ----> userDateText:' + userDateText)
     callback(null, startDateGMT, sherlocked.eventTitle + ' @ ' + userDateText)
   }
@@ -66,8 +66,8 @@ function convertDateToLiteralTimezoneEquivalent (date, timezoneText, reverse) {
   return now.toDate()
 }
 
-function timezonedDateText (date, timezoneText) {
-  return moment(date).tz(timezoneText).format('MM/DD/YYYY h:MMa')
+function timezonedDateText (date) {
+  return moment(date).format('MMM DD YYYY ddd h:MMa')
 }
 
 module.exports = {
