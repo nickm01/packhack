@@ -48,6 +48,7 @@ function processDateAndTitleFromText (inputText, callback) {
 function convertDateToLiteralTimezoneEquivalent (date, timezoneText, reverse) {
   var nowTimezone = moment.tz(date, timezoneText)
   var timezoneOffsetString = nowTimezone.format('Z')
+  console.log('timezoneOffsetString: ' + timezoneOffsetString)
   if (reverse === true) {
     var firstCharacter = timezoneOffsetString.substr(0, 1)
     if (firstCharacter === '-') {
@@ -59,7 +60,9 @@ function convertDateToLiteralTimezoneEquivalent (date, timezoneText, reverse) {
   }
   console.log('timezoneOffsetString: ' + timezoneOffsetString)
   var now = moment(date)
+  console.log('now1: ' + now)
   now.utcOffset(timezoneOffsetString, true)
+  console.log('now2: ' + now)
   return now.toDate()
 }
 
