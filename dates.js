@@ -1,8 +1,7 @@
 var moment = require('moment-timezone')
 var sherlock = require('./other_modules/sherlock/sherlock')
 
-function processDateAndTitleFromText (inputText, callback) {
-  var zoneName = 'America/Chicago'
+function processDateAndTitleFromText (inputText, zoneName, callback) {
   var nowLocalDate = convertDateToLiteralTimezoneEquivalent(new Date(), zoneName, false)
   console.log(' ----> nowLocalDate:' + nowLocalDate)
 

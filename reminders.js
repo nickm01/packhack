@@ -3,7 +3,7 @@ var mongoOp = require('./model/mongo')
 var stringProcessor = require('./stringprocessor')
 var dates = require('./dates')
 
-function addReminder (inputText, familyId, callback) {
+function addReminder (inputText, familyId, timeZone, callback) {
   var sendTo = stringProcessor.getFirstWord(inputText)
   var dateText = stringProcessor.removeFirstWord(inputText)
   var generalError = 'Error creating reminder list 😦'
@@ -27,7 +27,7 @@ function addReminder (inputText, familyId, callback) {
             if (err) callback(generalError)
           })
         }
-        dates.processDateAndTitleFromText(dateText, function (err, date, localDateText, title) {
+        dates.processDateAndTitleFromText(dateText, timeZone, function (err, date, localDateText, title) {
           if (err) callback(err)
           // Create listItem
           var newItem = new mongoOp.ListItems({
