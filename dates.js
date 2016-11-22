@@ -67,7 +67,7 @@ function convertDateToLiteralTimezoneEquivalent (date, timezoneText, reverse) {
 }
 
 function timezonedDateText (date) {
-  return moment(date).format('MMM DD YYYY ddd h:MMa')
+  return moment(date).format('MMM DD YYYY ddd h:mma')
 }
 
 module.exports = {

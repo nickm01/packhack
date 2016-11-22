@@ -179,7 +179,7 @@ var Sherlock = (function() {
             return match[0];
           case "morn":
           case "morning":
-            time.setHours(8, 0, 0);
+            time.setHours(7, 0, 0);
             time.hasMeridian = true;
             return match[0];
           case "noon":
@@ -430,12 +430,14 @@ var Sherlock = (function() {
         case "tmrw":
         case "tomorrow":
           time.setFullYear(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+          time.setHours(7, 0, 0)
           time.hasYear = true;
           return true;
         case "day after tom":
         case "day after tmrw":
         case "day after tomorrow":
           time.setFullYear(now.getFullYear(), now.getMonth(), now.getDate() + 2);
+          time.setHours(7, 0, 0)
           time.hasYear = true;
           return true;
         case "this week":
