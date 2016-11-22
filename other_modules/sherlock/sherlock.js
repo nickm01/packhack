@@ -179,7 +179,6 @@ var Sherlock = (function() {
             return match[0];
           case "morn":
           case "morning":
-          case "tomorrow":
             time.setHours(7, 0, 0);
             time.hasMeridian = true;
             return match[0];

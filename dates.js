@@ -9,61 +9,47 @@ function createDateFromText (inputText) {
 }
 
 function processDateAndTitleFromText (inputText, callback) {
-  // Take the current date in GMT and make it the literal same date/time in local timzone
-  // This is so that sherlock will work OK
-  // var now = new Date()
-  // var nowLocal = moment.tz(now, 'America/Chicago')
-  // var nowLocalString = nowLocal.format()
-  // var nowLocalTrimmed = nowLocalString.substring(0, nowLocalString.length - 6)
   var zoneName = 'America/Chicago'
   var nowLocalDate = convertDateToLiteralTimezoneEquivalent(new Date(), zoneName, false)
   console.log(' ----> nowLocalDate:' + nowLocalDate)
+
+  // Process Local Date as GMT to ensure "tomorrow" is tomorrow locally
   sherlock._setNow(nowLocalDate)
   var sherlocked = sherlock.parse(inputText)
-  // var startDateString = '' + sherlocked.startDate
-  // var startDateReported = startDateString.substring(0, startDateString.length - 15)
-  // var startDateTrimmed = startDateReported + ' GMT-06:00 (UTC)'
-  // var startDateLocal = moment(startDateTrimmed)
-  // var startDateGMT = new Date(startDateLocal)
-  // console.log('startDateTrimmed:' + startDateTrimmed + ' startDateLocal:' + startDateLocal.format() + ' startDateGMT:' + startDateGMT)
+
   if (sherlocked.startDate == null) {
-    callback("Couldn't work out that time sorry. 😕", null, null)
+    callback("Couldn't work out that time sorry. 😕")
   } else {
-    console.log(' ----> sherlocked.startDate:' + sherlocked.startDate)
-    var startDateGMT = convertDateToLiteralTimezoneEquivalent(sherlocked.startDate, zoneName, true)
+    var startDateLocal = sherlocked.startDate
+    console.log(' ----> sherlocked.startDate:' + startDateLocal)
+    var startDateGMT = convertDateToLiteralTimezoneEquivalent(startDateLocal, zoneName, true)
     console.log(' ----> startDateGMT:' + startDateGMT)
-    var userDateText = timezonedDateText(sherlocked.startDate)
+    var userDateText = timezonedDateText(startDateLocal)
     console.log(' ----> userDateText:' + userDateText)
-    callback(null, startDateGMT, sherlocked.eventTitle + ' @ ' + userDateText)
+    callback(null, startDateGMT, userDateText, sherlocked.eventTitle)
   }
 }
-
-// function convertDateToLiteralTimezoneEquivalent (date, timezoneText) {
-//   var nowLocal = moment.tz(date, timezoneText)
-//   var nowLocalString = nowLocal.format()
-//   var nowLocalTrimmed = nowLocalString.substring(0, nowLocalString.length - 6)
-//   return new Date(nowLocalTrimmed)
-// }
 
 function convertDateToLiteralTimezoneEquivalent (date, timezoneText, reverse) {
   var nowTimezone = moment.tz(date, timezoneText)
   var timezoneOffsetString = nowTimezone.format('Z')
-  console.log('timezoneOffsetString: ' + timezoneOffsetString)
   if (reverse === true) {
-    var firstCharacter = timezoneOffsetString.substr(0, 1)
-    if (firstCharacter === '-') {
-      firstCharacter = '+'
-    } else if (firstCharacter === '+') {
-      firstCharacter = '-'
-    }
-    timezoneOffsetString = firstCharacter + timezoneOffsetString.substr(1)
+    timezoneOffsetString = reverseTimezoneOffset(timezoneOffsetString)
   }
   console.log('timezoneOffsetString: ' + timezoneOffsetString)
   var now = moment(date)
-  console.log('now1: ' + now)
   now.utcOffset(timezoneOffsetString, true)
-  console.log('now2: ' + now)
   return now.toDate()
+}
+
+function reverseTimezoneOffset (timezoneOffsetString) {
+  var firstCharacter = timezoneOffsetString.substr(0, 1)
+  if (firstCharacter === '-') {
+    firstCharacter = '+'
+  } else if (firstCharacter === '+') {
+    firstCharacter = '-'
+  }
+  return firstCharacter + timezoneOffsetString.substr(1)
 }
 
 function timezonedDateText (date) {
