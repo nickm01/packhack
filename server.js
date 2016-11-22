@@ -40,9 +40,9 @@ router.route("/twilio")
   }
 
   //Check FamilyId
-  mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber }, 'familyId', function (err, familyMember) {
+  mongoOp.FamilyMembers.findOne({ 'phoneNumber': fromPhoneNumber }, 'familyId', function(err, familyMember) {
     if (familyMember == null) {
-      sendSMSResponse(fromPhoneNumber, 0, bodyText, "Sorry, don't see you as a member of a family.", res);  
+      sendSMSResponse(fromPhoneNumber, 0, bodyText, "Sorry, don't see you as a member of a family.", res);
     } else {
       familyId = familyMember.familyId;
       logging.log(fromPhoneNumber, familyId, bodyText, "request", "");
@@ -55,7 +55,7 @@ router.route("/twilio")
             logging.logError(fromPhoneNumber, familyId, bodyText, err);
           } else {
             var concatText = "";
-                
+
             lists.forEach(function(list){
               concatText = concatText.concat('\n#' + list.listKey);
             });
@@ -132,7 +132,7 @@ router.route("/twilio")
             //Add item
             if (bodyText.startsWith(addVerbPhrase)) {
               var listItemName = bodyText.substr(addVerbPhrase.length);
-              
+
               var newItem = new mongoOp.ListItems({
                 "listKey" : listName,
                 "listItemName" : listItemName,
@@ -143,7 +143,7 @@ router.route("/twilio")
                 else {
                   console.log('----saved ', data );
                   cacheListName(listName,res);
-                  sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
+                  sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
                 }
               });
 
@@ -151,7 +151,7 @@ router.route("/twilio")
             } else if (bodyText.startsWith(removeVerbPhrase)) {
               var listItemName = bodyText.substr(removeVerbPhrase.length);
               listItems.deleteListItemByName(familyId, listName, listItemName, function(err){
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, err ? err : config.successText, res); 
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, err ? err : config.successText, res);
               });
             }
 
@@ -164,11 +164,11 @@ router.route("/twilio")
         mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
 
           if (list != null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'List already exists!', res);  
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'List already exists!', res);
           } else {
 
             if (newListName.includes(' ')) {
-              sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Sorry, but please don't include spaces in list names.", res);  
+              sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Sorry, but please don't include spaces in list names.", res);
               return;
             }
 
@@ -182,7 +182,7 @@ router.route("/twilio")
               else {
                 console.log('----saved ', data );
                 cacheListName(newListName,res);
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
               }
             });
           }
@@ -204,9 +204,9 @@ router.route("/twilio")
               }
               console.log('----cleared ' + list.listKey + ' ' + removeResult.result.n);
               if (removeResult.result.n === 0) {
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, "#" + list.listKey + " already empty.", res); 
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, "#" + list.listKey + " already empty.", res);
               } else {
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);  
+                sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
               }
             });
 
@@ -219,19 +219,19 @@ router.route("/twilio")
       // TODO: Needs to delete items too
       } else if (bodyText.startsWith('delete #')) {
         var listName = bodyText.substr(8)
-        
+
         mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
           if (list == null) {
             sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
           } else {
-            
+
             mongoOp.Lists.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
               if (err) {
                 logging.logError(fromPhoneNumber, familyId, bodyText, err);
                 return;
               }
               console.log('----deleted ' + list.listKey + ' ' + removeResult.result.n);
-              sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);    
+              sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
             });
           }
         });
@@ -281,11 +281,11 @@ router.route("/twilio")
       // remind @nick some text date
       } else if (bodyText.startsWith('remind @')) {
         var remindText = bodyText.substr(8)
-        reminders.addReminder(remindText,familyId, function(err){
+        reminders.addReminder(remindText,familyId, function(err, additionalMessage){
           if (err == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);            
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, additionalMessage + ' ❤️FLOCK', res);            
           } else {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, err, res);                        
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, err, res);
           }
         });
 
@@ -293,14 +293,14 @@ router.route("/twilio")
       } else if (bodyText === 'flock') {
         sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Welcome to ❤️FLOCK\nThe Family Operating System\n\nUse the following commands:\n• get -OR- get lists\n• create #list\n• get #list\n• #list add item -OR - just 'add item' if already got list\n• #list remove item -OR- just 'remove item' if already got list\n• clear #list\n• delete #list", res);
 
-      // catch all        
+      // catch all
       } else {
-        sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Sorry, don't understand.  Type 'flock' for more info.", res);    
+        sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Sorry, don't understand.  Type 'flock' for more info.", res);
       }
 
-    } 
+    }
   });
-});          
+});
 
 
 app.use('/',router);
