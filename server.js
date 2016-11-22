@@ -25,10 +25,11 @@ router.get("/",function(req,res){
 
 router.route("/twilio")
 .get(function(req,res){
-  console.log('----Twilio From: ' + req.query['From'] + ' Message ' + req.query['Body']);
-  var bodyText = req.query['Body'].toLowerCase();
-  var fromPhoneNumber = req.query['From'];
-  var familyId = 0;
+  console.log('----Twilio From: ' + req.query['From'] + ' Message ' + req.query['Body'])
+  var bodyText = req.query['Body'].toLowerCase()
+  var fromPhoneNumber = req.query['From']
+  var familyId = 0
+  var timeZone = ''
 
   var cachedListName;
   if (req.cookies !== undefined && req.cookies.listName !== undefined) {
@@ -44,8 +45,11 @@ router.route("/twilio")
     if (familyMember == null) {
       sendSMSResponse(fromPhoneNumber, 0, bodyText, "Sorry, don't see you as a member of a family.", res);
     } else {
-      familyId = familyMember.familyId;
-      logging.log(fromPhoneNumber, familyId, bodyText, "request", "");
+      familyId = familyMember.familyId
+      logging.log(fromPhoneNumber, familyId, bodyText, 'request', '')
+
+      timeZone = familyMember.timeZone
+      if (timeZone == null) timeZone = 'America/New_York'
 
       //MAIN LOGIC
       if (bodyText === "get lists" || bodyText === "get" || bodyText === "lists") {
@@ -281,13 +285,13 @@ router.route("/twilio")
       // remind @nick some text date
       } else if (bodyText.startsWith('remind @')) {
         var remindText = bodyText.substr(8)
-        reminders.addReminder(remindText,familyId, function(err, additionalMessage){
+        reminders.addReminder(remindText, familyId, timeZone, function (err, additionalMessage) {
           if (err == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, additionalMessage + ' ❤️FLOCK', res);            
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, additionalMessage + ' ❤️FLOCK', res)
           } else {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, err, res);
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, err, res)
           }
-        });
+        })
 
       // help
       } else if (bodyText === 'flock') {
