@@ -49,7 +49,8 @@ router.route("/twilio")
       logging.log(fromPhoneNumber, familyId, bodyText, 'request', '')
 
       timeZone = familyMember.timeZone
-      if (timeZone == null) timeZone = 'America/New_York'
+      console.log('zzzzzzz timezone ' + familyMember.timeZone);
+      if (familyMember.timeZone == null) timeZone = 'America/New_York'
 
       //MAIN LOGIC
       if (bodyText === "get lists" || bodyText === "get" || bodyText === "lists") {
