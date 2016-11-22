@@ -32,7 +32,7 @@ function addReminder (inputText, familyId, callback) {
           // Create listItem
           var newItem = new mongoOp.ListItems({
             'listKey': config.remindersListKey,
-            'listItemName': title,
+            'listItemName': '@' + sendTo + ' ' + title,
             'familyId': familyId,
             'reminderWhen': date,
             'reminderUserId': sendToId
