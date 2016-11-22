@@ -29,6 +29,7 @@ function processDateAndTitleFromText (inputText, callback) {
   if (sherlocked.startDate == null) {
     callback("Couldn't work out that time sorry. 😕", null, null)
   } else {
+    console.log(' ----> sherlocked.startDate:' + sherlocked.startDate)
     var startDateGMT = convertDateToLiteralTimezoneEquivalent(sherlocked.startDate, zoneName, true)
     console.log(' ----> startDateGMT:' + startDateGMT)
     var userDateText = timezonedDateText(startDateGMT, zoneName)
