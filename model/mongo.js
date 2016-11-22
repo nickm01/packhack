@@ -33,7 +33,8 @@ var familyMemberSchema  = mongoose.Schema({
     "familyId": Number,
     "name": String,
     "phoneNumber": String,
-    "description": String
+    "description": String,
+    "timeZone": String
 }, { versionKey: false });
 var FamilyMembers = mongoose.model('FamilyMembers',familyMemberSchema, 'FamilyMembers');
 
