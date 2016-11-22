@@ -1,12 +1,12 @@
 var moment = require('moment-timezone')
 var sherlock = require('./other_modules/sherlock/sherlock')
 
-function createDateFromText (inputText) {
-  var convertedToUTC = moment.tz(inputText, 'America/Chicago').tz('UTC')
-  var utcDate = new Date(convertedToUTC.format())
-  console.log('Converted to ' + utcDate)
-  return utcDate
-}
+// function createDateFromText (inputText) {
+//   var convertedToUTC = moment.tz(inputText, 'America/Chicago').tz('UTC')
+//   var utcDate = new Date(convertedToUTC.format())
+//   console.log('Converted to ' + utcDate)
+//   return utcDate
+// }
 
 function processDateAndTitleFromText (inputText, callback) {
   var zoneName = 'America/Chicago'

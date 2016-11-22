@@ -27,12 +27,12 @@ function addReminder (inputText, familyId, callback) {
             if (err) callback(generalError)
           })
         }
-        dates.processDateAndTitleFromText(dateText, function (err, date, title) {
+        dates.processDateAndTitleFromText(dateText, function (err, date, localDateText, title) {
           if (err) callback(err)
           // Create listItem
           var newItem = new mongoOp.ListItems({
             'listKey': config.remindersListKey,
-            'listItemName': '@' + sendTo + ' ' + title,
+            'listItemName': '@' + sendTo + ' ' + title + ' ' + localDateText,
             'familyId': familyId,
             'reminderWhen': date,
             'reminderUserId': sendToId
@@ -41,7 +41,7 @@ function addReminder (inputText, familyId, callback) {
             if (err) callback('Error adding reminder 😦')
             else {
               console.log('----reminder saved: ' + inputText + ' Sherlocked:' + date + ' < ' + title)
-              callback(null)
+              callback(null, 'Set for ' + localDateText + '.')
             }
           })
         })
