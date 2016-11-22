@@ -41,7 +41,7 @@ router.route("/twilio")
   }
 
   //Check FamilyId
-  mongoOp.FamilyMembers.findOne({ 'phoneNumber': fromPhoneNumber }, 'familyId', function(err, familyMember) {
+  mongoOp.FamilyMembers.findOne({ 'phoneNumber': fromPhoneNumber }, function(err, familyMember) {
     if (familyMember == null) {
       sendSMSResponse(fromPhoneNumber, 0, bodyText, "Sorry, don't see you as a member of a family.", res);
     } else {
