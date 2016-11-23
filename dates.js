@@ -2,7 +2,8 @@ var moment = require('moment-timezone')
 var sherlock = require('./other_modules/sherlock/sherlock')
 
 function processDateAndTitleFromText (inputText, zoneName, callback) {
-  var nowLocalDate = convertDateToLiteralTimezoneEquivalent(new Date(), zoneName, false)
+  var rightNow = new Date()
+  var nowLocalDate = convertDateToLiteralTimezoneEquivalent(rightNow, zoneName, true)
   console.log(' ----> nowLocalDate:' + nowLocalDate)
 
   // Process Local Date as GMT to ensure "tomorrow" is tomorrow locally
@@ -14,7 +15,7 @@ function processDateAndTitleFromText (inputText, zoneName, callback) {
   } else {
     var startDateLocal = sherlocked.startDate
     console.log(' ----> sherlocked.startDate:' + startDateLocal)
-    var startDateGMT = convertDateToLiteralTimezoneEquivalent(startDateLocal, zoneName, true)
+    var startDateGMT = convertDateToLiteralTimezoneEquivalent(startDateLocal, zoneName, false)
     console.log(' ----> startDateGMT:' + startDateGMT)
     var userDateText = timezonedDateText(startDateLocal)
     console.log(' ----> userDateText:' + userDateText)
