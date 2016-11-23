@@ -23,6 +23,7 @@ function processDateAndTitleFromText (inputText, zoneName, callback) {
 }
 
 function convertDateToLiteralTimezoneEquivalent (date, timezoneText, reverse) {
+  console.log('date: ' + date)
   var nowTimezone = moment.tz(date, timezoneText)
   var timezoneOffsetString = nowTimezone.format('Z')
   if (reverse === true) {
