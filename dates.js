@@ -30,7 +30,9 @@ function convertDateToLiteralTimezoneEquivalent (date, timezoneText, reverse) {
   }
   console.log('timezoneOffsetString: ' + timezoneOffsetString)
   var now = moment(date)
+  console.log('now: ' + now)
   now.utcOffset(timezoneOffsetString, true)
+  console.log('now: ' + now)
   return now.toDate()
 }
 
