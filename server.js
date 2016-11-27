@@ -10,6 +10,7 @@ var cookieParser = require('cookie-parser');
 var logging = require('./logging');
 var reminders = require('./reminders');
 var listItems = require('./listitems');
+var messagePreProcessor = require('./messagepreprocessor')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({"extended" : false}));
@@ -31,28 +32,29 @@ router.route("/twilio")
   var familyId = 0
   var timeZone = ''
 
-  var cachedListName;
+  // Get Cached ListName
+  var cachedListName
   if (req.cookies !== undefined && req.cookies.listName !== undefined) {
-    cachedListName = req.cookies.listName;
-    if (bodyText.startsWith("add ") || bodyText.startsWith("remove ")) {
-      bodyText = '#' + cachedListName + ' ' + bodyText;
-      console.log('add command changed to ' + bodyText);
-    }
+    cachedListName = req.cookies.listName
   }
 
-  //Check FamilyId
-  mongoOp.FamilyMembers.findOne({ 'phoneNumber': fromPhoneNumber }, function(err, familyMember) {
-    if (familyMember == null) {
-      sendSMSResponse(fromPhoneNumber, 0, bodyText, "Sorry, don't see you as a member of a family.", res);
+  // Check FamilyId
+  mongoOp.FamilyMembers.findOne({ 'phoneNumber': fromPhoneNumber }, function (err, familyMember) {
+    if (err != null || familyMember == null) {
+      sendSMSResponse(fromPhoneNumber, 0, bodyText, "Sorry, don't see you as a member of a family.", res)
     } else {
       familyId = familyMember.familyId
       logging.log(fromPhoneNumber, familyId, bodyText, 'request', '')
 
       timeZone = familyMember.timeZone
-      console.log('zzzzzzz timezone ' + familyMember.timeZone);
       if (familyMember.timeZone == null) timeZone = 'America/New_York'
 
-      //MAIN LOGIC
+      var fromUserName = familyMember.name
+
+      // Preprocess Message Text
+      bodyText = messagePreProcessor.messagePreProcessor(bodyText, cachedListName, fromUserName)
+
+      // MAIN LOGIC
       if (bodyText === "get lists" || bodyText === "get" || bodyText === "lists") {
         response = true;
         mongoOp.Lists.find({'familyId':familyId}, 'listKey', function(err, lists) {
@@ -67,21 +69,6 @@ router.route("/twilio")
             sendSMSResponse(fromPhoneNumber, familyId, bodyText, concatText, res);
           }
         });
-
-      // } else if (bodyText === "fix")  {
-      //   mongoOp.ListItems.find({},function(err,listItems) {
-      //     listItems.forEach(function(listItem){
-      //       listItem.familyId = 1;
-      //       listItem.save(function(err){
-      //         if(err) {
-      //           console.log('---->>>> fix error');
-      //         } else {
-      //           console.log('---->>>> fix SUCCESS!!!!');
-      //         }
-      //       });
-      //     });
-      //   });
-
 
       // Basic welcome message
       } else if (bodyText.startsWith("** welcome ")) {
@@ -253,6 +240,7 @@ router.route("/twilio")
             return;
           }
 
+          //TODO: DUPLICATE CALL!!!!
           mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber, 'familyId': familyId}, 'name', function(err, fromFamilyMember) {
             if (err) {
               logging.logError(fromPhoneNumber, familyId, bodyText, err);
