@@ -8,7 +8,7 @@ function preProcessMessage (messageText, cachedListName, fromUserName) {
   }
 
   // Replaces @me wtih @<username>
-  returnText.replace('@me', '@' + fromUserName)
+  returnText = returnText.replace('@me', '@' + fromUserName)
 
   console.log('preProcessMessage: ' + returnText)
 
