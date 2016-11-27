@@ -52,7 +52,7 @@ router.route("/twilio")
       var fromUserName = familyMember.name
 
       // Preprocess Message Text
-      bodyText = messagePreProcessor.messagePreProcessor(bodyText, cachedListName, fromUserName)
+      bodyText = messagePreProcessor.preProcessMessage(bodyText, cachedListName, fromUserName)
 
       // MAIN LOGIC
       if (bodyText === "get lists" || bodyText === "get" || bodyText === "lists") {
