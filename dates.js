@@ -49,7 +49,13 @@ function reverseTimezoneOffset (timezoneOffsetString) {
 }
 
 function timezonedDateText (date) {
-  return moment(date).format('MMM DD YYYY ddd h:mma')
+  var dateFormat = 'ddd h:mma MMM Do'
+  if (date.getHours === 0 && date.getMinutes === 0) dateFormat = 'ddd MMM Do'
+  var now = new Date()
+  if (now.getFullYear() !== date.getFullYear()) {
+    dateFormat += ', YYYY'
+  }
+  return moment(date).format(dateFormat)
 }
 
 module.exports = {
