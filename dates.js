@@ -19,6 +19,7 @@ function processDateAndTitleFromText (inputText, zoneName, callback) {
     console.log(' ----> startDateGMT:' + startDateGMT)
     var userDateText = timezonedDateText(startDateLocal)
     console.log(' ----> userDateText:' + userDateText)
+    console.log(' ----> sherlocked.eventTitle:' + sherlocked.eventTitle)
     callback(null, startDateGMT, userDateText, sherlocked.eventTitle)
   }
 }
