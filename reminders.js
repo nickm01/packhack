@@ -6,6 +6,7 @@ var dates = require('./dates')
 function addReminder (inputText, familyId, timeZone, callback) {
   var sendTo = stringProcessor.getFirstWord(inputText)
   var dateText = stringProcessor.removeFirstWord(inputText)
+  dateText = dateText.replace('weekend', 'saturday')
   var generalError = 'Error creating reminder list 😦'
 
   mongoOp.FamilyMembers.findOne({ 'name': sendTo, 'familyId': familyId }, function (err, familyMember) {
@@ -31,7 +32,8 @@ function addReminder (inputText, familyId, timeZone, callback) {
           if (err) callback(err)
 
           if (title == null || title === '') {
-            callback('Sorry need a reminder desciption 😦\nTry "remind @me tomorrow" followed by a description.')
+            callback('Sorry need a reminder desciption 😦\nJust add one to the end.')
+            return
           }
 
           // Create listItem
