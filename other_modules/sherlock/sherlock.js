@@ -414,12 +414,26 @@ var Sherlock = (function() {
           time.setFullYear(now.getFullYear() + 1, now.getMonth(), now.getDate());
           time.hasYear = true;
           return true;
+        case "last week":
+          time.setFullYear(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+          time.hasYear = true;
+          return true;
+        case "last month":
+          time.setFullYear(now.getFullYear(), now.getMonth() - 1, now.getDate());
+          time.hasYear = true;
+          return true;
+        case "last year":
+          time.setFullYear(now.getFullYear() - 1, now.getMonth(), now.getDate());
+          time.hasYear = true;
+          return true;
+        case "tom":
         case "tmrw":
         case "tomorrow":
           time.setFullYear(now.getFullYear(), now.getMonth(), now.getDate() + 1);
           time.hasYear = true;
           return true;
-          case "day after tmrw":
+        case "day after tom":
+        case "day after tmrw":
         case "day after tomorrow":
           time.setFullYear(now.getFullYear(), now.getMonth(), now.getDate() + 2);
           time.hasYear = true;
@@ -427,6 +441,8 @@ var Sherlock = (function() {
         case "this week":
         case "this month":
         case "this year": // this week|month|year is pretty meaningless, but let's include it so that it parses as today
+        case "tod":
+        case "today":
           time.setFullYear(now.getFullYear(), now.getMonth(), now.getDate());
           time.hasYear = true;
           return true;

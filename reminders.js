@@ -28,9 +28,12 @@ function addReminder (inputText, familyId, timeZone, callback) {
           })
         }
         dates.processDateAndTitleFromText(dateText, timeZone, function (err, date, localDateText, title) {
+          console.log('ttt ' + title)
           if (err) callback(err)
 
-          if (title == null || title === '') callback("Sorry need a reminder desciption 😦")
+          if (title == null || title === '') {
+            callback('Sorry need a reminder desciption 😦\nTry "remind @me tomorrow" followed by a description.')
+          }
 
           // Create listItem
           var newItem = new mongoOp.ListItems({
