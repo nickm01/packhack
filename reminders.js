@@ -28,7 +28,6 @@ function addReminder (inputText, familyId, timeZone, callback) {
           })
         }
         dates.processDateAndTitleFromText(dateText, timeZone, function (err, date, localDateText, title) {
-          console.log('ttt ' + title)
           if (err) callback(err)
 
           if (title == null || title === '') {

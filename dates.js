@@ -50,9 +50,9 @@ function reverseTimezoneOffset (timezoneOffsetString) {
 }
 
 function timezonedDateText (date) {
-  var dateFormat = 'ddd h:mma MMM Do'
+  var dateFormat = 'dddd h:mma, MMM Do'
   if (date.getHours() === 0 && date.getMinutes() === 0) {
-    dateFormat = 'ddd MMM Do'
+    dateFormat = 'dddd, MMM Do'
   }
   // Note this isn't timezone friendly but so broad it doesn't make a difference
   var now = new Date()
