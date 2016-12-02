@@ -29,7 +29,10 @@ function addReminder (inputText, familyId, timeZone, callback) {
           })
         }
         dates.processDateAndTitleFromText(dateText, timeZone, function (err, date, localDateText, title) {
-          if (err) callback(err)
+          if (err) {
+            callback(err)
+            return
+          }
 
           if (title == null || title === '') {
             callback('Sorry need a reminder desciption 😦\nJust add one to the end.')
