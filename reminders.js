@@ -29,13 +29,17 @@ function addReminder (inputText, familyId, timeZone, callback) {
         }
         dates.processDateAndTitleFromText(dateText, timeZone, function (err, date, localDateText, title) {
           if (err) callback(err)
+
+          if (title == null || title === '') callback("Sorry need a reminder desciption 😦")
+
           // Create listItem
           var newItem = new mongoOp.ListItems({
             'listKey': config.remindersListKey,
             'listItemName': '@' + sendTo + ' ' + title + ' ' + localDateText,
             'familyId': familyId,
             'reminderWhen': date,
-            'reminderUserId': sendToId
+            'reminderUserId': sendToId,
+            'reminderTitle': title
           })
           newItem.save(function (err, data) {
             if (err) callback('Error adding reminder 😦')
