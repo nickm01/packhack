@@ -33,6 +33,10 @@ cfg.sendingNumber = '+19148195134';
 cfg.remindersListKey = 'reminders'
 cfg.successText = 'Got it! ❤️FLOCK'
 
+// reminders
+cfg.allFamilyMembersID = -1
+
+
 //var requiredConfig = [cfg.accountSid, cfg.authToken, cfg.sendingNumber];
 //var isConfigured = requiredConfig.every(function(configValue) {
 //  return configValue || false;
