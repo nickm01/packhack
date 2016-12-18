@@ -1,61 +1,65 @@
 #!/usr/bin/env node
 
-var config = require('../config');
-var twilio = require('twilio')(config.accountSid, config.authToken);
-var mongoOp = require('../model/mongo');
-var sendSms = require('../sendsms');
-var logging = require('../logging');
-var listItemFunctions = require('../listitems');
+var config = require('../config')
+var mongoOp = require('../model/mongo')
+var sendSms = require('../sendsms')
+var logging = require('../logging')
+var listItemFunctions = require('../listitems')
 
 var count = 0
 
-function processScheduler() {
-
-  console.log('Scheduler1');
-
-  mongoOp.ListItems.find({'listKey':config.remindersListKey}, function(err, listItems) {
-    if(err) {
-      logging.logError('scheduler', '', '', err);
+function processScheduler () {
+  mongoOp.ListItems.find({'listKey': config.remindersListKey}, function (err, listItems) {
+    if (err) {
+      logging.logError('scheduler', '', '', err)
     } else {
-      console.log('Scheduler2');
-      listItems.forEach(function(listItem) {
-        var familyId = listItem.familyId;
-        var reminderDate = new Date(listItem.reminderWhen);
-        var now = new Date();
-        console.log("now: " + now);
-        console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName);
-   	    //TODO: UTC
+      listItems.forEach(function (listItem) {
+        var familyId = listItem.familyId
+        var reminderDate = new Date(listItem.reminderWhen)
+        var now = new Date()
+        console.log('now: ' + now)
+        console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName)
 
-   	    if (reminderDate < now) {
-        console.log("1x");
-          mongoOp.FamilyMembers.findOne({'familyId': familyId, 'userId':listItem.reminderUserId}, function (err, familyMember) {
+        if (reminderDate < now) {
+          // Remove listItem first
+          listItemFunctions.deleteListItemByName(familyId, listItem.listKey, listItem.listItemName, function (err) {
             if (err) {
-              logging.logError('0', familyId, bodyText, err);
-              return;
-            }
-            console.log("2x");
-            // Remove listItem
-            listItemFunctions.deleteListItemByName(familyId, listItem.listKey, listItem.listItemName, function(err) {
-              console.log("3x");
-              if (err) {
-                return;
-              } else {
-                count++;
-                console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name);
-                sendSms.sendSms(familyMember.phoneNumber, '⏰ ' + listItem.reminderTitle, function(){
+              return
+            } else {
+              // Send to single or multiple family members
+              multipleOrSingleFamilyMembersForReminderUserId(familyId, listItem.reminderUserId, function (err, familyMember) {
+                if (err) {
+                  logging.logError('0', familyId, listItem, err)
+                  return
+                }
+                count++ //TODO: Use Q here this is awful
+                console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
+                sendSms.sendSms(familyMember.phoneNumber, '⏰ ' + listItem.reminderTitle, function () {
                   count--
-                  console.log('Count-- ' + count);
-                  if (count == 0) {
-                    process.exit();
+                  console.log('Count-- ' + count)
+                  if (count === 0) {
+                    process.exit()
                   }
-                });
-              }
-            });
-          });
+                })
+              })
+            }
+          })
         }
-      });
+      })
     }
-  });
+  })
 }
 
-processScheduler();
+function multipleOrSingleFamilyMembersForReminderUserId (familyId, reminderUserId, callback) {
+  if (reminderUserId === config.allFamilyMembersID) {
+    mongoOp.FamilyMembers.findOne({'familyId': familyId, 'userId': reminderUserId}, function (err, familyMember) {
+      callback(err, familyMember)
+    })
+  } else {
+    mongoOp.FamilyMembers.find({'familyId': familyId}, function (err, familyMember) {
+      callback(err, familyMember)
+    })
+  }
+}
+
+processScheduler()
