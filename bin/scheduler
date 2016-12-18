@@ -52,7 +52,7 @@ function processScheduler () {
 
 function multipleOrSingleFamilyMembersForReminderUserId (familyId, reminderUserId, callback) {
   console.log('FAM ID:' + familyId + ' UserId:' + reminderUserId)
-  if (reminderUserId === config.allFamilyMembersID) {
+  if (reminderUserId !== config.allFamilyMembersID) {
     mongoOp.FamilyMembers.findOne({'familyId': familyId, 'userId': reminderUserId}, function (err, familyMember) {
       console.log('FAM-SINGLE pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
       callback(err, familyMember)
