@@ -42,9 +42,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
     if ((familyMember == null || err) && (sendTo !== 'all')) {
       callback('@' + sendTo + ' unkown sorry! 😕')
     } else {
-      console.log('X1')
-      var sendToId = familyMember.userId || config.allFamilyMembersID
-      console.log('X2')
+      var sendToId = familyMember == null ? config.allFamilyMembersID : familyMember.userId
 
       // Check lists and create if necessary
       mongoOp.Lists.findOne({'listKey': config.remindersListKey, 'familyId': familyId}, function (err, list) {
