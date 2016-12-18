@@ -58,9 +58,15 @@ function multipleOrSingleFamilyMembersForReminderUserId (familyId, reminderUserI
       callback(err, familyMember)
     })
   } else {
-    mongoOp.FamilyMembers.find({'familyId': familyId}, function (err, familyMember) {
-      console.log('FAM-MUTLI pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
-      callback(err, familyMember)
+    mongoOp.FamilyMembers.find({'familyId': familyId}, function (err, familyMembers) {
+      if (err) {
+        callback(err)
+      } else {
+        familyMembers.forEach(function (familyMember) {
+          console.log('FAM-MUTLI pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
+          callback(null, familyMember)
+        })
+      }
     })
   }
 }
