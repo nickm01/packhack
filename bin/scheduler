@@ -32,7 +32,7 @@ function processScheduler () {
                   logging.logError('0', familyId, listItem, err)
                   return
                 }
-                count++ //TODO: Use Q here this is awful
+                count++ // TODO: Use Q here this is awful
                 console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
                 sendSms.sendSms(familyMember.phoneNumber, '⏰ ' + listItem.reminderTitle, function () {
                   count--
@@ -53,10 +53,12 @@ function processScheduler () {
 function multipleOrSingleFamilyMembersForReminderUserId (familyId, reminderUserId, callback) {
   if (reminderUserId === config.allFamilyMembersID) {
     mongoOp.FamilyMembers.findOne({'familyId': familyId, 'userId': reminderUserId}, function (err, familyMember) {
+      console.log('FAM-SINGLE pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
       callback(err, familyMember)
     })
   } else {
     mongoOp.FamilyMembers.find({'familyId': familyId}, function (err, familyMember) {
+      console.log('FAM-MUTLI pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
       callback(err, familyMember)
     })
   }
