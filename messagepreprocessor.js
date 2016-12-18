@@ -7,6 +7,11 @@ function preProcessMessage (messageText, cachedListName, fromUserName) {
     returnText = '#' + cachedListName + ' ' + returnText
   }
 
+  // For get shorthand... if a signle word that starts with #, then add get
+  if (returnText.startsWith('#') && returnText.indexOf(' ') >= 0) {
+    returnText = 'get ' + returnText
+  }
+
   // Replaces @me wtih @<username>
   returnText = returnText.replace('@me', '@' + fromUserName)
 
