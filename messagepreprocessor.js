@@ -8,7 +8,7 @@ function preProcessMessage (messageText, cachedListName, fromUserName) {
   }
 
   // For get shorthand... if a signle word that starts with #, then add get
-  if (returnText.startsWith('#') && returnText.indexOf(' ') >= 0) {
+  if (returnText.startsWith('#') && returnText.indexOf(' ') < 0) {
     returnText = 'get ' + returnText
   }
 
