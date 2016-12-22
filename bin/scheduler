@@ -34,6 +34,7 @@ function processScheduler () {
                 }
                 count++ // TODO: Use Q here this is awful
                 console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
+                logging.log(familyMember.phoneNumber, familyId, listItem.reminderTitle, 'Reminder', '')
                 sendSms.sendSms(familyMember.phoneNumber, '⏰ ' + listItem.reminderTitle, function () {
                   count--
                   console.log('Count-- ' + count)
