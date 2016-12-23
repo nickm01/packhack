@@ -40,7 +40,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
 
   mongoOp.FamilyMembers.findOne({ 'name': sendTo, 'familyId': familyId }, function (err, familyMember) {
     if ((familyMember == null || err) && (sendTo !== 'all')) {
-      callback('@' + sendTo + ' unkown sorry! 😕')
+      callback('@' + sendTo + ' unkown in this family sorry! 😕')
     } else {
       var sendToId = familyMember == null ? config.allFamilyMembersID : familyMember.userId
 
@@ -70,7 +70,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
 
           var createListItem = function (listItem) {
             listItem.save(function (err, data) {
-              if (err) callback('Error adding reminder 😦')
+              if (err) callback('Error adding reminder 😦.')
               else {
                 console.log('----reminder saved: ' + inputText + ' Sherlocked:' + date + ' < ' + title)
                 callback(null, 'Set for ' + localDateText + '.')
@@ -84,7 +84,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
 
             mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, function (err, list) {
               if (err || list == null) {
-                callback('Could not find #' + listName + '.')
+                callback('Could not find #' + listName + ' 😦.')
               } else {
                 var newListItem = new mongoOp.ListItems({
                   'listKey': config.remindersListKey,
