@@ -68,22 +68,47 @@ function addReminder (inputText, familyId, timeZone, callback) {
             return
           }
 
-          // Create listItem
-          var newItem = new mongoOp.ListItems({
-            'listKey': config.remindersListKey,
-            'listItemName': '@' + sendTo + ' ' + title + ' ' + localDateText,
-            'familyId': familyId,
-            'reminderWhen': date,
-            'reminderUserId': sendToId,
-            'reminderTitle': title
-          })
-          newItem.save(function (err, data) {
-            if (err) callback('Error adding reminder 😦')
-            else {
-              console.log('----reminder saved: ' + inputText + ' Sherlocked:' + date + ' < ' + title)
-              callback(null, 'Set for ' + localDateText + '.')
-            }
-          })
+          var createListItem = function (listItem) {
+            listItem.save(function (err, data) {
+              if (err) callback('Error adding reminder 😦')
+              else {
+                console.log('----reminder saved: ' + inputText + ' Sherlocked:' + date + ' < ' + title)
+                callback(null, 'Set for ' + localDateText + '.')
+              }
+            })
+          }
+
+          if (title.charAt(0) === '#') {
+            var listName = stringProcessor.getFirstWord(title).substr(1)
+            var updatedTitle = stringProcessor.removeFirstWord(title)
+
+            mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, function (err, list) {
+              if (err || list == null) {
+                callback('Could not find #' + listName + '.')
+              } else {
+                var newListItem = new mongoOp.ListItems({
+                  'listKey': config.remindersListKey,
+                  'listItemName': '@' + sendTo + ' ' + title + ' ' + localDateText,
+                  'familyId': familyId,
+                  'reminderWhen': date,
+                  'reminderUserId': sendToId,
+                  'reminderTitle': updatedTitle,
+                  'reminderListKey': list.listKey
+                })
+                createListItem(newListItem)
+              }
+            })
+          } else {
+            var newListItem = new mongoOp.ListItems({
+              'listKey': config.remindersListKey,
+              'listItemName': '@' + sendTo + ' ' + title + ' ' + localDateText,
+              'familyId': familyId,
+              'reminderWhen': date,
+              'reminderUserId': sendToId,
+              'reminderTitle': title
+            })
+            createListItem(newListItem)
+          }
         })
       })
     }
