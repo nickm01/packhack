@@ -283,6 +283,10 @@ router.route("/twilio")
           }
         })
 
+      // remind error/help
+      } else if (bodyText.startsWith('remind')) {
+        sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Sorry, don't understand 😕.\nPlease use format 'remind @who when what'.\n'what' can be a simple message or an #list.\n'when' can be a day, date, time or any combo.", res)
+
       // help
       } else if (bodyText === 'flock') {
         sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Welcome to ❤️FLOCK\nThe Family Operating System\n\nUse the following commands:\n• get -OR- get lists\n• create #list\n• get #list\n• #list add item -OR - just 'add item' if already got list\n• #list remove item -OR- just 'remove item' if already got list\n• clear #list\n• delete #list", res);
