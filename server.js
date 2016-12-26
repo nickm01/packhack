@@ -1,19 +1,20 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
-var mongoOp = require("./model/mongo");
-var router = express.Router();
-var config = require('./config');
-var twilio = require('twilio');
-var sendSms = require('./sendsms');
-var cookieParser = require('cookie-parser');
-var logging = require('./logging');
-var reminders = require('./reminders');
-var listItems = require('./listitems');
+var express = require('express')
+var bodyParser = require('body-parser')
+var app = express()
+var mongoOp = require('./model/mongo')
+var router = express.Router()
+var config = require('./config')
+var twilio = require('twilio')
+var sendSms = require('./sendsms')
+var cookieParser = require('cookie-parser')
+var logging = require('./logging')
+var reminders = require('./reminders')
+var listItems = require('./listitems')
 var messagePreProcessor = require('./messagepreprocessor')
+var stringProcessor = require('./stringprocessor')
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({"extended" : false}));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({"extended" : false}))
 
 var app = express();
 app.use(cookieParser());
@@ -56,8 +57,7 @@ router.route("/twilio")
 
       // MAIN LOGIC
       if (bodyText === "get lists" || bodyText === "get" || bodyText === "lists") {
-        response = true;
-        mongoOp.Lists.find({'familyId':familyId}, 'listKey', function(err, lists) {
+        mongoOp.Lists.find({'familyId': familyId}, 'listKey', function(err, lists) {
           if(err){
             logging.logError(fromPhoneNumber, familyId, bodyText, err);
           } else {
@@ -78,37 +78,48 @@ router.route("/twilio")
         mongoOp.FamilyMembers.findOne({'userId': welcomeSendUserId}, 'phoneNumber', function(err, familyMember) {
           sendSms.sendSms(familyMember.phoneNumber,'Welcome to FLOCK!\nYou now have the power to crowdsource your family lists. \nLearn more - text the word “flock” to this number to see a list of available commands.\nHave fun!\n❤️FLOCK', function(){});
           sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Welcome sent to ' + familyMember.phoneNumber, res);
-        });
+        })
 
       // Get list items
-      } else if (bodyText.startsWith("get #")) {
-        console.log('*** get list!!!!');
-        response = true;
-        var listName = bodyText.substr(5);
+      } else if (bodyText.startsWith('get #') || bodyText.startsWith('show #') || bodyText.startsWith('list #') || bodyText.startsWith('retrieve #') || bodyText.startsWith('display #')) {
+        var listName = stringProcessor.removeFirstWord(bodyText).substr(1)
+        console.log('*** get list!!!!')
+        var list = {'listKey': listName, 'familyId': familyId}
 
-        mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
-          if (list == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
+        listItems.listItemTextForList(list, function (err, text) {
+          if (err) {
+            logging.logError(fromPhoneNumber, familyId, bodyText, err)
           } else {
-            mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
-              if(err){
-                logging.logError(fromPhoneNumber, familyId, bodyText, err);
-              } else {
-                var concatText = "";
-                var itemNumber = 0;
-                listItems.forEach(function(listItem){
-                  itemNumber++;
-                  concatText = concatText.concat('\n• ' + listItem.listItemName);
-                });
-                if (itemNumber == 0) {
-                  concatText = concatText.concat('No items in #' + listName + '.');
-                }
-                cacheListName(listName,res);
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, '\n#'+ listName + ':' + concatText, res);
-             }
-            });
+            cacheListName(list.listKey, res)
           }
-        });
+          if (text) {
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, text, res)
+          }
+        })
+
+        // mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
+        //   if (list == null) {
+        //     sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
+        //   } else {
+        //     mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
+        //       if(err){
+        //         logging.logError(fromPhoneNumber, familyId, bodyText, err);
+        //       } else {
+        //         var concatText = "";
+        //         var itemNumber = 0;
+        //         listItems.forEach(function(listItem){
+        //           itemNumber++;
+        //           concatText = concatText.concat('\n• ' + listItem.listItemName);
+        //         });
+        //         if (itemNumber == 0) {
+        //           concatText = concatText.concat('No items in #' + listName + '.');
+        //         }
+        //         cacheListName(listName,res);
+        //         sendSMSResponse(fromPhoneNumber, familyId, bodyText, '\n#'+ listName + ':' + concatText, res);
+        //      }
+        //     });
+        //   }
+        // });
 
       } else if (bodyText.startsWith('#')) {
 
