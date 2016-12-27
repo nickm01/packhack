@@ -23,6 +23,7 @@ function listItemsTextForList (unconfirmedList, callback) {
       callback(err, "Sorry, couldn't find #" + unconfirmedList.listKey + '.\nType "get lists" to see available lists.')
     } else {
       mongoOp.ListItems.find({'listKey': list.listKey, 'familyId': list.familyId}, function (err, listItems) {
+        console.log('TEST3:' + err + ':' + listItems)
         if (err) {
           callback(err)
         } else {
