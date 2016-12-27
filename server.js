@@ -94,8 +94,9 @@ router.route("/twilio")
           }
           if (text) {
             var smsText
+            console.log('****TEST:' + text + 'X')
             if (text === '') {
-              smsText = text.concat('Currently no items in #' + list.listKey + '.')
+              smsText = 'Currently no items in #' + list.listKey + '.'
             } else {
               smsText = '\n#' + list.listKey + ':' + text
             }
