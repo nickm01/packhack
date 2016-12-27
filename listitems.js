@@ -31,6 +31,7 @@ function listItemsTextForList (unconfirmedList, callback) {
           listItems.forEach(function (listItem) {
             concatText = concatText.concat('\n• ' + listItem.listItemName)
           })
+          console.log('TEST4:' + concatText)
           callback(null, concatText)
         }
       })
