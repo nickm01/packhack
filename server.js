@@ -96,7 +96,7 @@ router.route("/twilio")
           if (text === '') {
             console.log('****TEST5:')
           }
-          if (text === null) {
+          if (text == null) {
             console.log('****TEST6:')
           }
           if (text) {
