@@ -17,10 +17,10 @@ function deleteListItemByName (familyId, listKey, listItemName, callback) {
   })
 }
 
-function listItemTextForList(list, callback) {
-  mongoOp.Lists.findOne({'listKey': list.listKey, 'familyId': list.familyId}, function (err, list) {
+function listItemTextForList(unconfirmedList, callback) {
+  mongoOp.Lists.findOne({'listKey': unconfirmedList.listKey, 'familyId': unconfirmedList.familyId}, function (err, list) {
     if (err || list == null) {
-      callback(err, "Sorry, couldn't find #" + list.listKey + '.\nType "get lists" to see available lists.')
+      callback(err, "Sorry, couldn't find #" + unconfirmedList.listKey + '.\nType "get lists" to see available lists.')
     } else {
       mongoOp.ListItems.find({'listKey': list.listKey, 'familyId': list.familyId}, function (err, listItems) {
         if (err) {
