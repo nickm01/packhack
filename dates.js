@@ -11,7 +11,7 @@ function processDateAndTitleFromText (inputText, zoneName, callback) {
   var sherlocked = sherlock.parse(inputText)
 
   if (sherlocked.startDate == null) {
-    callback("Just couldn't work out that time, sorry. 😕\nTry a date or day of week with or without a time.")
+    callback("Just couldn't work out that time, sorry. 😕\nTry a date, day of week, time or any combo.")
   } else {
     var startDateLocal = sherlocked.startDate
     console.log(' ----> sherlocked.startDate:' + startDateLocal)
