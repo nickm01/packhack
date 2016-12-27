@@ -84,7 +84,7 @@ function textForReminder (listItem, callback) {
     listItemFunctions.listItemsTextForList(unconfirmedList, function (err, text) {
       console.log('****TEST24:' + err + ':' + text)
       if (err) {
-        callback(err)
+        callback(err, "(Sorry couldn't find #" + listItem.reminderListKey + '.)')
       } else {
         console.log('****TEST25:' + listItem.reminderTitle + ':' + listItem.reminderListKey)
         var reminderText = ''
