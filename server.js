@@ -93,7 +93,13 @@ router.route("/twilio")
             cacheListName(list.listKey, res)
           }
           if (text) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, text, res)
+            var smsText
+            if (text === '') {
+              smsText = text.concat('Currently no items in #' + list.listKey + '.')
+            } else {
+              smsText = '\n#' + list.listKey + ':' + text
+            }
+            sendSMSResponse(fromPhoneNumber, familyId, bodyText, smsText, res)
           }
         })
 
