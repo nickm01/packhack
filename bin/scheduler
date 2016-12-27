@@ -86,12 +86,16 @@ function textForReminder (listItem, callback) {
       } else {
         var reminderText = ''
         if (text === '' && listItem.reminderTitle === '') {
+          console.log('****TEST20')
           reminderText = '⏰ ' + listItem.reminderListKey
         } else if (text === '' && listItem.reminderTitle !== '') {
+          console.log('****TEST21')
           reminderText = '⏰ ' + listItem.reminderTitle + '\n#' + listItem.reminderListKey + ' is empty.'
         } else if (text !== '' && listItem.reminderTitle === '') {
+          console.log('****TEST22')
           reminderText = '⏰ #' + listItem.reminderListKey + text
         } else if (text !== '' && listItem.reminderTitle !== '') {
+          console.log('****TEST23')
           reminderText = '⏰ ' + listItem.reminderTitle + '\n#' + listItem.reminderListKey + text
         }
         callback(null, reminderText)
