@@ -94,10 +94,10 @@ router.route("/twilio")
             cacheListName(list.listKey, res)
           }
           if (text === '') {
-            console.log('****TEST4:')
+            console.log('****TEST5:')
           }
           if (text === null) {
-            console.log('****TEST4:')
+            console.log('****TEST6:')
           }
           if (text) {
             var smsText
