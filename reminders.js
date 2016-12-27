@@ -77,10 +77,11 @@ function addReminder (inputText, familyId, timeZone, callback) {
               }
             })
           }
-
+          console.log('TEST10:' + title.charAt(0) + '--:' + title)
           if (title.charAt(0) === '#') {
             var listName = stringProcessor.getFirstWord(title).substr(1)
             var updatedTitle = stringProcessor.removeFirstWord(title)
+            console.log('TEST11:' + listName + '--:' + updatedTitle)
 
             mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, function (err, list) {
               if (err || list == null) {
