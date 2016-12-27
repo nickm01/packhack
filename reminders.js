@@ -40,7 +40,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
 
   mongoOp.FamilyMembers.findOne({ 'name': sendTo, 'familyId': familyId }, function (err, familyMember) {
     if ((familyMember == null || err) && (sendTo !== 'all')) {
-      callback('@' + sendTo + ' unkown in this family sorry! 😕')
+      callback('@' + sendTo + ' unkown in this family sorry! 😕\nIn addition to @names, can use @me or @all.')
     } else {
       var sendToId = familyMember == null ? config.allFamilyMembersID : familyMember.userId
 
