@@ -37,8 +37,8 @@ function processScheduler () {
                   if (err) {
                   }
                   console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
-                  logging.log(familyMember.phoneNumber, familyId, listItem.reminderTitle, 'Reminder', '')
-                  sendSms.sendSms(familyMember.phoneNumber, '⏰ ' + listItem.reminderTitle, function () {
+                  logging.log(familyMember.phoneNumber, familyId, text, 'Reminder', '')
+                  sendSms.sendSms(familyMember.phoneNumber, text, function () {
                     count--
                     console.log('Count-- ' + count)
                     if (count === 0) {
