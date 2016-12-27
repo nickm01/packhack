@@ -99,7 +99,7 @@ router.route("/twilio")
           if (text == null) {
             console.log('****TEST6:')
           }
-          if (text) {
+          if (text != null) {
             var smsText
             console.log('****TEST2:' + text + 'X')
             if (text === '') {
