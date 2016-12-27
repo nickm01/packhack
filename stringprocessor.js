@@ -8,7 +8,7 @@ function getFirstWord (str) {
 
 function removeFirstWord (str) {
   if (str.indexOf(' ') === -1) {
-    return str
+    return ''
   } else {
     return str.substr(str.indexOf(' ') + 1)
   }
