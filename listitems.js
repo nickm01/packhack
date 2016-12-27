@@ -17,7 +17,7 @@ function deleteListItemByName (familyId, listKey, listItemName, callback) {
   })
 }
 
-function listItemTextForList(unconfirmedList, callback) {
+function listItemsTextForList (unconfirmedList, callback) {
   mongoOp.Lists.findOne({'listKey': unconfirmedList.listKey, 'familyId': unconfirmedList.familyId}, function (err, list) {
     if (err || list == null) {
       callback(err, "Sorry, couldn't find #" + unconfirmedList.listKey + '.\nType "get lists" to see available lists.')
@@ -27,15 +27,10 @@ function listItemTextForList(unconfirmedList, callback) {
           callback(err)
         } else {
           var concatText = ''
-          var itemNumber = 0
           listItems.forEach(function (listItem) {
-            itemNumber++
             concatText = concatText.concat('\n• ' + listItem.listItemName)
           })
-          if (itemNumber === 0) {
-            concatText = concatText.concat('No items in #' + list.listKey + '.')
-          }
-          callback(null, '\n#' + list.listKey + ':' + concatText)
+          callback(null, concatText)
         }
       })
     }
@@ -44,5 +39,5 @@ function listItemTextForList(unconfirmedList, callback) {
 
 module.exports = {
   deleteListItemByName,
-  listItemTextForList
+  listItemsTextForList
 }

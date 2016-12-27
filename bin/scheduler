@@ -33,14 +33,18 @@ function processScheduler () {
                   return
                 }
                 count++ // TODO: Use Q here this is awful
-                console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
-                logging.log(familyMember.phoneNumber, familyId, listItem.reminderTitle, 'Reminder', '')
-                sendSms.sendSms(familyMember.phoneNumber, '⏰ ' + listItem.reminderTitle, function () {
-                  count--
-                  console.log('Count-- ' + count)
-                  if (count === 0) {
-                    process.exit()
+                textForReminder(listItem, function (err, text) {
+                  if (err) {
                   }
+                  console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
+                  logging.log(familyMember.phoneNumber, familyId, listItem.reminderTitle, 'Reminder', '')
+                  sendSms.sendSms(familyMember.phoneNumber, '⏰ ' + listItem.reminderTitle, function () {
+                    count--
+                    console.log('Count-- ' + count)
+                    if (count === 0) {
+                      process.exit()
+                    }
+                  })
                 })
               })
             }
@@ -67,6 +71,30 @@ function multipleOrSingleFamilyMembersForReminderUserId (familyId, reminderUserI
           console.log('FAM-MUTLI pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
           callback(null, familyMember)
         })
+      }
+    })
+  }
+}
+
+function textForReminder (listItem, callback) {
+  if (listItem.reminderListKey == null || listItem.reminderListKey === '') {
+    callback(null, '⏰ ' + listItem.reminderTitle)
+  } else {
+    listItemFunctions.listItemsTextForList(listItem.reminderListKey, function (err, text) {
+      if (err) {
+        callback(err)
+      } else {
+        var reminderText = ''
+        if (text === '' && listItem.reminderTitle === '') {
+          reminderText = '⏰ ' + listItem.reminderListKey
+        } else if (text === '' && listItem.reminderTitle !== '') {
+          reminderText = '⏰ ' + listItem.reminderTitle + '\n#' + listItem.reminderListKey + ' is empty.'
+        } else if (text !== '' && listItem.reminderTitle === '') {
+          reminderText = '⏰ #' + listItem.reminderListKey + text
+        } else if (text !== '' && listItem.reminderTitle !== '') {
+          reminderText = '⏰ ' + listItem.reminderTitle + '\n#' + listItem.reminderListKey + text
+        }
+        callback(null, reminderText)
       }
     })
   }

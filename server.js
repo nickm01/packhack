@@ -86,7 +86,7 @@ router.route("/twilio")
         console.log('*** get list!!!!')
         var list = {'listKey': listName, 'familyId': familyId}
 
-        listItems.listItemTextForList(list, function (err, text) {
+        listItems.listItemsTextForList(list, function (err, text) {
           if (err) {
             logging.logError(fromPhoneNumber, familyId, bodyText, err)
           } else {
