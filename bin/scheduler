@@ -81,9 +81,11 @@ function textForReminder (listItem, callback) {
     callback(null, '⏰ ' + listItem.reminderTitle)
   } else {
     listItemFunctions.listItemsTextForList(listItem.reminderListKey, function (err, text) {
+      console.log('****TEST24:' + err + ':' + text)
       if (err) {
         callback(err)
       } else {
+        console.log('****TEST25:' + listItem.reminderTitle + ':' + listItem.reminderListKey)
         var reminderText = ''
         if (text === '' && listItem.reminderTitle === '') {
           console.log('****TEST20')
