@@ -24,7 +24,8 @@ var listItemsSchema  = mongoose.Schema({
     "familyId" : Number,
     "reminderWhen": String,
     "reminderUserId": Number,
-    "reminderTitle": String
+    "reminderTitle": String,
+    "reminderListKey": String
 }, { versionKey: false });
 var ListItems = mongoose.model('ListItems',listItemsSchema, 'ListItems');
 
