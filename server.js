@@ -87,6 +87,7 @@ router.route("/twilio")
         var list = {'listKey': listName, 'familyId': familyId}
 
         listItems.listItemsTextForList(list, function (err, text) {
+          console.log('****TEST1:' + err + ':' + text)
           if (err) {
             logging.logError(fromPhoneNumber, familyId, bodyText, err)
           } else {
@@ -94,7 +95,7 @@ router.route("/twilio")
           }
           if (text) {
             var smsText
-            console.log('****TEST:' + text + 'X')
+            console.log('****TEST2:' + text + 'X')
             if (text === '') {
               smsText = 'Currently no items in #' + list.listKey + '.'
             } else {
