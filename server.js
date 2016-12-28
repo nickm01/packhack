@@ -83,25 +83,17 @@ router.route("/twilio")
       // Get list items
       } else if (bodyText.startsWith('get #') || bodyText.startsWith('show #') || bodyText.startsWith('list #') || bodyText.startsWith('retrieve #') || bodyText.startsWith('display #')) {
         var listName = stringProcessor.removeFirstWord(bodyText).substr(1)
-        console.log('*** get list!!!!')
+        console.log('*** Get List:' + listName)
         var list = {'listKey': listName, 'familyId': familyId}
 
         listItems.listItemsTextForList(list, function (err, text) {
-          console.log('****TEST1:' + err + ':' + text)
           if (err) {
             logging.logError(fromPhoneNumber, familyId, bodyText, err)
           } else {
             cacheListName(list.listKey, res)
           }
-          if (text === '') {
-            console.log('****TEST5:')
-          }
-          if (text == null) {
-            console.log('****TEST6:')
-          }
           if (text != null) {
             var smsText
-            console.log('****TEST2:' + text + 'X')
             if (text === '') {
               smsText = 'Currently no items in #' + list.listKey + '.'
             } else {

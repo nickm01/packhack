@@ -23,7 +23,6 @@ function listItemsTextForList (unconfirmedList, callback) {
       callback(err || true, "Sorry, couldn't find #" + unconfirmedList.listKey + '.\nType "get lists" to see available lists.')
     } else {
       mongoOp.ListItems.find({'listKey': list.listKey, 'familyId': list.familyId}, function (err, listItems) {
-        console.log('TEST3:' + err + ':' + listItems)
         if (err) {
           callback(err)
         } else {
@@ -31,7 +30,6 @@ function listItemsTextForList (unconfirmedList, callback) {
           listItems.forEach(function (listItem) {
             concatText = concatText.concat('\n• ' + listItem.listItemName)
           })
-          console.log('TEST4:' + concatText)
           callback(null, concatText)
         }
       })
