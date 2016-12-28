@@ -36,6 +36,7 @@ function processScheduler () {
                 textForReminder(listItem, function (err, text) {
                   if (err) {
                   }
+                  text = '⏰ ' + text
                   console.log('Count++ ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
                   logging.log(familyMember.phoneNumber, familyId, text, 'Reminder', '')
                   sendSms.sendSms(familyMember.phoneNumber, text, function () {
@@ -78,7 +79,7 @@ function multipleOrSingleFamilyMembersForReminderUserId (familyId, reminderUserI
 
 function textForReminder (listItem, callback) {
   if (listItem.reminderListKey == null || listItem.reminderListKey === '') {
-    callback(null, '⏰ ' + listItem.reminderTitle)
+    callback(null, listItem.reminderTitle)
   } else {
     var unconfirmedList = {'listKey': listItem.reminderListKey, 'familyId': listItem.familyId}
     listItemFunctions.listItemsTextForList(unconfirmedList, function (err, text) {
@@ -90,16 +91,16 @@ function textForReminder (listItem, callback) {
         var reminderText = ''
         if (text === '' && listItem.reminderTitle === '') {
           console.log('****TEST20')
-          reminderText = '⏰ #' + listItem.reminderListKey + ' - currently empty.'
+          reminderText = '#' + listItem.reminderListKey + ' - currently empty.'
         } else if (text === '' && listItem.reminderTitle !== '') {
           console.log('****TEST21')
-          reminderText = '⏰ ' + listItem.reminderTitle + '\n(#' + listItem.reminderListKey + ' is currently empty.)'
+          reminderText = listItem.reminderTitle + '\n(#' + listItem.reminderListKey + ' is currently empty.)'
         } else if (text !== '' && listItem.reminderTitle === '') {
           console.log('****TEST22')
-          reminderText = '⏰ #' + listItem.reminderListKey + ':' + text
+          reminderText = '#' + listItem.reminderListKey + ':' + text
         } else if (text !== '' && listItem.reminderTitle !== '') {
           console.log('****TEST23')
-          reminderText = '⏰ ' + listItem.reminderTitle + '\n#' + listItem.reminderListKey + ':' + text
+          reminderText = listItem.reminderTitle + '\n#' + listItem.reminderListKey + ':' + text
         }
         console.log('****TEST26:' + reminderText)
         callback(null, reminderText)
