@@ -110,7 +110,7 @@ router.route("/twilio")
         })
       // Help message if didn't use #
       } else if (bodyText.startsWith('get ')) {
-        sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Lists always start with a "#".\nUse the format "get #list".', res)
+        sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Lists always start with a "#".\nPlease use the format "get #list".', res)
 
       } else if (bodyText.startsWith('#')) {
 
