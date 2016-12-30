@@ -97,7 +97,11 @@ router.route("/twilio")
             if (text === '') {
               smsText = 'Currently no items in #' + list.listKey + '.'
             } else {
-              smsText = '\n#' + list.listKey + ':' + text
+              if (err) {
+                smsText = text
+              } else {
+                smsText = '\n#' + list.listKey + ':' + text
+              }
             }
             sendSMSResponse(fromPhoneNumber, familyId, bodyText, smsText, res)
           }
