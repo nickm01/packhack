@@ -56,6 +56,8 @@ router.route("/twilio")
       bodyText = messagePreProcessor.preProcessMessage(bodyText, cachedListName, fromUserName)
 
       // MAIN LOGIC
+
+      // get lists
       if (bodyText === "get lists" || bodyText === "get" || bodyText === "lists") {
         mongoOp.Lists.find({'familyId': familyId}, 'listKey', function(err, lists) {
           if(err){
@@ -106,30 +108,9 @@ router.route("/twilio")
             sendSMSResponse(fromPhoneNumber, familyId, bodyText, smsText, res)
           }
         })
-
-        // mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
-        //   if (list == null) {
-        //     sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
-        //   } else {
-        //     mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
-        //       if(err){
-        //         logging.logError(fromPhoneNumber, familyId, bodyText, err);
-        //       } else {
-        //         var concatText = "";
-        //         var itemNumber = 0;
-        //         listItems.forEach(function(listItem){
-        //           itemNumber++;
-        //           concatText = concatText.concat('\n• ' + listItem.listItemName);
-        //         });
-        //         if (itemNumber == 0) {
-        //           concatText = concatText.concat('No items in #' + listName + '.');
-        //         }
-        //         cacheListName(listName,res);
-        //         sendSMSResponse(fromPhoneNumber, familyId, bodyText, '\n#'+ listName + ':' + concatText, res);
-        //      }
-        //     });
-        //   }
-        // });
+      // Help message if didn't use #
+      } else if (bodyText.startsWith('get ')) {
+        sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Lists always start with a "#".\nUse the format "get #list".', res)
 
       } else if (bodyText.startsWith('#')) {
 
