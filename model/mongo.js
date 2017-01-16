@@ -1,5 +1,7 @@
 var mongoose = require("mongoose");
-mongoose.Promise = global.Promise;
+//mongoose.Promise = global.Promise;
+mongoose.Promise = require('q').Promise
+
 //TODO: Shouldn't be saved here
 mongoose.connect("mongodb://heroku_x61dp8bp:12f6g0oe2r8hn13jnad3m5or49@ds161495.mlab.com:61495/heroku_x61dp8bp");
 
