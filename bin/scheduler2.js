@@ -27,12 +27,17 @@ function processScheduler () {
           listItemPromises.push(
             deleteListItemByNamePromise(listItem)
             .then(multipleOrSingleFamilyMembersForReminderUserIdPromise)
-            .then(function (something) {
-              console.log('X: ' + something + ' count ' + something.length)
-              return something
-            })
-
+            .then(sendSmsForAllListItemFamilyMembersPromise)
+            // .then(function (something) {
+            //   console.log('X--------: ' + something)
+            //   // something.forEach(function (thing) {
+            //   //   console.log('1--------: ' + thing.familyMember)
+            //   //   console.log('2--------: ' + thing.listItem)
+            //   // })
+            //   return something
+            // })
           )
+
           // Remove listItem first
           // listItemFunctions.deleteListItemByName(familyId, listItem.listKey, listItem.listItemName, function (err) {
           //   if (err) {
@@ -101,110 +106,88 @@ function processScheduler () {
 //   }
 // }
 
-// function multipleOrSingleFamilyMembersForReminderUserIdPromise2 (listItem) {
-//   var promise
-//   console.log('FAM ID:' + listItem.familyId + ' UserId:' + listItem.reminderUserId)
-//   if (listItem.reminderUserId !== config.allFamilyMembersID) {
-//     promise = mongoOp.FamilyMembers.findOne({'familyId': listItem.familyId, 'userId': listItem.reminderUserId})
-//       .exec()
-//   } else {
-//     promise = mongoOp.FamilyMembers.find({'familyId': listItem.familyId})
-//       .exec()
-//   }
-//   return promise
-// }
-
 function multipleOrSingleFamilyMembersForReminderUserIdPromise (listItem) {
-  var familyMembersDeferred = Q.defer()
-  console.log('FAM ID:' + listItem.familyId + ' UserId:' + listItem.reminderUserId)
+  var promise
+  console.log('* FAM ID:' + listItem.familyId + ' UserId:' + listItem.reminderUserId)
   if (listItem.reminderUserId !== config.allFamilyMembersID) {
-    mongoOp.FamilyMembers.findOne({'familyId': listItem.familyId, 'userId': listItem.reminderUserId}, function (err, familyMember) {
-      console.log('FAM-SINGLE pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
-      if (err) {
-        return familyMembersDeferred.reject(err)
-      } else {
-        return familyMembersDeferred.resolve([familyMember, listItem])
-      }
-    })
+    promise = mongoOp.FamilyMembers.findOne({'familyId': listItem.familyId, 'userId': listItem.reminderUserId})
+      .exec()
+      .then(function (familyMember) {
+        console.log('* FAM-SINGLE pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
+        return [{listItem, familyMember}]
+      })
   } else {
-    mongoOp.FamilyMembers.find({'familyId': listItem.familyId}, function (err, familyMembers) {
-      if (err) {
-        return familyMembersDeferred.reject(err)
-      } else {
-        familyMembers.forEach(function (familyMember) {
-          console.log('FAM-MUTLI pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
+    promise = mongoOp.FamilyMembers.find({'familyId': listItem.familyId})
+      .exec()
+      .then(function (familyMembers) {
+        return familyMembers.map(function (familyMember) {
+          console.log('* FAM-MUTLI pn:' + familyMember.phoneNumber + ' ' + familyMember.name)
+          return ({listItem, familyMember})
         })
-        var result = familyMembers.map(function (familyMember) {
-          console.log('QQ: ' + familyMember + ' WW: ' + listItem)
-          return ({familyMember, listItem})
-        })
-        return familyMembersDeferred.resolve(result)
-      }
-    })
+      })
   }
-  return familyMembersDeferred.promise
+  return promise
 }
 
-function textForReminder (listItem, callback) {
-  if (listItem.reminderListKey == null || listItem.reminderListKey === '') {
-    callback(null, listItem.reminderTitle)
-  } else {
-    var unconfirmedList = {'listKey': listItem.reminderListKey, 'familyId': listItem.familyId}
-    listItemFunctions.listItemsTextForList(unconfirmedList, function (err, text) {
-      if (err) {
-        callback(err, "(Sorry, couldn't find #" + listItem.reminderListKey + '.)')
-      } else {
-        var reminderText = ''
-        if (text === '' && listItem.reminderTitle === '') {
-          reminderText = '#' + listItem.reminderListKey + ' - currently empty.'
-        } else if (text === '' && listItem.reminderTitle !== '') {
-          reminderText = listItem.reminderTitle + '\n(#' + listItem.reminderListKey + ' is currently empty.)'
-        } else if (text !== '' && listItem.reminderTitle === '') {
-          reminderText = '#' + listItem.reminderListKey + ':' + text
-        } else if (text !== '' && listItem.reminderTitle !== '') {
-          reminderText = listItem.reminderTitle + '\n#' + listItem.reminderListKey + ':' + text
-        }
-        callback(null, reminderText)
-      }
-    })
-  }
-}
-
-function textForReminderPromise (listItem) {
-  var deferred = Q.defer()
-  if (listItem.reminderListKey == null || listItem.reminderListKey === '') {
-    return deferred.resolve(listItem.reminderTitle)
-  } else {
-    var unconfirmedList = {'listKey': listItem.reminderListKey, 'familyId': listItem.familyId}
-    listItemFunctions.listItemsTextForList(unconfirmedList, function (err, text) {
-      if (err) {
-        return deferred.reject("(Sorry, couldn't find #" + listItem.reminderListKey + '.)')
-      } else {
-        var reminderText = ''
-        if (text === '' && listItem.reminderTitle === '') {
-          reminderText = '#' + listItem.reminderListKey + ' - currently empty.'
-        } else if (text === '' && listItem.reminderTitle !== '') {
-          reminderText = listItem.reminderTitle + '\n(#' + listItem.reminderListKey + ' is currently empty.)'
-        } else if (text !== '' && listItem.reminderTitle === '') {
-          reminderText = '#' + listItem.reminderListKey + ':' + text
-        } else if (text !== '' && listItem.reminderTitle !== '') {
-          reminderText = listItem.reminderTitle + '\n#' + listItem.reminderListKey + ':' + text
-        }
-        return deferred.resolve(reminderText)
-      }
-    })
-  }
-}
-
-function smsPromise (messageDetails) {
-  var deferredSms = Q.defer()
-  var reminderText = '⏰ ' + messageDetails.text
-  count++
-  console.log('Count++ ' + count + ' pn:' + messageDetails.phoneNumber + ' ' + messageDetails.name + ':' + reminderText)
-  logging.log(messageDetails.phoneNumber, messageDetails.familyId, reminderText, 'Reminder', '')
-  sendSms.sendSms(messageDetails.phoneNumber, reminderText, function () {
-    return deferredSms.resolve
+function sendSmsForAllListItemFamilyMembersPromise (listItemFamilyMembers) {
+  console.log('Q1*** length ' + listItemFamilyMembers.length)
+  var sendPromises = listItemFamilyMembers.map(function (listItemFamilyMember) {
+    console.log('Q1B*** ' + listItemFamilyMember)
+    return textForReminderPromise(listItemFamilyMember)
+    .then(smsPromise)
   })
+  console.log('Q1C*** length ' + sendPromises.length)
+  return Q.all(sendPromises)
+  .then(function (something) {
+    console.log('Q3*** ' + something)
+  })
+}
+
+function textForReminderPromise (listItemFamilyMember) {
+  console.log('Q2*** ' + listItemFamilyMember.listItem + listItemFamilyMember.familyMember)
+  var listItem = listItemFamilyMember.listItem
+  var toFamilyMember = listItemFamilyMember.familyMember
+  var deferred = Q.defer()
+  var reminderText = ''
+  if (listItem.reminderListKey == null || listItem.reminderListKey === '') {
+    reminderText = listItem.reminderTitle
+    console.log('Q4A*** ' + reminderText)
+    deferred.resolve({listItem, toFamilyMember, reminderText})
+  } else {
+    var unconfirmedList = {'listKey': listItem.reminderListKey, 'familyId': listItem.familyId}
+    listItemFunctions.listItemsTextForList(unconfirmedList, function (err, text) {
+      if (err) {
+        deferred.reject("(Sorry, couldn't find #" + listItem.reminderListKey + '.)')
+      } else {
+        if (text === '' && listItem.reminderTitle === '') {
+          reminderText = '#' + listItem.reminderListKey + ' - currently empty.'
+        } else if (text === '' && listItem.reminderTitle !== '') {
+          reminderText = listItem.reminderTitle + '\n(#' + listItem.reminderListKey + ' is currently empty.)'
+        } else if (text !== '' && listItem.reminderTitle === '') {
+          reminderText = '#' + listItem.reminderListKey + ':' + text
+        } else if (text !== '' && listItem.reminderTitle !== '') {
+          reminderText = listItem.reminderTitle + '\n#' + listItem.reminderListKey + ':' + text
+        }
+        console.log('Q4B*** ' + reminderText)
+        deferred.resolve({listItem, toFamilyMember, reminderText})
+      }
+    })
+  }
+  return deferred.promise
+}
+
+function smsPromise (listItemFamilyMemberReminderText) {
+  console.log('HERE IT IS ' + listItemFamilyMemberReminderText)
+  var toFamilyMember = listItemFamilyMemberReminderText.toFamilyMember
+  var reminderText = '⏰ ' + listItemFamilyMemberReminderText.reminderText
+  var deferred = Q.defer()
+  count++
+  console.log('Count++ ' + count + ' pn:' + toFamilyMember.phoneNumber + ' ' + toFamilyMember.name + ':' + reminderText)
+  logging.log(toFamilyMember.phoneNumber, toFamilyMember.familyId, reminderText, 'Reminder', '')
+  sendSms.sendSms(toFamilyMember.phoneNumber, reminderText, function () {
+    deferred.resolve('sent')
+  })
+  return deferred.promise
 }
 
 // TODO: Move
