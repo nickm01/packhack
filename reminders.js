@@ -80,6 +80,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
           if (title.charAt(0) === '#') {
             var listName = stringProcessor.getFirstWord(title).substr(1)
             var updatedTitle = stringProcessor.removeFirstWord(title)
+            console.log('XXXX: listName: ' + listName + ' UpdatedTitle:' + updatedTitle + ' title:' + title)
 
             mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, function (err, list) {
               if (err || list == null) {
