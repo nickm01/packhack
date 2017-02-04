@@ -84,6 +84,9 @@ function addReminder (inputText, familyId, timeZone, callback) {
             var updatedTitle = stringProcessor.removeFirstWord(title)
             console.log('XXXX: listName: ' + listName + ' UpdatedTitle:' + updatedTitle + ' title:' + title)
 
+            var listItemTitle = listName
+            if {updatedTitle !== ''}
+
             mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, function (err, list) {
               if (err || list == null) {
                 callback('Could not find #' + listName + ' 😦.')
@@ -101,6 +104,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
               }
             })
           } else {
+            console.log('XXXX: title:' + title)
             var newListItem = new mongoOp.ListItems({
               'listKey': config.remindersListKey,
               'listItemName': '@' + sendTo + ' ' + title + ' ' + localDateText,
