@@ -78,7 +78,9 @@ function addReminder (inputText, familyId, timeZone, callback) {
             })
           }
           if (title.charAt(0) === '#') {
-            var listName = stringProcessor.getFirstWord(title).substr(1)
+            // Listname is processed with the original text as sherlocked title isn't great at hyphenated list names
+            var listName = stringProcessor.textBetween(inputText, '#', ' ')
+
             var updatedTitle = stringProcessor.removeFirstWord(title)
             console.log('XXXX: listName: ' + listName + ' UpdatedTitle:' + updatedTitle + ' title:' + title)
 

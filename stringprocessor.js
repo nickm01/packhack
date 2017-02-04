@@ -14,6 +14,12 @@ function removeFirstWord (str) {
   }
 }
 
+function textBetween (str, firstCharacter, secondCharacter) {
+  var start = str.indexOf(firstCharacter) + 1
+  var end = str.indexOf(secondCharacter, start)
+  return str.substring(start, end)
+}
+
 module.exports = {
   getFirstWord,
   removeFirstWord
