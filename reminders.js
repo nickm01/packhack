@@ -85,7 +85,9 @@ function addReminder (inputText, familyId, timeZone, callback) {
             console.log('XXXX: listName: ' + listName + ' UpdatedTitle:' + updatedTitle + ' title:' + title)
 
             var listItemTitle = listName
-            if {updatedTitle !== ''}
+            if (updatedTitle !== '') {
+              listItemTitle += ' ' + updatedTitle
+            }
 
             mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, function (err, list) {
               if (err || list == null) {
@@ -93,7 +95,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
               } else {
                 var newListItem = new mongoOp.ListItems({
                   'listKey': config.remindersListKey,
-                  'listItemName': '@' + sendTo + ' ' + title + ' ' + localDateText,
+                  'listItemName': '@' + sendTo + ' ' + listItemTitle + ' ' + localDateText,
                   'familyId': familyId,
                   'reminderWhen': date,
                   'reminderUserId': sendToId,
