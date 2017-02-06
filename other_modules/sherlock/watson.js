@@ -12,7 +12,7 @@ var Watson = (function() {
 
   return {
     /*
-     * Takes the untouched input string, returns 
+     * Takes the untouched input string, returns
      * an array with the modified input string at position 0 and a new Sherlocked object at position 1
     */
     preprocess: function(str) {
@@ -23,7 +23,7 @@ var Watson = (function() {
       return [str, Sherlocked];
     },
 
-    /* 
+    /*
      * Takes a Sherlocked object, and returns that Sherlocked object with any desired modifications.
     */
     postprocess: function(Sherlocked) {
@@ -36,7 +36,7 @@ var Watson = (function() {
     /* Config vars for disabling certain features */
     config: {
       // Should Sherlock try to parse time ranges and return an endDate?
-      disableRanges: false
+      disableRanges: true
     }
   };
 })();
