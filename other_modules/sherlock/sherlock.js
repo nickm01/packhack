@@ -635,7 +635,8 @@ var Sherlock = (function() {
         str = result[0],
         ret = result[1],
         // token the string to start and stop times
-        tokens = readConfig("disableRanges") ? [str.toLowerCase()] : str.toLowerCase().split(patterns.rangeSplitters);
+        // NGM tokens = readConfig("disableRanges") ? [str.toLowerCase()] : str.toLowerCase().split(patterns.rangeSplitters);
+        tokens = [str.toLowerCase()]
 
       patterns.rangeSplitters.lastIndex = 0;
 
