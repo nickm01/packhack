@@ -73,7 +73,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
               if (err) callback('Error adding reminder 😦.')
               else {
                 console.log('----reminder saved: ' + inputText + ' Sherlocked:' + date + ' < ' + title)
-                callback(null, 'Set for ' + localDateText + ' (' + updatedTitle + ').')
+                callback(null, 'Set for ' + localDateText + '.')
               }
             })
           }
@@ -95,7 +95,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
               } else {
                 var newListItem = new mongoOp.ListItems({
                   'listKey': config.remindersListKey,
-                  'listItemName': '@' + sendTo + ' ' + listItemTitle + ' ' + localDateText,
+                  'listItemName': '@' + sendTo + ': #' + listItemTitle + ' ' + localDateText,
                   'familyId': familyId,
                   'reminderWhen': date,
                   'reminderUserId': sendToId,
@@ -109,7 +109,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
             console.log('XXXX: title:' + title)
             var newListItem = new mongoOp.ListItems({
               'listKey': config.remindersListKey,
-              'listItemName': '@' + sendTo + ' ' + title + ' ' + localDateText,
+              'listItemName': '@' + sendTo + ': ' + title + ' ' + localDateText,
               'familyId': familyId,
               'reminderWhen': date,
               'reminderUserId': sendToId,
