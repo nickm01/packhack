@@ -179,7 +179,7 @@ var Sherlock = (function() {
             return match[0];
           case "morn":
           case "morning":
-            time.setHours(7, 0, 0);
+            time.setHours(8, 0, 0);
             time.hasMeridian = true;
             return match[0];
           case "noon":
@@ -702,9 +702,9 @@ var Sherlock = (function() {
 
       // get capitalized version of title
       if (ret.eventTitle) {
-        var fillerWords = readConfig("disableRanges") ? patterns.fillerWords2 : patterns.fillerWords;
-        ret.eventTitle = ret.eventTitle.split(fillerWords)[0].trim();
-        ret.eventTitle = ret.eventTitle.replace(/(?:^| )(?:\.|-$|by$|in$|at$|from$|on$|starts?$|for$|(?:un)?till?$|!|,|;)+/g, '').replace(/ +/g, ' ').trim();
+        // ***NGM var fillerWords = readConfig("disableRanges") ? patterns.fillerWords2 : patterns.fillerWords;
+        // ***NGM ret.eventTitle = ret.eventTitle.split(fillerWords)[0].trim();
+        // ***NGM ret.eventTitle = ret.eventTitle.replace(/(?:^| )(?:\.|-$|by$|in$|at$|from$|on$|starts?$|for$|(?:un)?till?$|!|,|;)+/g, '').replace(/ +/g, ' ').trim();
         var match = str.match(new RegExp(helpers.escapeRegExp(ret.eventTitle), "i"));
         if (match) {
           ret.eventTitle = match[0].replace(/ +/g, ' ').trim(); // replace multiple spaces

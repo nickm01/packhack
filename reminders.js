@@ -73,7 +73,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
               if (err) callback('Error adding reminder 😦.')
               else {
                 console.log('----reminder saved: ' + inputText + ' Sherlocked:' + date + ' < ' + title)
-                callback(null, 'Set for ' + localDateText + '.')
+                callback(null, 'Set for ' + localDateText + ' (' + updatedTitle + ').')
               }
             })
           }
