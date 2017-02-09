@@ -1,4 +1,4 @@
-#!/usr/bin/env node --use_strict
+#!/usr/bin/env node
 'use strict'
 const config = require('../config')
 const mongoOp = require('../model/mongo')
