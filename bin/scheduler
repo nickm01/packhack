@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-var config = require('../config')
-var mongoOp = require('../model/mongo')
-var sendSms = require('../sendsms')
-var logging = require('../logging')
-var listItemFunctions = require('../listitems')
-var Q = require('q')
+const config = require('../config')
+const mongoOp = require('../model/mongo')
+const sendSms = require('../sendsms')
+const logging = require('../logging')
+const listItemFunctions = require('../listitems')
+const Q = require('q')
 
 var count = 0
 
@@ -15,10 +15,10 @@ function processScheduler () {
     if (err) {
       logging.logError('scheduler', '', '', err)
     } else {
-      var listItemPromises = []
+      const listItemPromises = []
       listItems.forEach(function (listItem) {
-        var reminderDate = new Date(listItem.reminderWhen)
-        var now = new Date()
+        const reminderDate = new Date(listItem.reminderWhen)
+        const now = new Date()
         console.log('now: ' + now)
         console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName)
 
@@ -45,7 +45,7 @@ function processScheduler () {
 }
 
 function deleteListItemByNamePromise (listItem) {
-  var promise = mongoOp.ListItems.remove(listItem)
+  const promise = mongoOp.ListItems.remove(listItem)
     .exec()
     .then(function (removeResult) {
       if (removeResult.result.n !== 1) {
@@ -59,7 +59,7 @@ function deleteListItemByNamePromise (listItem) {
 }
 
 function multipleOrSingleFamilyMembersForReminderUserIdPromise (listItem) {
-  var promise
+  let promise
   if (listItem.reminderUserId !== config.allFamilyMembersID) {
     promise = mongoOp.FamilyMembers.findOne({'familyId': listItem.familyId, 'userId': listItem.reminderUserId})
       .exec()
@@ -79,7 +79,7 @@ function multipleOrSingleFamilyMembersForReminderUserIdPromise (listItem) {
 }
 
 function sendSmsForAllListItemFamilyMembersPromise (listItemFamilyMembers) {
-  var sendPromises = listItemFamilyMembers.map(function (listItemFamilyMember) {
+  const sendPromises = listItemFamilyMembers.map(function (listItemFamilyMember) {
     return textForReminderPromise(listItemFamilyMember)
     .then(smsPromise)
   })
@@ -87,15 +87,15 @@ function sendSmsForAllListItemFamilyMembersPromise (listItemFamilyMembers) {
 }
 
 function textForReminderPromise (listItemFamilyMember) {
-  var listItem = listItemFamilyMember.listItem
-  var toFamilyMember = listItemFamilyMember.familyMember
-  var deferred = Q.defer()
-  var reminderText = ''
+  const listItem = listItemFamilyMember.listItem
+  const toFamilyMember = listItemFamilyMember.familyMember
+  const deferred = Q.defer()
+  let reminderText = ''
   if (listItem.reminderListKey == null || listItem.reminderListKey === '') {
     reminderText = listItem.reminderTitle
     deferred.resolve({listItem, toFamilyMember, reminderText})
   } else {
-    var unconfirmedList = {'listKey': listItem.reminderListKey, 'familyId': listItem.familyId}
+    let unconfirmedList = {'listKey': listItem.reminderListKey, 'familyId': listItem.familyId}
     listItemFunctions.listItemsTextForList(unconfirmedList, function (err, text) {
       if (err) {
         if (listItem.reminderTitle !== '') {
@@ -120,11 +120,11 @@ function textForReminderPromise (listItemFamilyMember) {
 }
 
 function smsPromise (listItemFamilyMemberReminderText) {
-  var toFamilyMember = listItemFamilyMemberReminderText.toFamilyMember
-  var reminderText = '⏰ ' + listItemFamilyMemberReminderText.reminderText
-  var deferred = Q.defer()
+  const toFamilyMember = listItemFamilyMemberReminderText.toFamilyMember
+  const reminderText = '⏰ ' + listItemFamilyMemberReminderText.reminderText
+  const deferred = Q.defer()
   count++
-  console.log('Count ' + count + ' pn:' + toFamilyMember.phoneNumber + ' ' + toFamilyMember.name + ':' + reminderText)
+  console.log('Count: ' + count + ' pn:' + toFamilyMember.phoneNumber + ' ' + toFamilyMember.name + ':' + reminderText)
   logging.log(toFamilyMember.phoneNumber, toFamilyMember.familyId, reminderText, 'Reminder', '')
   sendSms.sendSms(toFamilyMember.phoneNumber, reminderText, function () {
     deferred.resolve(listItemFamilyMemberReminderText)

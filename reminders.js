@@ -77,6 +77,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
               }
             })
           }
+          // TODO: see if we can put this anywhere (will need to remove it from the title... plus remove double spaces)
           if (title.charAt(0) === '#') {
             // Listname is processed with the original text as sherlocked title isn't great at hyphenated list names
             var listName = stringProcessor.textBetween(inputText, '#', ' ')
