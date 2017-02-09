@@ -17,21 +17,6 @@ function processScheduler () {
     if (err) {
       logging.logError('scheduler', '', '', err)
     } else {
-      // const listItemPromises = []
-      // listItems.forEach(function (listItem) {
-      //   const reminderDate = new Date(listItem.reminderWhen)
-      //   const now = new Date()
-      //   console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName)
-      //
-      //   if (reminderDate < now) {
-      //     listItemPromises.push(
-      //       deleteListItemByNamePromise(listItem)
-      //       .then(multipleOrSingleFamilyMembersForReminderUserIdPromise)
-      //       .then(sendSmsForAllListItemFamilyMembersPromise)
-      //     )
-      //   }
-      // })
-      // Q.all(listItemPromises)
       allListItemsPromise(listItems)
         .then(result => {
           console.log('*** Reminders Complete')
