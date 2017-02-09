@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --use_strict
+'use strict'
 const config = require('../config')
 const mongoOp = require('../model/mongo')
 const sendSms = require('../sendsms')
@@ -8,10 +9,13 @@ const Q = require('q')
 
 var count = 0
 
+console.log('running')
 processScheduler()
 
 function processScheduler () {
+  console.log('running2 ' + config.remindersListKey)
   mongoOp.ListItems.find({'listKey': config.remindersListKey}, function (err, listItems) {
+    console.log('running3')
     if (err) {
       logging.logError('scheduler', '', '', err)
     } else {
