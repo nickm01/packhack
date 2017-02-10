@@ -51,7 +51,7 @@ function addReminder (inputText, familyId, timeZone, callback) {
           // Listname is processed with the original text as sherlocked title isn't great at hyphenated list names
           var listName = stringProcessor.textBetween(inputText, '#', ' ')
           if (listName !== '') {
-            var updatedTitle = stringProcessor.textBetween(title, '#', ' ')
+            var updatedTitle = stringProcessor.removeTextBetween(title, '#', ' ')
             console.log('XXXX: listName: ' + listName + ' UpdatedTitle:' + updatedTitle + ' title:' + title)
 
             var listItemTitle = listName
