@@ -13,21 +13,20 @@ var count = 0
 processScheduler()
 
 function processScheduler () {
-  mongoOp.ListItems.find({'listKey': config.remindersListKey}, function (err, listItems) {
-    if (err) {
-      logging.logError('scheduler', '', '', err)
-    } else {
-      allListItemsPromise(listItems)
-        .then(result => {
-          console.log('*** Reminders Complete')
-          process.exit()
-        }, error => {
-          console.error(error)
-          logging.logError(0, 0, 'Scheduler Error', error)
-          console.log('*** REMINDERS ERROR ***')
-          process.exit()
-        })
-    }
+  mongoOp.ListItems.find({'listKey': config.remindersListKey})
+  .exec()
+  .then(listItems => {
+    allListItemsPromise(listItems)
+    .then(result => {
+      console.log('*** Reminders Complete')
+      process.exit()
+    }, error => {
+      logging.logError('scheduler', 0, 'Scheduler Error', error)
+      console.log('*** REMINDERS ERROR *** error')
+      process.exit()
+    })
+  }, error => {
+    logging.logError('scheduler', '', '', error)
   })
 }
 
@@ -92,13 +91,12 @@ function sendSmsForAllListItemFamilyMembersPromise (listItemFamilyMembers) {
 }
 
 function sendSmsForListItemFamilyMemberPromise (listItemFamilyMember) {
-  const listItem = listItemFamilyMember.listItem
-  const toFamilyMember = listItemFamilyMember.familyMember
+  const {listItem, familyMember} = listItemFamilyMember // destructuring
   const deferred = Q.defer()
   let reminderText = ''
   if (listItem.reminderListKey == null || listItem.reminderListKey === '') {
     reminderText = listItem.reminderTitle
-    deferred.resolve({listItem, toFamilyMember, reminderText})
+    deferred.resolve({listItem, familyMember, reminderText})
   } else {
     let unconfirmedList = {'listKey': listItem.reminderListKey, 'familyId': listItem.familyId}
     listItemFunctions.listItemsTextForList(unconfirmedList, function (err, text) {
@@ -110,7 +108,7 @@ function sendSmsForListItemFamilyMemberPromise (listItemFamilyMember) {
       } else {
         reminderText = reminderTextForReminderListItemAndListItemsText(listItem, text)
       }
-      deferred.resolve({listItem, toFamilyMember, reminderText})
+      deferred.resolve({listItem, familyMember, reminderText})
     })
   }
   return deferred.promise

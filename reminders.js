@@ -3,40 +3,11 @@ var mongoOp = require('./model/mongo')
 var stringProcessor = require('./stringprocessor')
 var dates = require('./dates')
 
-// Example of promisifying
-// function doSomething(input) {
-//   console.log('hello' + input)
-//   return Q.resolve();
-// }
-
-// const addReminder = (sendTo, familyId) => {
-//
-//   return Q.ninvoke(mongoOp.FamilyMembers, 'findOne', { 'name': sendTo, 'familyId': familyId }) //wraps n a promise
-//   .catch(() => Q.reject('@' + sendTo + ' unkown sorry! 😕'))
-//   //.then(doSomething) // automatically sends the result (the second parameter) to the function doSomething
-//   .then(familyMember => {
-//     return Q.ninvoke(mongoOp.Lists, 'findOne', {'listKey': config.remindersListKey, 'familyId': familyId})
-//         .catch(() => Q.reject('second error')) // 'Second error' will be the actual error
-//       })
-// }
-
 function addReminder (inputText, familyId, timeZone, callback) {
   var sendTo = stringProcessor.getFirstWord(inputText)
   var dateText = stringProcessor.removeFirstWord(inputText)
   dateText = dateText.replace('weekend', 'saturday')
   var generalError = 'Error creating reminder list 😦'
-
-  // Q.ninvoke(mongoOp.FamilyMembers, 'findOne', { 'name': sendTo, 'familyId': familyId }) //wraps n a promise
-  // .catch(() => Q.reject('@' + sendTo + ' unkown sorry! 😕'))
-  // .then(doSomething) // automatically sends the result (the second parameter) to the function doSomething
-  // .then(familyMember => {
-  //
-  //   return Q.ninvoke(mongoOp.Lists, 'findOne', {'listKey': config.remindersListKey, 'familyId': familyId})
-  //       .catch(() => Q.reject('second error')) // 'Second error' will be the actual error
-  //     })
-  // .catch(err => {
-  //   callback(err)
-  // })
 
   mongoOp.FamilyMembers.findOne({ 'name': sendTo, 'familyId': familyId }, function (err, familyMember) {
     if ((familyMember == null || err) && (sendTo !== 'all')) {
