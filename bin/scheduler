@@ -91,7 +91,8 @@ function sendSmsForAllListItemFamilyMembersPromise (listItemFamilyMembers) {
 }
 
 function sendSmsForListItemFamilyMemberPromise (listItemFamilyMember) {
-  const {listItem, familyMember} = listItemFamilyMember // destructuring
+  const listItem = listItemFamilyMember.listItem
+  const familyMember = listItemFamilyMember.familyMember
   const deferred = Q.defer()
   let reminderText = ''
   if (listItem.reminderListKey == null || listItem.reminderListKey === '') {
@@ -129,13 +130,13 @@ function reminderTextForReminderListItemAndListItemsText (reimderListItem, listI
 }
 
 function smsPromise (listItemFamilyMemberReminderText) {
-  const toFamilyMember = listItemFamilyMemberReminderText.toFamilyMember
+  const familyMember = listItemFamilyMemberReminderText.familyMember
   const reminderText = '⏰ ' + listItemFamilyMemberReminderText.reminderText
   const deferred = Q.defer()
   count++
-  console.log('Count: ' + count + ' pn:' + toFamilyMember.phoneNumber + ' ' + toFamilyMember.name + ':' + reminderText)
-  logging.log(toFamilyMember.phoneNumber, toFamilyMember.familyId, reminderText, 'Reminder', '')
-  sendSms.sendSms(toFamilyMember.phoneNumber, reminderText, function () {
+  console.log('Count: ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name + ':' + reminderText)
+  logging.log(familyMember.phoneNumber, familyMember.familyId, reminderText, 'Reminder', '')
+  sendSms.sendSms(familyMember.phoneNumber, reminderText, function () {
     deferred.resolve(listItemFamilyMemberReminderText)
   })
   return deferred.promise

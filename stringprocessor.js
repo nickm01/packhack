@@ -22,8 +22,17 @@ function textBetween (str, firstCharacter, secondCharacter) {
   return str.substring(start, end)
 }
 
+function removeTextBetween (str, firstCharacter, secondCharacter) {
+  var start = str.indexOf(firstCharacter)
+  if (start === -1) { return str }
+  var end = str.indexOf(secondCharacter, start)
+  if (end === -1) { end = str.length }
+  return (str.substring(0, start) + str.substring(end + 1)).trim()
+}
+
 module.exports = {
   getFirstWord,
   removeFirstWord,
-  textBetween
+  textBetween,
+  removeTextBetween
 }
