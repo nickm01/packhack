@@ -1,0 +1,14 @@
+{
+    "extends": "standard",
+    "plugins": [
+        "standard",
+        "promise",
+        "mocha"
+    ],
+    "rules": {
+       "quotes": [2, "single"],
+   },
+   "env": {
+     "mocha": true
+   }
+}
