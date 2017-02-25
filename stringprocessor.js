@@ -30,9 +30,18 @@ function removeTextBetween (str, firstCharacter, secondCharacter) {
   return (str.substring(0, start) + str.substring(end + 1)).trim()
 }
 
+function stringToWords (str) {
+  if (str) {
+    return str.split(' ')
+  } else {
+    return []
+  }
+}
+
 module.exports = {
   getFirstWord,
   removeFirstWord,
   textBetween,
-  removeTextBetween
+  removeTextBetween,
+  stringToWords
 }

@@ -5,9 +5,7 @@
         "promise",
         "mocha"
     ],
-    "rules": {
-       "quotes": [2, "single"],
-   },
+    "rules": {},
    "env": {
      "mocha": true
    }
