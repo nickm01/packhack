@@ -28,6 +28,8 @@ describe('languageProcessor', function () {
     it('✅ get lists', function () { textShouldResult('get lists', {command: 'getlists'}) })
     it('✅ Get Lists', function () { textShouldResult('Get Lists', {command: 'getlists'}) })
     it('✅ show lists', function () { textShouldResult('show lists', {command: 'getlists'}) })
+    it('✅ display lists', function () { textShouldResult('display lists', {command: 'getlists'}) })
+    it('❌ getlists', function () { textShouldError('getlists', languageProcessor.errorTypes.unrecognizedCommandCouldBeList) })
   })
 
   describe('createList', function () {
@@ -50,6 +52,7 @@ describe('languageProcessor', function () {
     it('✅ display lisT', function () { textShouldResult('display lisT', {command: 'getList', list: 'list', validateList: true}) })
     it('❌ nothing', function () { textShouldError('', languageProcessor.errorTypes.noText) })
     it('❌ one word but not a command', function () { textShouldError('yippeeee', languageProcessor.errorTypes.unrecognizedCommandCouldBeList) })
+    it('❌ getshopping', function () { textShouldError('getshopping', languageProcessor.errorTypes.unrecognizedCommandCouldBeList) })
     it('❌ two word nonsense', function () { textShouldError('yipppeeee whippeee', languageProcessor.errorTypes.unrecognizedCommand) })
     it('✅ get + cached listname', function () { textShouldResult('get', {command: 'getList', list: 'cachedListName', validateList: true}, 'cachedListName') })
     it('✅ get #stuff + cached listname', function () { textShouldResult('get #stuff', {command: 'getList', list: 'stuff', validateList: true}, 'cachedListName') })

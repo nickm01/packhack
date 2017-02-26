@@ -24,6 +24,8 @@ const doNothing = () => {}
 
 const validateNewListName = (resultObject) => {
   const listToBeValidated = resultObject.list
+
+  // Reserved Words
   if (commandData.filter(obj => {
       return obj.actuals.filter(actualText => {
         return (listToBeValidated === actualText)
@@ -31,6 +33,8 @@ const validateNewListName = (resultObject) => {
     }).length > 0) {
       throw new Error(errorTypes.listNameInvalid)
     }
+
+  // Multiple Words
   if (resultObject.words.length > 2) {
     throw new Error(errorTypes.listNameInvalid)
   }
@@ -38,15 +42,23 @@ const validateNewListName = (resultObject) => {
 }
 
 const commandData = [
-  { command: 'getlists', actuals: ['lists', 'get lists', 'show lists'], getList: doNothing, validateList: false, additionalProcessing: doNothing},
+  { command: 'getlists', actuals: ['lists', 'get lists', 'show lists', 'display lists'], getList: doNothing, validateList: false, additionalProcessing: doNothing},
   { command: 'getList', actuals: ['get','show','display'], getList: getListFromSecondWordOrCache, validateList: true, additionalProcessing: doNothing},
   { command: 'createList', actuals: ['create'], getList: getListFromSecondWord, validateList: false, additionalProcessing:validateNewListName}
 ]
 
-const getCommandFromText = (text) => {
+const getCommandFromWords = (words) => {
   return commandData.filter(obj => {
     return obj.actuals.filter(actualText => {
-      return (text.substr(0,actualText.length).toLowerCase() === actualText)
+      const actualTextWords = stringProcessor.stringToWords(actualText)
+
+      // Processing to match 1 or 2 words
+      if (actualTextWords.length === 1) {
+        return (words[0].toLowerCase() === actualText)
+      } else if (actualTextWords.length === 2) {
+        return (words.length > 1 && words[0].toLowerCase() === actualTextWords[0] &&
+          words[1].toLowerCase() === actualTextWords[1])
+      }
     }).length > 0
   })[0]
 }
@@ -65,7 +77,7 @@ const processText = (text, cachedListName) => {
 
   if (words.length === 0) {throw new Error(errorTypes.noText)}
 
-  const commandObj = getCommandFromText(text)
+  const commandObj = getCommandFromWords(words)
   if (!commandObj) {
     if (words.length ===1) {
       throw new Error(errorTypes.unrecognizedCommandCouldBeList)
