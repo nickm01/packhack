@@ -4,69 +4,55 @@
 const should = require('chai').should()
 const languageProcessor = require('./languageProcessor')
 
+// This is a help these unit tests be more succinct
+const textShouldResult = (text, expectedResult, cachedListName) => {
+  const actualResult = languageProcessor.processText(text, cachedListName)
+  actualResult.command.should.equal(expectedResult.command)
+  if (actualResult.hasOwnProperty('list') && actualResult.list) {
+    actualResult.list.should.equal(expectedResult.list)
+    actualResult.validateList.should.equal(expectedResult.validateList)
+  }
+}
+
+const textShouldError = (text, expectedError) => {
+  const resultFunction = () => { languageProcessor.processText(text) }
+  resultFunction.should.throw(expectedError)
+}
+
 describe('languageProcessor', function () {
   beforeEach(() => {
   })
 
-  describe('get', function () {
-    it('simple get with #', function () {
-      const result = languageProcessor.processText('get #list')
-      result.command.should.equal('get')
-      result.list.should.equal('list')
-      result.validateList.should.equal(true)
-    })
+  describe('getLists', function () {
+    it('✅ lists', function () { textShouldResult('lists', {command: 'getlists'}) })
+    it('✅ get lists', function () { textShouldResult('get lists', {command: 'getlists'}) })
+    it('✅ Get Lists', function () { textShouldResult('Get Lists', {command: 'getlists'}) })
+    it('✅ show lists', function () { textShouldResult('show lists', {command: 'getlists'}) })
+  })
 
-    it('simple get without #', function () {
-      const result = languageProcessor.processText('get list')
-      result.command.should.equal('get')
-      result.list.should.equal('list')
-      result.validateList.should.equal(true)
-    })
+  describe('createList', function () {
+    it('✅ create #list', function () { textShouldResult('create #list', {command: 'createList', list: 'list', validateList: false}) })
+    it('✅ create list', function () { textShouldResult('create list', {command: 'createList', list: 'list', validateList: false}) })
+    it('✅ CREATE Something', function () { textShouldResult('CREATE SomeThing', {command: 'createList', list: 'something', validateList: false}) })
+    it('✅ create with special characters', function () { textShouldResult('create 👍❤️😜!@#$%^&*()', {command: 'createList', list: '👍❤️😜!@#$%^&*()', validateList: false}) })
+    it('❌ create #get', function () { textShouldError('create #get', languageProcessor.errorTypes.listNameInvalid) })
+    it('❌ create #create', function () { textShouldError('create #create', languageProcessor.errorTypes.listNameInvalid) })
+    it('❌ create', function () { textShouldError('create', languageProcessor.errorTypes.noList) })
+    it('❌ create only with cachedListName', function () { textShouldError('create', languageProcessor.errorTypes.noList) }, 'cachedListName')
+    it('❌ create #list with multiple words', function () { textShouldError('create #list with multiple words', languageProcessor.errorTypes.listNameInvalid) })
+  })
 
-    it('simple alternative get', function () {
-      const result = languageProcessor.processText('show #list')
-      result.command.should.equal('get')
-      result.list.should.equal('list')
-      result.validateList.should.equal(true)
-    })
-
-    it('nothing', function () {
-      const resultFunction = () => { languageProcessor.processText('') }
-      resultFunction.should.throw(languageProcessor.errorTypes.noText)
-    })
-
-    it('one word but not a command', function () {
-      const resultFunction = () => { languageProcessor.processText('yipppeeee') }
-      resultFunction.should.throw(languageProcessor.errorTypes.unrecognizedCommandCouldBeList)
-    })
-
-    it('two word nonsense', function () {
-      const resultFunction = () => { languageProcessor.processText('yipppeeee whippeee') }
-      resultFunction.should.throw(languageProcessor.errorTypes.unrecognizedCommand)
-    })
-
-    it('get with cached listname', function () {
-      const result = languageProcessor.processText('get', 'shopping')
-      result.command.should.equal('get')
-      result.list.should.equal('shopping')
-      result.validateList.should.equal(true)
-    })
-
-    it('get with 2nd word and cached listname', function () {
-      const result = languageProcessor.processText('get #stuff', 'shopping')
-      result.command.should.equal('get')
-      result.list.should.equal('stuff')
-      result.validateList.should.equal(true)
-    })
-
-    it('get with no second word and no cach', function () {
-      const resultFunction = () => { languageProcessor.processText('get', '') }
-      resultFunction.should.throw(languageProcessor.errorTypes.noList)
-    })
-
-    it('get with no second word and no cach', function () {
-      const resultFunction = () => { languageProcessor.processText('get', '') }
-      resultFunction.should.throw(languageProcessor.errorTypes.noList)
-    })
+  describe('getList', function () {
+    it('✅ get #list', function () { textShouldResult('get #list', {command: 'getList', list: 'list', validateList: true}) })
+    it('✅ get list', function () { textShouldResult('get list', {command: 'getList', list: 'list', validateList: true}) })
+    it('✅ get list now', function () { textShouldResult('get list now', {command: 'getList', list: 'list', validateList: true}) })
+    it('✅ show #list', function () { textShouldResult('show #list', {command: 'getList', list: 'list', validateList: true}) })
+    it('✅ display lisT', function () { textShouldResult('display lisT', {command: 'getList', list: 'list', validateList: true}) })
+    it('❌ nothing', function () { textShouldError('', languageProcessor.errorTypes.noText) })
+    it('❌ one word but not a command', function () { textShouldError('yippeeee', languageProcessor.errorTypes.unrecognizedCommandCouldBeList) })
+    it('❌ two word nonsense', function () { textShouldError('yipppeeee whippeee', languageProcessor.errorTypes.unrecognizedCommand) })
+    it('✅ get + cached listname', function () { textShouldResult('get', {command: 'getList', list: 'cachedListName', validateList: true}, 'cachedListName') })
+    it('✅ get #stuff + cached listname', function () { textShouldResult('get #stuff', {command: 'getList', list: 'stuff', validateList: true}, 'cachedListName') })
+    it('❌ get', function () { textShouldError('get', languageProcessor.errorTypes.noList) })
   })
 })

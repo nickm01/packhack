@@ -1,42 +1,71 @@
 const stringProcessor = require('./stringprocessor')
 
 const getListFromSecondWordOrCache = (words, cachedListName) => {
-  if (words.length < 2 && !cachedListName) {
-    throw new Error(errorTypes.noList)
-  } else if (words.length === 1) {
+  if (words.length === 1 && cachedListName) {
     return cachedListName
   } else {
+    return getListFromSecondWord(words)
+  }
+}
+
+const getListFromSecondWord = (words) => {
+  if (words.length < 2) {
+    throw new Error(errorTypes.noList)
+  } else {
     if (words[1].charAt(0) === '#') {
-      return words[1].substr(1)
+      return words[1].substr(1).toLowerCase()
     } else {
-      return words[1]
+      return words[1].toLowerCase()
     }
   }
 }
 
+const doNothing = () => {}
+
+const validateNewListName = (resultObject) => {
+  const listToBeValidated = resultObject.list
+  if (commandData.filter(obj => {
+      return obj.actuals.filter(actualText => {
+        return (listToBeValidated === actualText)
+      }).length > 0
+    }).length > 0) {
+      throw new Error(errorTypes.listNameInvalid)
+    }
+  if (resultObject.words.length > 2) {
+    throw new Error(errorTypes.listNameInvalid)
+  }
+
+}
+
 const commandData = [
-  { command: 'get', actuals: ['get','show'], getList: getListFromSecondWordOrCache, validateList: true}
+  { command: 'getlists', actuals: ['lists', 'get lists', 'show lists'], getList: doNothing, validateList: false, additionalProcessing: doNothing},
+  { command: 'getList', actuals: ['get','show','display'], getList: getListFromSecondWordOrCache, validateList: true, additionalProcessing: doNothing},
+  { command: 'createList', actuals: ['create'], getList: getListFromSecondWord, validateList: false, additionalProcessing:validateNewListName}
 ]
+
+const getCommandFromText = (text) => {
+  return commandData.filter(obj => {
+    return obj.actuals.filter(actualText => {
+      return (text.substr(0,actualText.length).toLowerCase() === actualText)
+    }).length > 0
+  })[0]
+}
 
 const errorTypes = {
   noText : 'noText',
   unrecognizedCommand: 'unrecognizedCommand',
   unrecognizedCommandCouldBeList: 'unrecognizedCommandCouldBeList',
-  noList : 'noList'
+  noList : 'noList',
+  listNameInvalid : 'listNameInvalid'
 }
 
+// MAIN PROCESS
 const processText = (text, cachedListName) => {
   const words = stringProcessor.stringToWords(text)
 
-  if (words.length === 0) {
-    throw new Error(errorTypes.noText)
-  }
+  if (words.length === 0) {throw new Error(errorTypes.noText)}
 
-  const commandObj = commandData.filter(obj => {
-    // TODO: Node 6 switch to contains
-    return (obj.actuals.indexOf(words[0]) >= 0)
-  })[0]
-
+  const commandObj = getCommandFromText(text)
   if (!commandObj) {
     if (words.length ===1) {
       throw new Error(errorTypes.unrecognizedCommandCouldBeList)
@@ -44,13 +73,19 @@ const processText = (text, cachedListName) => {
       throw new Error(errorTypes.unrecognizedCommand)
     }
   }
-  return {
+
+  const returnObj = {
     command: commandObj.command,
     list: commandObj.getList(words, cachedListName),
-    validateList: commandObj.validateList
+    validateList: commandObj.validateList,
+    words: words
   }
-}
 
+  // Miscellaneous processing
+  commandObj.additionalProcessing(returnObj)
+
+  return commandObj
+}
 
 module.exports = {
   processText,
