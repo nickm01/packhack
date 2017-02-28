@@ -23,6 +23,13 @@ describe('languageProcessor', function () {
   beforeEach(() => {
   })
 
+  describe('basics', function () {
+    it('❌ nothing', function () { textShouldError('', languageProcessor.errorTypes.noText) })
+    it('❌ one word but not a command', function () { textShouldError('yippeeee', languageProcessor.errorTypes.unrecognizedCommandCouldBeList) })
+    it('❌ getshopping', function () { textShouldError('getshopping', languageProcessor.errorTypes.unrecognizedCommandCouldBeList) })
+    it('❌ two word nonsense', function () { textShouldError('yipppeeee whippeee', languageProcessor.errorTypes.unrecognizedCommand) })
+  })
+
   describe('getLists', function () {
     it('✅ lists', function () { textShouldResult('lists', {command: 'getlists'}) })
     it('✅ get lists', function () { textShouldResult('get lists', {command: 'getlists'}) })
@@ -50,12 +57,27 @@ describe('languageProcessor', function () {
     it('✅ get list now', function () { textShouldResult('get list now', {command: 'getList', list: 'list', validateList: true}) })
     it('✅ show #list', function () { textShouldResult('show #list', {command: 'getList', list: 'list', validateList: true}) })
     it('✅ display lisT', function () { textShouldResult('display lisT', {command: 'getList', list: 'list', validateList: true}) })
-    it('❌ nothing', function () { textShouldError('', languageProcessor.errorTypes.noText) })
-    it('❌ one word but not a command', function () { textShouldError('yippeeee', languageProcessor.errorTypes.unrecognizedCommandCouldBeList) })
-    it('❌ getshopping', function () { textShouldError('getshopping', languageProcessor.errorTypes.unrecognizedCommandCouldBeList) })
-    it('❌ two word nonsense', function () { textShouldError('yipppeeee whippeee', languageProcessor.errorTypes.unrecognizedCommand) })
     it('✅ get + cached listname', function () { textShouldResult('get', {command: 'getList', list: 'cachedListName', validateList: true}, 'cachedListName') })
     it('✅ get #stuff + cached listname', function () { textShouldResult('get #stuff', {command: 'getList', list: 'stuff', validateList: true}, 'cachedListName') })
     it('❌ get', function () { textShouldError('get', languageProcessor.errorTypes.noList) })
+  })
+
+  describe('addListItem', function () {
+    it('✅ add item with cachedListName', function () { textShouldResult('add item', {command: 'addListItem', list: 'cachedListName', validateList: true}, 'cachedListName') })
+    it('❌ add item with no cachedListName', function () { textShouldError('add item', languageProcessor.errorTypes.noList) })
+    it('✅ #list add item', function () { textShouldResult('#list add item', {command: 'addListItem', list: 'list', validateList: true}) })
+    it('✅ list add item', function () { textShouldResult('list add item', {command: 'addListItem', list: 'list', validateList: true}) })
+    it('✅ #list add item with cachedListName', function () { textShouldResult('#list add item', {command: 'addListItem', list: 'list', validateList: true}, 'cachedListName') })
+    it('✅ add item from list - with no cachedListName', function () { textShouldResult('add item to #list', {command: 'addListItem', list: 'list', validateList: true}) })
+  })
+
+  describe('clearList', function () {
+    it('✅ clear #list', function () { textShouldResult('clear #list', {command: 'clearList', list: 'list', validateList: true}) })
+    it('✅ empty #list', function () { textShouldResult('empty #list', {command: 'clearList', list: 'list', validateList: true}) })
+    it('✅ flush #list', function () { textShouldResult('flush #list', {command: 'clearList', list: 'list', validateList: true}) })
+    it('✅ clear list', function () { textShouldResult('clear list', {command: 'clearList', list: 'list', validateList: true}) })
+    it('✅ CLEar List', function () { textShouldResult('CLEar SomeThing', {command: 'clearList', list: 'something', validateList: true}) })
+    it('✅ clear + cached listname', function () { textShouldResult('clear', {command: 'clearList', list: 'cachedListName', validateList: true}, 'cachedListName') })
+    it('❌ clear', function () { textShouldError('clear', languageProcessor.errorTypes.noList) })
   })
 })
