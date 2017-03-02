@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Family Decentralized Management",
   "main": "server.js",
+  "engines": {
+   "node": "6.10.0"
+ },
   "dependencies": {
     "express": "^4.13.3",
     "body-parser": "^1.15.2",
