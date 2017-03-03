@@ -10,7 +10,6 @@ const textShouldResult = (text, expectedResult, cachedListName) => {
   actualResult.command.should.equal(expectedResult.command)
   if (actualResult.hasOwnProperty('list') && actualResult.list) {
     actualResult.list.should.equal(expectedResult.list)
-    actualResult.validateList.should.equal(expectedResult.validateList)
   }
 }
 
@@ -40,10 +39,10 @@ describe('languageProcessor', function () {
   })
 
   describe('createList', function () {
-    it('✅ create #list', function () { textShouldResult('create #list', {command: 'createList', list: 'list', validateList: false}) })
-    it('✅ create list', function () { textShouldResult('create list', {command: 'createList', list: 'list', validateList: false}) })
-    it('✅ CREATE Something', function () { textShouldResult('CREATE SomeThing', {command: 'createList', list: 'something', validateList: false}) })
-    it('✅ create with special characters', function () { textShouldResult('create 👍❤️😜!@#$%^&*()', {command: 'createList', list: '👍❤️😜!@#$%^&*()', validateList: false}) })
+    it('✅ create #list', function () { textShouldResult('create #list', {command: 'createList', list: 'list'}) })
+    it('✅ create list', function () { textShouldResult('create list', {command: 'createList', list: 'list'}) })
+    it('✅ CREATE Something', function () { textShouldResult('CREATE SomeThing', {command: 'createList', list: 'something'}) })
+    it('✅ create with special characters', function () { textShouldResult('create 👍❤️😜!@#$%^&*()', {command: 'createList', list: '👍❤️😜!@#$%^&*()'}) })
     it('❌ create #get', function () { textShouldError('create #get', languageProcessor.errorTypes.listNameInvalid) })
     it('❌ create #create', function () { textShouldError('create #create', languageProcessor.errorTypes.listNameInvalid) })
     it('❌ create', function () { textShouldError('create', languageProcessor.errorTypes.noList) })
@@ -52,32 +51,32 @@ describe('languageProcessor', function () {
   })
 
   describe('getList', function () {
-    it('✅ get #list', function () { textShouldResult('get #list', {command: 'getList', list: 'list', validateList: true}) })
-    it('✅ get list', function () { textShouldResult('get list', {command: 'getList', list: 'list', validateList: true}) })
-    it('✅ get list now', function () { textShouldResult('get list now', {command: 'getList', list: 'list', validateList: true}) })
-    it('✅ show #list', function () { textShouldResult('show #list', {command: 'getList', list: 'list', validateList: true}) })
-    it('✅ display lisT', function () { textShouldResult('display lisT', {command: 'getList', list: 'list', validateList: true}) })
-    it('✅ get + cached listname', function () { textShouldResult('get', {command: 'getList', list: 'cachedListName', validateList: true}, 'cachedListName') })
-    it('✅ get #stuff + cached listname', function () { textShouldResult('get #stuff', {command: 'getList', list: 'stuff', validateList: true}, 'cachedListName') })
+    it('✅ get #list', function () { textShouldResult('get #list', {command: 'getList', list: 'list'}) })
+    it('✅ get list', function () { textShouldResult('get list', {command: 'getList', list: 'list'}) })
+    it('✅ get list now', function () { textShouldResult('get list now', {command: 'getList', list: 'list'}) })
+    it('✅ show #list', function () { textShouldResult('show #list', {command: 'getList', list: 'list'}) })
+    it('✅ display lisT', function () { textShouldResult('display lisT', {command: 'getList', list: 'list'}) })
+    it('✅ get + cached listname', function () { textShouldResult('get', {command: 'getList', list: 'cachedListName'}, 'cachedListName') })
+    it('✅ get #stuff + cached listname', function () { textShouldResult('get #stuff', {command: 'getList', list: 'stuff'}, 'cachedListName') })
     it('❌ get', function () { textShouldError('get', languageProcessor.errorTypes.noList) })
   })
 
   describe('addListItem', function () {
-    it('✅ add item with cachedListName', function () { textShouldResult('add item', {command: 'addListItem', list: 'cachedListName', validateList: true}, 'cachedListName') })
+    it('✅ add item with cachedListName', function () { textShouldResult('add item', {command: 'addListItem', list: 'cachedListName'}, 'cachedListName') })
     it('❌ add item with no cachedListName', function () { textShouldError('add item', languageProcessor.errorTypes.noList) })
-    it('✅ #list add item', function () { textShouldResult('#list add item', {command: 'addListItem', list: 'list', validateList: true}) })
-    it('✅ list add item', function () { textShouldResult('list add item', {command: 'addListItem', list: 'list', validateList: true}) })
-    it('✅ #list add item with cachedListName', function () { textShouldResult('#list add item', {command: 'addListItem', list: 'list', validateList: true}, 'cachedListName') })
-    it('✅ add item from list - with no cachedListName', function () { textShouldResult('add item to #list', {command: 'addListItem', list: 'list', validateList: true}) })
+    it('✅ #list add item', function () { textShouldResult('#list add item', {command: 'addListItem', list: 'list'}) })
+    it('✅ list add item', function () { textShouldResult('list add item', {command: 'addListItem', list: 'list'}) })
+    it('✅ #list add item with cachedListName', function () { textShouldResult('#list add item', {command: 'addListItem', list: 'list'}, 'cachedListName') })
+    it('✅ add item from list - with no cachedListName', function () { textShouldResult('add item to #list', {command: 'addListItem', list: 'list'}) })
   })
 
   describe('clearList', function () {
-    it('✅ clear #list', function () { textShouldResult('clear #list', {command: 'clearList', list: 'list', validateList: true}) })
-    it('✅ empty #list', function () { textShouldResult('empty #list', {command: 'clearList', list: 'list', validateList: true}) })
-    it('✅ flush #list', function () { textShouldResult('flush #list', {command: 'clearList', list: 'list', validateList: true}) })
-    it('✅ clear list', function () { textShouldResult('clear list', {command: 'clearList', list: 'list', validateList: true}) })
-    it('✅ CLEar List', function () { textShouldResult('CLEar SomeThing', {command: 'clearList', list: 'something', validateList: true}) })
-    it('✅ clear + cached listname', function () { textShouldResult('clear', {command: 'clearList', list: 'cachedListName', validateList: true}, 'cachedListName') })
+    it('✅ clear #list', function () { textShouldResult('clear #list', {command: 'clearList', list: 'list'}) })
+    it('✅ empty #list', function () { textShouldResult('empty #list', {command: 'clearList', list: 'list'}) })
+    it('✅ flush #list', function () { textShouldResult('flush #list', {command: 'clearList', list: 'list'}) })
+    it('✅ clear list', function () { textShouldResult('clear list', {command: 'clearList', list: 'list'}) })
+    it('✅ CLEar List', function () { textShouldResult('CLEar SomeThing', {command: 'clearList', list: 'something'}) })
+    it('✅ clear + cached listname', function () { textShouldResult('clear', {command: 'clearList', list: 'cachedListName'}, 'cachedListName') })
     it('❌ clear', function () { textShouldError('clear', languageProcessor.errorTypes.noList) })
   })
 })
