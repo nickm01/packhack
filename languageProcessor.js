@@ -9,42 +9,25 @@ const commandTypes = {
 }
 
 const commandData = [
-  { command: commandTypes.getlists, actuals: ['lists', 'get lists', 'show lists', 'display lists']},
-  { command: commandTypes.getList, actuals: ['get','show','display'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
-  { command: commandTypes.createList, actuals: ['create'], postProcessing:'postProcessCreate'},
-  { command: commandTypes.clearList, actuals: ['clear', 'empty', 'flush'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
-  { command: commandTypes.addListItem, actuals: ['add'], postProcessing: 'postProcessAdd'},
-  { command: commandTypes.addListItem, actuals: ['* add'], postProcessing: 'setListFromFirstWord'}
+  {command: commandTypes.getlists, actuals: ['lists', 'get lists', 'show lists', 'display lists']},
+  {command: commandTypes.getList, actuals: ['get', 'show', 'display'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
+  {command: commandTypes.createList, actuals: ['create'], postProcessing: 'postProcessCreate'},
+  {command: commandTypes.clearList, actuals: ['clear', 'empty', 'flush'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
+  {command: commandTypes.addListItem, actuals: ['add'], postProcessing: 'postProcessAdd'},
+  {command: commandTypes.addListItem, actuals: ['* add'], postProcessing: 'setListFromFirstWord'}
 ]
 
 const errorTypes = {
-  noText : 'noText',
+  noText: 'noText',
   unrecognizedCommand: 'unrecognizedCommand',
   unrecognizedCommandCouldBeList: 'unrecognizedCommandCouldBeList',
-  noList : 'noList',
-  listNameInvalid : 'listNameInvalid'
-}
-
-const getCommandFromWords = words => {
-  return commandData.filter(obj => {
-    return obj.actuals.filter(actualText => {
-      const actualTextWords = stringProcessor.stringToWords(actualText)
-
-      // Processing to match 1 or 2 words
-      if (actualTextWords.length === 1) {
-        return (words[0].toLowerCase() === actualText)
-      } else if (actualTextWords.length === 2) {
-        return (words.length > 1 &&
-          (words[0].toLowerCase() === actualTextWords[0] || actualTextWords[0] === '*')
-          && words[1].toLowerCase() === actualTextWords[1])
-      }
-    }).length > 0
-  })[0]
+  noList: 'noList',
+  listNameInvalid: 'listNameInvalid'
 }
 
 // MAIN PROCESS
 const processText = (text, cachedListName) => {
-  const returnObj = new languageProcessorResult({text: text, cachedListName: cachedListName})
+  const returnObj = new LanguageProcessorResult({text: text, cachedListName: cachedListName})
     .convertToWords()
     .checkZeroWords()
     .getCommandFromWords()
@@ -54,11 +37,11 @@ const processText = (text, cachedListName) => {
   return returnObj
 }
 
-// METHOD CHAINING
+// USE OF PROTOTYPES FOR METHOD CHAINING
 // https://schier.co/blog/2013/11/14/method-chaining-in-javascript.html
 // https://medium.com/tiny-code-lessons/javascript-cascade-design-pattern-990b1a761ff4#.8xxot6rc0
 
-const languageProcessorResult = function ({text: text, cachedListName: cachedListName}) {
+const LanguageProcessorResult = function ({text, cachedListName}) {
   this.originalText = text
   this.words = null
   this.command = null
@@ -67,17 +50,17 @@ const languageProcessorResult = function ({text: text, cachedListName: cachedLis
   this.postProcessing = null
 }
 
-languageProcessorResult.prototype.convertToWords = function() {
+LanguageProcessorResult.prototype.convertToWords = function () {
   this.words = stringProcessor.stringToWords(this.originalText)
   return this
 }
 
-languageProcessorResult.prototype.checkZeroWords = function() {
-  if (this.words.length === 0) {throw new Error(errorTypes.noText)}
+LanguageProcessorResult.prototype.checkZeroWords = function () {
+  if (this.words.length === 0) { throw new LanguageProcessorError(errorTypes.noText, this) }
   return this
 }
 
-languageProcessorResult.prototype.getCommandFromWords = function() {
+LanguageProcessorResult.prototype.getCommandFromWords = function () {
   const commandobj = commandData.filter(obj => {
     return obj.actuals.filter(actualText => {
       const actualTextWords = stringProcessor.stringToWords(actualText)
@@ -87,42 +70,39 @@ languageProcessorResult.prototype.getCommandFromWords = function() {
         return (this.words[0].toLowerCase() === actualText)
       } else if (actualTextWords.length === 2) {
         return (this.words.length > 1 &&
-          (this.words[0].toLowerCase() === actualTextWords[0] || actualTextWords[0] === '*')
-          && this.words[1].toLowerCase() === actualTextWords[1])
+          (this.words[0].toLowerCase() === actualTextWords[0] || actualTextWords[0] === '*') &&
+            this.words[1].toLowerCase() === actualTextWords[1])
       }
     }).length > 0
   })[0]
   if (commandobj) {
-    // Destructuring
     this.command = commandobj.command
     this.postProcessing = commandobj.postProcessing
   }
   return this
 }
 
-languageProcessorResult.prototype.errorIfNoCommand = function() {
+LanguageProcessorResult.prototype.errorIfNoCommand = function () {
   if (!this.command) {
-    if (this.words.length ===1) {
-      throw new Error(errorTypes.unrecognizedCommandCouldBeList)
+    if (this.words.length === 1) {
+      throw new LanguageProcessorError(errorTypes.unrecognizedCommandCouldBeList, this)
     } else {
-      throw new Error(errorTypes.unrecognizedCommand)
+      throw new LanguageProcessorError(errorTypes.unrecognizedCommand, this)
     }
   }
   return this
 }
 
-languageProcessorResult.prototype.postProcess = function() {
-  console.log('postProcess')
-  if (!!this.postProcessing) {
-    console.log('postProcess2')
+LanguageProcessorResult.prototype.postProcess = function () {
+  if (this.postProcessing) {
     return this[this.postProcessing]()
   }
   return this
 }
 
-languageProcessorResult.prototype.setListFromSecondWord = function() {
+LanguageProcessorResult.prototype.setListFromSecondWord = function () {
   if (this.words.length < 2) {
-    throw new Error(errorTypes.noList)
+    throw new LanguageProcessorError(errorTypes.noList, this)
   } else {
     if (this.words[1].charAt(0) === '#') {
       this.list = this.words[1].substr(1).toLowerCase()
@@ -133,7 +113,7 @@ languageProcessorResult.prototype.setListFromSecondWord = function() {
   return this
 }
 
-languageProcessorResult.prototype.postProcessBasicListCommandIncludingCache = function() {
+LanguageProcessorResult.prototype.postProcessBasicListCommandIncludingCache = function () {
   if (this.words.length === 1 && this.previouslyCachedListName) {
     this.setListFromWord(this.previouslyCachedListName)
     return this
@@ -142,55 +122,53 @@ languageProcessorResult.prototype.postProcessBasicListCommandIncludingCache = fu
   }
 }
 
-languageProcessorResult.prototype.postProcessCreate = function() {
+LanguageProcessorResult.prototype.postProcessCreate = function () {
   return this.setListFromSecondWord().validateNewListName()
 }
 
-languageProcessorResult.prototype.validateNewListName = function() {
-  console.log('------ validateNewListName: ' + this.list + ' - ' + this.originalText)
-
+LanguageProcessorResult.prototype.validateNewListName = function () {
   // Reserved Words
   if (commandData.filter(obj => {
-      return obj.actuals.filter(actualText => {
-        return (this.list === actualText)
-      }).length > 0
-    }).length > 0) {
-      throw new Error(errorTypes.listNameInvalid)
-    }
+    return obj.actuals.filter(actualText => {
+      return (this.list === actualText)
+    }).length > 0
+  }).length > 0) {
+    throw new LanguageProcessorError(errorTypes.listNameInvalid, this)
+  }
 
   // Multiple Words
   if (this.words.length > 2) {
-    throw new Error(errorTypes.listNameInvalid)
+    throw new LanguageProcessorError(errorTypes.listNameInvalid, this)
   }
 
   return this
 }
 
-languageProcessorResult.prototype.postProcessAdd = function() {
-  if (this.words.length >= 4 && this.words[this.words.length-2] === 'to') {
-    this.setListFromWord(this.words[this.words.length-1])
+LanguageProcessorResult.prototype.postProcessAdd = function () {
+  if (this.words.length >= 4 && this.words[this.words.length - 2] === 'to') {
+    this.setListFromWord(this.words[this.words.length - 1])
     this.words.unshift(this.list)
-    this.words = this.words.splice(0, this.words.length-2)
+    this.words = this.words.splice(0, this.words.length - 2)
   } else {
     return this.setListFromCache()
   }
   return this
 }
 
-languageProcessorResult.prototype.setListFromCache = function() {
+LanguageProcessorResult.prototype.setListFromCache = function () {
   if (this.previouslyCachedListName) {
     this.setListFromWord(this.previouslyCachedListName)
   } else {
-    throw new Error(errorTypes.noList)
+    throw new LanguageProcessorError(errorTypes.noList, this)
   }
   return this
 }
 
-languageProcessorResult.prototype.setListFromFirstWord = function() {
+LanguageProcessorResult.prototype.setListFromFirstWord = function () {
   return this.setListFromWord(this.words[0])
 }
 
-languageProcessorResult.prototype.setListFromWord = function(str) {
+LanguageProcessorResult.prototype.setListFromWord = function (str) {
   if (str.charAt(0) === '#') {
     this.list = str.toString().substr(1).toLowerCase()
   } else {
@@ -199,8 +177,19 @@ languageProcessorResult.prototype.setListFromWord = function(str) {
   return this
 }
 
+class LanguageProcessorError extends Error {
+  constructor (message, languageProcessorResult) {
+    super()
+    this.message = message
+    this.originalText = languageProcessorResult.originalText
+    this.words = languageProcessorResult.words
+    this.command = languageProcessorResult.command
+    this.list = languageProcessorResult.list
+  }
+}
+
 module.exports = {
   processText,
-  errorTypes: errorTypes,
-  commandTypes: commandTypes
+  errorTypes,
+  commandTypes
 }
