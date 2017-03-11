@@ -1,6 +1,6 @@
 var config = require('./config')
 var mongoOp = require('./model/mongo')
-var stringProcessor = require('./stringprocessor')
+var stringProcessor = require('./src/stringprocessor')
 var dates = require('./dates')
 
 function addReminder (inputText, familyId, timeZone, callback) {

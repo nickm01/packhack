@@ -28,7 +28,7 @@
     "mocha": "^3.2.0"
   },
   "scripts": {
-    "test": "mocha mocha *.test.js -w",
+    "test": "mocha mocha **/*.test.js -w",
     "start": "node server.js"
   },
   "repository": {
