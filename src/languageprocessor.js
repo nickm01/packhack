@@ -5,16 +5,24 @@ const commandTypes = {
   getList: 'getList',
   createList: 'createList',
   clearList: 'clearList',
-  addListItem: 'addListItem'
+  deleteList: 'deleteList',
+  addListItem: 'addListItem',
+  removeListItem: 'removeListItem',
+  sendList: 'sendList'
 }
 
+// Note more complex constructs should be at the end
 const commandData = [
   {command: commandTypes.getlists, actuals: ['lists', 'get lists', 'show lists', 'display lists']},
   {command: commandTypes.getList, actuals: ['get', 'show', 'display'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
   {command: commandTypes.createList, actuals: ['create'], postProcessing: 'postProcessCreate'},
   {command: commandTypes.clearList, actuals: ['clear', 'empty', 'flush'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
-  {command: commandTypes.addListItem, actuals: ['add'], postProcessing: 'postProcessAdd'},
-  {command: commandTypes.addListItem, actuals: ['* add'], postProcessing: 'setListFromFirstWord'}
+  {command: commandTypes.deleteList, actuals: ['delete'], postProcessing: 'setListFromSecondWord'},
+  {command: commandTypes.sendList, actuals: ['send'], postProcessing: 'postProcessSend'},
+  {command: commandTypes.addListItem, actuals: ['add', 'append'], commandCanBeFirstOrSecondWord: true, postProcessing: 'postProcessAdd'},
+  {command: commandTypes.removeListItem, actuals: ['remove'], commandCanBeFirstOrSecondWord: true, postProcessing: 'postProcessRemove'}
+  // remind
+  // flock/help
 ]
 
 const errorTypes = {
@@ -27,14 +35,19 @@ const errorTypes = {
 
 // MAIN PROCESS
 const processText = (text, cachedListName) => {
-  const returnObj = new LanguageProcessorResult({text: text, cachedListName: cachedListName})
+  const result = new LanguageProcessorResult({text: text, cachedListName: cachedListName})
     .convertToWords()
     .checkZeroWords()
     .getCommandFromWords()
     .errorIfNoCommand()
     .postProcess()
 
-  return returnObj
+  return {
+    command: result.commandObj ? result.commandObj.command : null,
+    list: result.list,
+    person: result.person,
+    supplementaryText: result.supplementaryText
+  }
 }
 
 // USE OF PROTOTYPES FOR METHOD CHAINING
@@ -44,10 +57,11 @@ const processText = (text, cachedListName) => {
 const LanguageProcessorResult = function ({text, cachedListName}) {
   this.originalText = text
   this.words = null
-  this.command = null
+  this.commandObj = null
   this.list = null
   this.previouslyCachedListName = cachedListName
-  this.postProcessing = null
+  this.supplementaryText = null
+  this.person = null
 }
 
 LanguageProcessorResult.prototype.convertToWords = function () {
@@ -61,29 +75,24 @@ LanguageProcessorResult.prototype.checkZeroWords = function () {
 }
 
 LanguageProcessorResult.prototype.getCommandFromWords = function () {
-  const commandobj = commandData.filter(obj => {
-    return obj.actuals.filter(actualText => {
-      const actualTextWords = stringProcessor.stringToWords(actualText)
-
-      // Processing to match 1 or 2 words
-      if (actualTextWords.length === 1) {
-        return (this.words[0].toLowerCase() === actualText)
-      } else if (actualTextWords.length === 2) {
-        return (this.words.length > 1 &&
-          (this.words[0].toLowerCase() === actualTextWords[0] || actualTextWords[0] === '*') &&
-            this.words[1].toLowerCase() === actualTextWords[1])
-      }
+  this.commandObj = commandData.filter(obj => {
+    return obj.actuals.filter(commandText => {
+      return ((obj.commandCanBeFirstOrSecondWord &&
+                this.words.length > 1 &&
+                this.words[1].toLowerCase() === commandText
+              ) || (
+                this.words[0].toLowerCase() === commandText
+              ) || (
+                this.originalText.toLowerCase() === commandText
+              )
+      )
     }).length > 0
   })[0]
-  if (commandobj) {
-    this.command = commandobj.command
-    this.postProcessing = commandobj.postProcessing
-  }
   return this
 }
 
 LanguageProcessorResult.prototype.errorIfNoCommand = function () {
-  if (!this.command) {
+  if (!this.commandObj) {
     if (this.words.length === 1) {
       throw new LanguageProcessorError(errorTypes.unrecognizedCommandCouldBeList, this)
     } else {
@@ -94,8 +103,8 @@ LanguageProcessorResult.prototype.errorIfNoCommand = function () {
 }
 
 LanguageProcessorResult.prototype.postProcess = function () {
-  if (this.postProcessing) {
-    return this[this.postProcessing]()
+  if (this.commandObj && this.commandObj.postProcessing) {
+    return this[this.commandObj.postProcessing]()
   }
   return this
 }
@@ -104,19 +113,13 @@ LanguageProcessorResult.prototype.setListFromSecondWord = function () {
   if (this.words.length < 2) {
     throw new LanguageProcessorError(errorTypes.noList, this)
   } else {
-    if (this.words[1].charAt(0) === '#') {
-      this.list = this.words[1].substr(1).toLowerCase()
-    } else {
-      this.list = this.words[1].toLowerCase()
-    }
+    return this.setListFromWord(this.words[1])
   }
-  return this
 }
 
 LanguageProcessorResult.prototype.postProcessBasicListCommandIncludingCache = function () {
   if (this.words.length === 1 && this.previouslyCachedListName) {
-    this.setListFromWord(this.previouslyCachedListName)
-    return this
+    return this.setListFromWord(this.previouslyCachedListName)
   } else {
     return this.setListFromSecondWord()
   }
@@ -145,12 +148,43 @@ LanguageProcessorResult.prototype.validateNewListName = function () {
 }
 
 LanguageProcessorResult.prototype.postProcessAdd = function () {
-  if (this.words.length >= 4 && this.words[this.words.length - 2] === 'to') {
+  return this.postProcessItem('to')
+}
+
+LanguageProcessorResult.prototype.postProcessRemove = function () {
+  return this.postProcessItem('from')
+}
+
+// Tries to restructure to a standard "list add item" format, then gets the supplementaryText
+LanguageProcessorResult.prototype.postProcessItem = function (connector) {
+  // Checks if second word is a command, but not first
+  if (this.commandObj.actuals.indexOf(this.words[1].toLowerCase()) !== -1 &&
+    this.commandObj.actuals.indexOf(this.words[0].toLowerCase()) === -1
+  ) {
+    this.words[1] = this.words[1].toLowerCase()
+    this.setListFromFirstWord()
+  } else if (this.words.length >= 4 && this.words[this.words.length - 2].toLowerCase() === connector) {
     this.setListFromWord(this.words[this.words.length - 1])
     this.words.unshift(this.list)
     this.words = this.words.splice(0, this.words.length - 2)
   } else {
-    return this.setListFromCache()
+    this.setListFromCache()
+    this.words.unshift(this.list)
+  }
+  this.supplementaryText = this.words.splice(2).join(' ')
+  return this
+}
+
+LanguageProcessorResult.prototype.postProcessSend = function () {
+  console.log('>>>> postProcessSend')
+  if (this.words.length < 2) {
+//    throw new LanguageProcessorError(errorTypes.noList, this)
+  }
+  this.setPersonFromWord(this.words[1])
+  if (this.words.length < 3) {
+//    this.setListFromCache
+  } else {
+    this.setListFromWord(this.words[2])
   }
   return this
 }
@@ -169,12 +203,21 @@ LanguageProcessorResult.prototype.setListFromFirstWord = function () {
 }
 
 LanguageProcessorResult.prototype.setListFromWord = function (str) {
-  if (str.charAt(0) === '#') {
-    this.list = str.toString().substr(1).toLowerCase()
-  } else {
-    this.list = str.toString().toLowerCase()
-  }
+  this.list = str.removePrefix('#').toLowerCase()
   return this
+}
+
+LanguageProcessorResult.prototype.setPersonFromWord = function (str) {
+  this.preson = str.removePrefix('@').toLowerCase()
+  return this
+}
+
+String.prototype.removePrefix = function (prefix) {
+  if (this.charAt(0) === prefix) {
+    return this.substr(1)
+  } else {
+    return this
+  }
 }
 
 class LanguageProcessorError extends Error {
@@ -183,7 +226,7 @@ class LanguageProcessorError extends Error {
     this.message = message
     this.originalText = languageProcessorResult.originalText
     this.words = languageProcessorResult.words
-    this.command = languageProcessorResult.command
+    this.command = languageProcessorResult.commandObj ? languageProcessorResult.commandObj.command : null
     this.list = languageProcessorResult.list
   }
 }

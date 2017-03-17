@@ -25,7 +25,8 @@
     "eslint-plugin-mocha": "^4.8.0",
     "eslint-plugin-promise": "^3.3.2",
     "eslint-plugin-standard": "^2.0.1",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "sinon": "*"
   },
   "scripts": {
     "test": "mocha mocha **/*.test.js -w",
