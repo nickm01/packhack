@@ -66,22 +66,24 @@ describe('languageProcessor', function () {
     it('✅ CREATE Something', function () { textShouldResult('CREATE SomeThing', {command: command, list: 'something'}) })
     it('✅ create with special characters', function () { textShouldResult('create 👍❤️😜!@#$%^&*()', {command: command, list: '👍❤️😜!@#$%^&*()'}) })
     it('❌ create #get', function () { textShouldError('create #get', {command: command, list: null, message: languageProcessor.errorTypes.listNameInvalid}) })
+    it('❌ create Get', function () { textShouldError('create Get', {command: command, list: null, message: languageProcessor.errorTypes.listNameInvalid}) })
     it('❌ create #create', function () { textShouldError('create #create', {command: command, list: null, message: languageProcessor.errorTypes.listNameInvalid}) })
     it('❌ create', function () { textShouldError('create', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
     it('❌ create only with cachedListName', function () { textShouldError('create', {command: command, list: null, message: languageProcessor.errorTypes.noList}) }, 'cachedListName')
     it('❌ create #list with multiple words', function () { textShouldError('create #list with multiple words', {command: command, list: null, message: languageProcessor.errorTypes.listNameInvalid}) })
+    it('❌ create list with multiple words', function () { textShouldError('create list with multiple words', {command: command, list: null, message: languageProcessor.errorTypes.listNameInvalid}) })
   })
 
   describe('getList', function () {
     const command = languageProcessor.commandTypes.getList
     it('✅ get #list', function () { textShouldResult('get #list', {command: command, list: 'list'}) })
     it('✅ get list', function () { textShouldResult('get list', {command: command, list: 'list'}) })
-    it('✅ get list now', function () { textShouldResult('get list now', {command: command, list: 'list'}) })
     it('✅ show #list', function () { textShouldResult('show #list', {command: command, list: 'list'}) })
     it('✅ display lisT', function () { textShouldResult('display lisT', {command: command, list: 'list'}) })
     it('✅ get + cached listname', function () { textShouldResult('get', {command: command, list: 'cachedlistname'}, 'cachedListName') })
     it('✅ get #stuff + cached listname', function () { textShouldResult('get #stuff', {command: command, list: 'stuff'}, 'cachedListName') })
     it('❌ get', function () { textShouldError('get', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
+    it('❌ get one two', function () { textShouldError('get one two', {command: command, message: languageProcessor.errorTypes.listNameInvalid}) })
   })
 
   describe('addListItem', function () {
@@ -95,6 +97,9 @@ describe('languageProcessor', function () {
     it('✅ #list add item with cachedListName', function () { textShouldResult('#list add item', {command: command, list: 'list', supplementaryText: 'item'}, 'cachedListName') })
     it('✅ add item to list - with no cachedListName', function () { textShouldResult('add item to #list', {command: command, list: 'list', supplementaryText: 'item'}) })
     it('✅ add multiple item to list - with no cachedListName', function () { textShouldResult('add item1 item2 item3 to #list', {command: command, list: 'list', supplementaryText: 'item1 item2 item3'}) })
+    it('✅ add remove stuff - deliberate confusion', function () { textShouldResult('add remove stuff', {command: command, list: 'cachedlistname', supplementaryText: 'remove stuff'}, 'cachedListName') })
+    it('✅ add remove stuff to x- deliberate confusion', function () { textShouldResult('add remove stuff to x', {command: command, list: 'x', supplementaryText: 'remove stuff'}, 'cachedListName') })
+    it('✅ append remove stuff to x - deliberate confusion', function () { textShouldResult('append remove stuff to x', {command: command, list: 'x', supplementaryText: 'remove stuff'}, 'cachedListName') })
   })
 
   describe('removeListItem', function () {
@@ -109,6 +114,8 @@ describe('languageProcessor', function () {
     it('✅ remove multiple item from list - with no cachedListName', function () { textShouldResult('remove item1 item2 item3 from #list', {command: command, list: 'list', supplementaryText: 'item1 item2 item3'}) })
     it('✅ #list REMOVE item', function () { textShouldResult('#list REMOVE item', {command: command, list: 'list', supplementaryText: 'item'}) })
     it('✅ remove item FROM list - with no cachedListName', function () { textShouldResult('remove item FROM #list', {command: command, list: 'list', supplementaryText: 'item'}) })
+    it('✅ remove add stuff - deliberate confusion', function () { textShouldResult('remove add stuff', {command: command, list: 'cachedlistname', supplementaryText: 'add stuff'}, 'cachedListName') })
+    it('✅ remove add stuff from  x - deliberate confusion', function () { textShouldResult('remove add stuff from x', {command: command, list: 'x', supplementaryText: 'add stuff'}, 'cachedListName') })
   })
 
   describe('clearList', function () {
@@ -120,6 +127,7 @@ describe('languageProcessor', function () {
     it('✅ CLEar List', function () { textShouldResult('CLEar SomeThing', {command: command, list: 'something'}) })
     it('✅ clear + cached listname', function () { textShouldResult('clear', {command: command, list: 'cachedlistname'}, 'cachedListName') })
     it('❌ clear', function () { textShouldError('clear', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
+    it('❌ clear one two', function () { textShouldError('clear one two', {command: command, message: languageProcessor.errorTypes.listNameInvalid}) })
   })
 
   describe('deleteList', function () {
@@ -128,10 +136,37 @@ describe('languageProcessor', function () {
     it('✅ delete list', function () { textShouldResult('delete list', {command: command, list: 'list'}) })
     it('❌ delete + cached listname', function () { textShouldError('delete', {command: command, list: null, message: languageProcessor.errorTypes.noList}, 'cachedListName') })
     it('❌ delete', function () { textShouldError('delete', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
+    it('❌ delete one two', function () { textShouldError('delete one two', {command: command, message: languageProcessor.errorTypes.listNameInvalid}) })
   })
 
   describe('sendList', function () {
     const command = languageProcessor.commandTypes.sendList
-    it('✅ send @someone #list', function () { textShouldResult('send @someone #list', {command: command, list: 'list', person: 'someone'}) })
+    it('✅ send @someone #list without cache', function () { textShouldResult('send @someone #list', {command: command, list: 'list', person: 'someone'}) })
+    it('✅ send @someone #list with cache', function () { textShouldResult('send @someone #list', {command: command, list: 'list', person: 'someone'}, 'cachedListName') })
+    it('✅ send @someone', function () { textShouldResult('send @someone', {command: command, list: 'cachedlistname', person: 'someone'}, 'cachedListName') })
+    it('✅ send someone list', function () { textShouldResult('send someone list', {command: command, list: 'list', person: 'someone'}, 'cachedListName') })
+    it('✅ send someone list hello', function () { textShouldResult('send someone list hello', {command: command, list: 'list', person: 'someone', supplementaryText: 'hello'}, 'cachedListName') })
+    it('❌ send @someone no cache', function () { textShouldError('send @someone', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
+    it('❌ send', function () { textShouldError('send', {command: command, list: null, message: languageProcessor.errorTypes.noPerson}) })
+    it('❌ send #list', function () { textShouldError('send #list', {command: command, list: null, message: languageProcessor.errorTypes.noPerson}) })
+    it('✅ send list to someone', function () { textShouldResult('send list to someone', {command: command, list: 'list', person: 'someone'}, 'cachedListName') })
+    it('✅ send #list to @someone', function () { textShouldResult('send list to someone', {command: command, list: 'list', person: 'someone'}, 'cachedListName') })
+    it('✅ send list hello to someone', function () { textShouldResult('send list hello to someone', {command: command, list: 'list', person: 'someone', supplementaryText: 'hello'}, 'cachedListName') })
+    it('✅ send list hello goodbye to someone', function () { textShouldResult('send list hello goodbye to someone', {command: command, list: 'list', person: 'someone', supplementaryText: 'hello goodbye'}, 'cachedListName') })
+  })
+
+  describe('addReminder', function () {
+    const command = languageProcessor.commandTypes.addReminder
+    it('✅ remind @me tomorrow hello', function () { textShouldResult('remind @me tomorrow hello', {command: command}) })
+  })
+
+  describe('help', function () {
+    const command = languageProcessor.commandTypes.help
+    it('✅ packhack', function () { textShouldResult('packhack', {command: command}) })
+  })
+
+  describe('pushIntro', function () {
+    const command = languageProcessor.commandTypes.pushIntro
+    it('✅ **welcome 1', function () { textShouldResult('**welcome 1', {command: command}) })
   })
 })

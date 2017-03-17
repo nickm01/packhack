@@ -8,7 +8,10 @@ const commandTypes = {
   deleteList: 'deleteList',
   addListItem: 'addListItem',
   removeListItem: 'removeListItem',
-  sendList: 'sendList'
+  sendList: 'sendList',
+  addReminder: 'addReminder',
+  help: 'help',
+  pushIntro: 'pushIntro'
 }
 
 // Note more complex constructs should be at the end
@@ -17,12 +20,13 @@ const commandData = [
   {command: commandTypes.getList, actuals: ['get', 'show', 'display'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
   {command: commandTypes.createList, actuals: ['create'], postProcessing: 'postProcessCreate'},
   {command: commandTypes.clearList, actuals: ['clear', 'empty', 'flush'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
-  {command: commandTypes.deleteList, actuals: ['delete'], postProcessing: 'setListFromSecondWord'},
+  {command: commandTypes.deleteList, actuals: ['delete'], postProcessing: 'postProcessDelete'},
   {command: commandTypes.sendList, actuals: ['send'], postProcessing: 'postProcessSend'},
   {command: commandTypes.addListItem, actuals: ['add', 'append'], commandCanBeFirstOrSecondWord: true, postProcessing: 'postProcessAdd'},
-  {command: commandTypes.removeListItem, actuals: ['remove'], commandCanBeFirstOrSecondWord: true, postProcessing: 'postProcessRemove'}
-  // remind
-  // flock/help
+  {command: commandTypes.removeListItem, actuals: ['remove'], commandCanBeFirstOrSecondWord: true, postProcessing: 'postProcessRemove'},
+  {command: commandTypes.addReminder, actuals: ['remind']}, // TODO: needs to be flushed out
+  {command: commandTypes.help, actuals: ['help', 'flock', 'packhack', 'assist', '?', 'intro']}, // TODO: needs to be flushed out
+  {command: commandTypes.pushIntro, actuals: ['**welcome']} // TODO: needs to be flushed out
 ]
 
 const errorTypes = {
@@ -30,7 +34,8 @@ const errorTypes = {
   unrecognizedCommand: 'unrecognizedCommand',
   unrecognizedCommandCouldBeList: 'unrecognizedCommandCouldBeList',
   noList: 'noList',
-  listNameInvalid: 'listNameInvalid'
+  listNameInvalid: 'listNameInvalid',
+  noPerson: 'noPerson'
 }
 
 // MAIN PROCESS
@@ -75,11 +80,13 @@ LanguageProcessorResult.prototype.checkZeroWords = function () {
 }
 
 LanguageProcessorResult.prototype.getCommandFromWords = function () {
+  console.log('xxx ' + this.words[0].toLowerCase())
   this.commandObj = commandData.filter(obj => {
     return obj.actuals.filter(commandText => {
       return ((obj.commandCanBeFirstOrSecondWord &&
                 this.words.length > 1 &&
-                this.words[1].toLowerCase() === commandText
+                this.words[1].toLowerCase() === commandText &&
+                !this.words[0].isACommand() // this is for add/remove text confusion
               ) || (
                 this.words[0].toLowerCase() === commandText
               ) || (
@@ -121,7 +128,7 @@ LanguageProcessorResult.prototype.postProcessBasicListCommandIncludingCache = fu
   if (this.words.length === 1 && this.previouslyCachedListName) {
     return this.setListFromWord(this.previouslyCachedListName)
   } else {
-    return this.setListFromSecondWord()
+    return this.setListFromSecondWord().validateMultipleWordListName()
   }
 }
 
@@ -138,12 +145,13 @@ LanguageProcessorResult.prototype.validateNewListName = function () {
   }).length > 0) {
     throw new LanguageProcessorError(errorTypes.listNameInvalid, this)
   }
+  return this.validateMultipleWordListName()
+}
 
-  // Multiple Words
+LanguageProcessorResult.prototype.validateMultipleWordListName = function () {
   if (this.words.length > 2) {
     throw new LanguageProcessorError(errorTypes.listNameInvalid, this)
   }
-
   return this
 }
 
@@ -175,16 +183,40 @@ LanguageProcessorResult.prototype.postProcessItem = function (connector) {
   return this
 }
 
+LanguageProcessorResult.prototype.postProcessDelete = function () {
+  return this.setListFromSecondWord().validateMultipleWordListName()
+}
+
 LanguageProcessorResult.prototype.postProcessSend = function () {
-  console.log('>>>> postProcessSend')
-  if (this.words.length < 2) {
-//    throw new LanguageProcessorError(errorTypes.noList, this)
+  const len = this.words.length
+  if (len === 1 ||
+      (len === 2 && this.words[1].charAt(0) === '#')) {
+    throw new LanguageProcessorError(errorTypes.noPerson, this)
   }
-  this.setPersonFromWord(this.words[1])
-  if (this.words.length < 3) {
-//    this.setListFromCache
+
+  // if this is of the structure "send list to someone"
+  if (len >= 3 && this.words[len - 2] === 'to') {
+    console.log('333')
+    this.setPersonFromWord(this.words[len - 1])
+    this.setListFromWord(this.words[1])
+    if (len > 4) {
+      console.log('444')
+      this.supplementaryText = this.words.splice(2, len - 4).join(' ')
+      console.log('xxx ' + this.supplementaryText)
+    }
+
+  // else format is more like "send someone list"
   } else {
-    this.setListFromWord(this.words[2])
+    this.setPersonFromWord(this.words[1])
+
+    if (len < 3) {
+      this.setListFromCache()
+    } else {
+      this.setListFromWord(this.words[2])
+      if (len > 3) {
+        this.supplementaryText = this.words.splice(3).join(' ')
+      }
+    }
   }
   return this
 }
@@ -218,6 +250,15 @@ String.prototype.removePrefix = function (prefix) {
   } else {
     return this
   }
+}
+
+// TODO: Refactor to flatmap
+String.prototype.isACommand = function () {
+  return (commandData.filter(obj => {
+    return obj.actuals.filter(commandText => {
+      return (this.toString().toLowerCase() === commandText)
+    }).length > 0
+  }).length > 0)
 }
 
 class LanguageProcessorError extends Error {
