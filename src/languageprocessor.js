@@ -1,4 +1,7 @@
+// Responsible for processing the language of the text into structured commmands and objects
+
 const stringProcessor = require('./stringprocessor')
+const Q = require('q')
 
 const commandTypes = {
   getlists: 'getlists',
@@ -39,7 +42,7 @@ const errorTypes = {
 }
 
 // MAIN PROCESS
-const processText = (text, cachedListName) => {
+const processLanguage = (text, cachedListName) => {
   const result = new LanguageProcessorResult({text: text, cachedListName: cachedListName})
     .convertToWords()
     .checkZeroWords()
@@ -80,7 +83,6 @@ LanguageProcessorResult.prototype.checkZeroWords = function () {
 }
 
 LanguageProcessorResult.prototype.getCommandFromWords = function () {
-  console.log('xxx ' + this.words[0].toLowerCase())
   this.commandObj = commandData.filter(obj => {
     return obj.actuals.filter(commandText => {
       return ((obj.commandCanBeFirstOrSecondWord &&
@@ -196,13 +198,10 @@ LanguageProcessorResult.prototype.postProcessSend = function () {
 
   // if this is of the structure "send list to someone"
   if (len >= 3 && this.words[len - 2] === 'to') {
-    console.log('333')
     this.setPersonFromWord(this.words[len - 1])
     this.setListFromWord(this.words[1])
     if (len > 4) {
-      console.log('444')
       this.supplementaryText = this.words.splice(2, len - 4).join(' ')
-      console.log('xxx ' + this.supplementaryText)
     }
 
   // else format is more like "send someone list"
@@ -272,8 +271,21 @@ class LanguageProcessorError extends Error {
   }
 }
 
+// TODO: Is there a better approach - should this even be here?
+const processLanguagePromise = (text, cachedListName) => {
+  const deferred = Q.defer()
+  try {
+    const result = processLanguage(text, cachedListName)
+    deferred.resolve(result)
+  } catch (exception) {
+    deferred.reject(exception)
+  }
+  return deferred.promise
+}
+
 module.exports = {
-  processText,
+  processLanguage,
+  processLanguagePromise,
   errorTypes,
   commandTypes
 }

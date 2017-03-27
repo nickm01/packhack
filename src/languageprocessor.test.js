@@ -3,10 +3,11 @@
 
 const should = require('chai').should()
 const languageProcessor = require('./languageProcessor')
+const Q = require('q')
 
 // This is a help these unit tests be more succinct
 const textShouldResult = (text, expectedResult, cachedListName) => {
-  const actualResult = languageProcessor.processText(text, cachedListName)
+  const actualResult = languageProcessor.processLanguage(text, cachedListName)
   actualResult.command.should.equal(expectedResult.command)
   if (expectedResult.list) {
     actualResult.list.should.equal(expectedResult.list)
@@ -18,7 +19,7 @@ const textShouldResult = (text, expectedResult, cachedListName) => {
 
 const textShouldError = (text, expectedResult, cachedListName) => {
   try {
-    languageProcessor.processText(text, cachedListName)
+    languageProcessor.processLanguage(text, cachedListName)
     should.fail('should fail')
   } catch (exception) {
     exception.message.should.equal(expectedResult.message)
@@ -168,5 +169,27 @@ describe('languageProcessor', function () {
   describe('pushIntro', function () {
     const command = languageProcessor.commandTypes.pushIntro
     it('✅ **welcome 1', function () { textShouldResult('**welcome 1', {command: command}) })
+  })
+
+  describe('promsify textProcessor', function () {
+    it('resolve', function () {
+      return Q.resolve(languageProcessor.processLanguagePromise('get list'))
+      .then(function (result) {
+        result.command.should.equal(languageProcessor.commandTypes.getList)
+        result.list.should.equal('list')
+      }, function (error) {
+        should.fail('should fail, instead: ' + error)
+      })
+    })
+
+    it('reject', function () {
+      return Q.resolve(languageProcessor.processLanguagePromise('nonsense'))
+      .then(languageProcessor.processLanguagePromise)
+      .then(function (result) {
+        should.fail('should fail')
+      }, function (error) {
+        error.message.should.equal(languageProcessor.errorTypes.unrecognizedCommandCouldBeList)
+      })
+    })
   })
 })
