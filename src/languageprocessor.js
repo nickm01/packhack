@@ -54,6 +54,7 @@ const processLanguage = (text, cachedListName) => {
     command: result.commandObj ? result.commandObj.command : null,
     list: result.list,
     person: result.person,
+    originalText: text,
     supplementaryText: result.supplementaryText
   }
 }
@@ -239,7 +240,7 @@ LanguageProcessorResult.prototype.setListFromWord = function (str) {
 }
 
 LanguageProcessorResult.prototype.setPersonFromWord = function (str) {
-  this.preson = str.removePrefix('@').toLowerCase()
+  this.person = str.removePrefix('@').toLowerCase()
   return this
 }
 

@@ -8,13 +8,7 @@ const Q = require('q')
 // This is a help these unit tests be more succinct
 const textShouldResult = (text, expectedResult, cachedListName) => {
   const actualResult = languageProcessor.processLanguage(text, cachedListName)
-  actualResult.command.should.equal(expectedResult.command)
-  if (expectedResult.list) {
-    actualResult.list.should.equal(expectedResult.list)
-  }
-  if (expectedResult.supplementaryText) {
-    actualResult.supplementaryText.should.equal(expectedResult.supplementaryText)
-  }
+  shouldEqualExpectedActual(expectedResult, actualResult, text)
 }
 
 const textShouldError = (text, expectedResult, cachedListName) => {
@@ -22,27 +16,31 @@ const textShouldError = (text, expectedResult, cachedListName) => {
     languageProcessor.processLanguage(text, cachedListName)
     should.fail('should fail')
   } catch (exception) {
-    exception.message.should.equal(expectedResult.message)
-    exception.originalText.should.equal(text)
-    if (expectedResult.command) {
-      exception.command.should.equal(expectedResult.command)
-    }
-    if (expectedResult.words) {
-      exception.words.should.equal(expectedResult.words)
-    }
-    if (expectedResult.list) {
-      exception.list.should.equal(expectedResult.list)
-    }
-    if (expectedResult.person) {
-      exception.person.should.equal(expectedResult.person)
-    }
+    shouldEqualExpectedActual(expectedResult, exception, text)
   }
 }
 
-describe('languageProcessor', function () {
-  beforeEach(() => {
-  })
+// TODO: Make this more generic with access to dictionary directly - and loop
+const shouldEqualExpectedActual = function (expected, actual, originalText) {
+  if (expected.command) {
+    actual.command.should.equal(expected.command)
+  }
+  if (expected.words) {
+    actual.words.should.equal(expected.words)
+  }
+  if (expected.list) {
+    actual.list.should.equal(expected.list)
+  }
+  if (expected.person) {
+    actual.person.should.equal(expected.person)
+  }
+  if (expected.message) {
+    actual.message.should.equal(expected.message)
+  }
+  actual.originalText.should.equal(originalText)
+}
 
+describe('languageProcessor', function () {
   describe('basics', function () {
     it('❌ nothing', function () { textShouldError('', {command: null, list: null, message: languageProcessor.errorTypes.noText}) })
     it('❌ one word but not a command', function () { textShouldError('yippeeee', {command: null, list: null, message: languageProcessor.errorTypes.unrecognizedCommandCouldBeList}) })
