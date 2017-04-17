@@ -182,7 +182,6 @@ describe('languageProcessor', function () {
 
     it('reject', function () {
       return Q.resolve(languageProcessor.processLanguagePromise('nonsense'))
-      .then(languageProcessor.processLanguagePromise)
       .then(function (result) {
         should.fail('should fail')
       }, function (error) {
