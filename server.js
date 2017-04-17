@@ -13,6 +13,8 @@ var listItems = require('./listitems')
 var messagePreProcessor = require('./messagepreprocessor')
 var stringProcessor = require('./src/stringprocessor')
 
+mongoOp.intialize()
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({"extended" : false}))
 
