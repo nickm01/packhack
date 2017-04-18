@@ -9,6 +9,8 @@ const logging = require('../logging')
 const listItemFunctions = require('../listitems')
 const Q = require('q')
 
+mongoOp.intialize()
+
 var count = 0
 processScheduler()
 
