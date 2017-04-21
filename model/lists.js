@@ -1,11 +1,9 @@
 const listsMongoPromises = require('./listsmongopromises')
 const modelConstants = require('./modelconstants')
 
-const validateListExistsPromise = ({listKey, familyId}) => {
-  console.log('----VALIDATE CALLED')
-  return listsMongoPromises.listsFindOnePromise({listKey, familyId})
+const validateListExistsPromise = (data) => {
+  return listsMongoPromises.listsFindOnePromise(data.list, data.familyId)
     .then((results) => {
-      console.log('----VALIDATE THEN')
       if (results.length === 0) {
         throw new Error(modelConstants.errorTypes.notFound)
       } else {

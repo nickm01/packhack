@@ -7,13 +7,13 @@ const Q = require('q')
 
 // This is a help these unit tests be more succinct
 const textShouldResult = (text, expectedResult, cachedListName) => {
-  const actualResult = languageProcessor.processLanguage(text, cachedListName)
+  const actualResult = languageProcessor.processLanguage({originalText: text, cachedListName})
   shouldEqualExpectedActual(expectedResult, actualResult, text)
 }
 
 const textShouldError = (text, expectedResult, cachedListName) => {
   try {
-    languageProcessor.processLanguage(text, cachedListName)
+    languageProcessor.processLanguage({originalText: text, cachedListName})
     should.fail('should fail')
   } catch (exception) {
     shouldEqualExpectedActual(expectedResult, exception, text)
@@ -169,9 +169,9 @@ describe('languageProcessor', function () {
     it('✅ **welcome 1', function () { textShouldResult('**welcome 1', {command: command}) })
   })
 
-  describe('promsify textProcessor', function () {
+  describe('promsify languageProcessor', function () {
     it('resolve', function () {
-      return Q.resolve(languageProcessor.processLanguagePromise('get list'))
+      return Q.resolve(languageProcessor.processLanguagePromise({originalText: 'get list'}))
       .then(function (result) {
         result.command.should.equal(languageProcessor.commandTypes.getList)
         result.list.should.equal('list')
@@ -181,7 +181,7 @@ describe('languageProcessor', function () {
     })
 
     it('reject', function () {
-      return Q.resolve(languageProcessor.processLanguagePromise('nonsense'))
+      return Q.resolve(languageProcessor.processLanguagePromise({originalText: 'nonsense'}))
       .then(function (result) {
         should.fail('should fail')
       }, function (error) {

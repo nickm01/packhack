@@ -1,13 +1,13 @@
 // Responsible for taking the text of a text message and processing it fully.
 
 const languageProcessor = require('./languageprocessor')
+const lists = require('../model/lists')
 
-const processText = (text, cachedListName) => {
-  const result = languageProcessor.processLanguage(text, cachedListName)
-  console.log('>>> ' + result)
-  // should validate listname
+const processTextPromise = (data) => {
+  return languageProcessor.processLanguagePromise(data)
+  .then(lists.validateListExistsPromise)
 }
 
 module.exports = {
-  processText
+  processTextPromise
 }

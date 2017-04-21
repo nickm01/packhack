@@ -42,21 +42,19 @@ const errorTypes = {
 }
 
 // MAIN PROCESS
-const processLanguage = (text, cachedListName) => {
-  const result = new LanguageProcessorResult({text: text, cachedListName: cachedListName})
+const processLanguage = (data) => {
+  const result = new LanguageProcessorResult({text: data.originalText, cachedListName: data.cachedListName})
     .convertToWords()
     .checkZeroWords()
     .getCommandFromWords()
     .errorIfNoCommand()
     .postProcess()
 
-  return {
-    command: result.commandObj ? result.commandObj.command : null,
-    list: result.list,
-    person: result.person,
-    originalText: text,
-    supplementaryText: result.supplementaryText
-  }
+  data.command = result.commandObj ? result.commandObj.command : null
+  data.list = result.list
+  data.person = result.person
+  data.supplementaryText = result.supplementaryText
+  return data
 }
 
 // USE OF PROTOTYPES FOR METHOD CHAINING
@@ -273,10 +271,10 @@ class LanguageProcessorError extends Error {
 }
 
 // TODO: Is there a better approach - should this even be here?
-const processLanguagePromise = (text, cachedListName) => {
+const processLanguagePromise = (data) => {
   const deferred = Q.defer()
   try {
-    const result = processLanguage(text, cachedListName)
+    const result = processLanguage(data)
     deferred.resolve(result)
   } catch (exception) {
     deferred.reject(exception)
