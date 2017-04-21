@@ -3,14 +3,17 @@ const modelConstants = require('./modelconstants')
 
 const validateListExistsPromise = (data) => {
   return listsMongoPromises.listsFindOnePromise(data.list, data.familyId)
-    .then((results) => {
-      if (results.length === 0) {
-        throw new Error(modelConstants.errorTypes.notFound)
+    .then(lists => {
+      if (lists.length === 0) {
+        data.error = modelConstants.errorTypes.notFound
+        throw data
       } else {
-        return true
+        data.listExists = true
+        return data
       }
     }, () => {
-      return modelConstants.errorTypes.generalError
+      data.error = modelConstants.errorTypes.generalError
+      throw data
     })
 }
 

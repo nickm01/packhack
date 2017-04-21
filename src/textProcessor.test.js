@@ -17,10 +17,8 @@ describe('textProcessor', function () {
   })
 
   afterEach(() => {
-    if (languageProcessorMock) {
-      languageProcessorMock.restore()
-      languageProcessorMock.verify()
-    }
+    languageProcessorMock.restore()
+    languageProcessorMock.verify()
     listsMock.restore()
     listsMock.verify()
   })
@@ -31,7 +29,7 @@ describe('textProcessor', function () {
     const originalText = 'get list'
     const data = {originalText}
 
-    it.only('should call languageProcessor and then validate list', function () {
+    it('should call languageProcessor and then validate list', function () {
       languageProcessorMock.expects('processLanguagePromise').once().withArgs(data).returns(Q.resolve(data))
       listsMock.expects('validateListExistsPromise').once().withArgs(data).returns(Q.resolve(data))
       return textProcessor.processTextPromise(data)

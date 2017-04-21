@@ -5,24 +5,54 @@ const listsMongoPromises = require('./listsmongopromises')
 const should = require('chai').should()
 const sinon = require('sinon')
 const Q = require('q')
+const modelConstants = require('./modelconstants')
 
-describe('lists', function () {
-  describe('lists document access', function () {
-    it('should return 1 result', function () {
+describe('lists', () => {
+  describe('when validating list exists', () => {
+    afterEach(() => {
+      listsMongoPromises.listsFindOnePromise.restore()
+    })
+
+    it('should find if there is one result', () => {
+      const singleElementArray = [{}]
       sinon.stub(listsMongoPromises, 'listsFindOnePromise').callsFake(function () {
-        return Q.resolve({
-          'listKey': 'myList',
-          'listDescription': 'line',
-          'familyId': 123
-        })
+        return Q.resolve(singleElementArray)
       })
-      // findOneListMock.expects('listsFindOnePromise').withArgs({}).returns(Q.resolve([{}]))
       return lists.validateListExistsPromise({listKey: 'myList', familyId: 123})
-        .then(function (result) {
-          result.should.equal(true)
-        }, function (error) {
-          should.fail('should not have failed: ' + error)
+        .then(result => {
+          result.listExists.should.equal(true)
         })
     })
+
+    it('should error if there no results', () => {
+      const emptyArray = []
+      const data = {listKey: 'myList', familyId: 123, someBaloney: 'sausages'}
+      sinon.stub(listsMongoPromises, 'listsFindOnePromise').callsFake(() => {
+        return Q.resolve(emptyArray)
+      })
+      return lists.validateListExistsPromise(data)
+        .then(result => {
+          should.fail('expecting error')
+        }, result => {
+          data.error = modelConstants.errorTypes.notFound
+          result.should.equal(data)
+        })
+    })
+
+    // TODO for general DB Error
+    // it('should error if database errors', () => {
+    //   const emptyArray = []
+    //   const data = {listKey: 'myList', familyId: 123, someData: 'sausages'}
+    //   sinon.stub(listsMongoPromises, 'listsFindOnePromise').callsFake(() => {
+    //     return Q.resolve(emptyArray)
+    //   })
+    //   return lists.validateListExistsPromise(data)
+    //     .then(result => {
+    //       should.fail('expecting error')
+    //     }, result => {
+    //       data.error = modelConstants.errorTypes.notFound
+    //       result.should.equal(data)
+    //     })
+    // })
   })
 })
