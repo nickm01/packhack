@@ -43,18 +43,28 @@ const errorTypes = {
 
 // MAIN PROCESS
 const processLanguage = (data) => {
-  const result = new LanguageProcessorResult({text: data.originalText, cachedListName: data.cachedListName})
-    .convertToWords()
-    .checkZeroWords()
-    .getCommandFromWords()
-    .errorIfNoCommand()
-    .postProcess()
+  try {
+    const result = new LanguageProcessorResult({text: data.originalText, cachedListName: data.cachedListName})
+      .convertToWords()
+      .checkZeroWords()
+      .getCommandFromWords()
+      .errorIfNoCommand()
+      .postProcess()
+    setDataAccordingToResult(data, result)
+    return data
+  } catch (error) {
+    data.message = error.message
+    setDataAccordingToResult(data, error.languageProcessorResult)
+    throw data
+  }
+}
 
+const setDataAccordingToResult = (data, result) => {
   data.command = result.commandObj ? result.commandObj.command : null
   data.list = result.list
   data.person = result.person
   data.supplementaryText = result.supplementaryText
-  return data
+  data.words = result.words
 }
 
 // USE OF PROTOTYPES FOR METHOD CHAINING
@@ -263,10 +273,7 @@ class LanguageProcessorError extends Error {
   constructor (message, languageProcessorResult) {
     super()
     this.message = message
-    this.originalText = languageProcessorResult.originalText
-    this.words = languageProcessorResult.words
-    this.command = languageProcessorResult.commandObj ? languageProcessorResult.commandObj.command : null
-    this.list = languageProcessorResult.list
+    this.languageProcessorResult = languageProcessorResult
   }
 }
 

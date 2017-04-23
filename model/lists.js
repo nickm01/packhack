@@ -11,8 +11,9 @@ const validateListExistsPromise = (data) => {
         data.listExists = true
         return data
       }
-    }, () => {
+    }, (error) => {
       data.error = modelConstants.errorTypes.generalError
+      data.systemError = error
       throw data
     })
 }

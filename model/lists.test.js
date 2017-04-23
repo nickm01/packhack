@@ -39,20 +39,19 @@ describe('lists', () => {
         })
     })
 
-    // TODO for general DB Error
-    // it('should error if database errors', () => {
-    //   const emptyArray = []
-    //   const data = {listKey: 'myList', familyId: 123, someData: 'sausages'}
-    //   sinon.stub(listsMongoPromises, 'listsFindOnePromise').callsFake(() => {
-    //     return Q.resolve(emptyArray)
-    //   })
-    //   return lists.validateListExistsPromise(data)
-    //     .then(result => {
-    //       should.fail('expecting error')
-    //     }, result => {
-    //       data.error = modelConstants.errorTypes.notFound
-    //       result.should.equal(data)
-    //     })
-    // })
+    it('should error if database errors', () => {
+      const data = {listKey: 'myList', familyId: 123, someData: 'sausages'}
+      sinon.stub(listsMongoPromises, 'listsFindOnePromise').callsFake(() => {
+        return Q.reject('someError')
+      })
+      return lists.validateListExistsPromise(data)
+        .then(result => {
+          should.fail('expecting error')
+        }, result => {
+          data.error = modelConstants.errorTypes.generalError
+          data.systemError = 'someError'
+          result.should.equal(data)
+        })
+    })
   })
 })
