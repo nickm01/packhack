@@ -35,7 +35,6 @@ const commandData = [
 const errorTypes = {
   noText: 'noText',
   unrecognizedCommand: 'unrecognizedCommand',
-  unrecognizedCommandCouldBeList: 'unrecognizedCommandCouldBeList',
   noList: 'noList',
   listNameInvalid: 'listNameInvalid',
   noPerson: 'noPerson'
@@ -48,6 +47,7 @@ const processLanguage = (data) => {
       .convertToWords()
       .checkZeroWords()
       .getCommandFromWords()
+      .guessGetIfNoCommandSingleWord()
       .errorIfNoCommand()
       .postProcess()
     setDataAccordingToResult(data, result)
@@ -109,13 +109,19 @@ LanguageProcessorResult.prototype.getCommandFromWords = function () {
   return this
 }
 
-LanguageProcessorResult.prototype.errorIfNoCommand = function () {
+LanguageProcessorResult.prototype.guessGetIfNoCommandSingleWord = function () {
   if (!this.commandObj) {
     if (this.words.length === 1) {
-      throw new LanguageProcessorError(errorTypes.unrecognizedCommandCouldBeList, this)
-    } else {
-      throw new LanguageProcessorError(errorTypes.unrecognizedCommand, this)
+      this.commandObj = commandData[1] // Default to get
+      this.setListFromFirstWord()
     }
+  }
+  return this
+}
+
+LanguageProcessorResult.prototype.errorIfNoCommand = function () {
+  if (!this.commandObj) {
+    throw new LanguageProcessorError(errorTypes.unrecognizedCommand, this)
   }
   return this
 }
@@ -136,7 +142,9 @@ LanguageProcessorResult.prototype.setListFromSecondWord = function () {
 }
 
 LanguageProcessorResult.prototype.postProcessBasicListCommandIncludingCache = function () {
-  if (this.words.length === 1 && this.previouslyCachedListName) {
+  if (this.list) {
+    return this
+  } else if (this.words.length === 1 && this.previouslyCachedListName) {
     return this.setListFromWord(this.previouslyCachedListName)
   } else {
     return this.setListFromSecondWord().validateMultipleWordListName()

@@ -41,10 +41,11 @@ const shouldEqualExpectedActual = function (expected, actual, originalText) {
 }
 
 describe('languageProcessor', function () {
+  const getCommand = languageProcessor.commandTypes.getList
   describe('basics', function () {
     it('❌ nothing', function () { textShouldError('', {command: null, list: null, message: languageProcessor.errorTypes.noText}) })
-    it('❌ one word but not a command', function () { textShouldError('yippeeee', {command: null, list: null, message: languageProcessor.errorTypes.unrecognizedCommandCouldBeList}) })
-    it('❌ getshopping', function () { textShouldError('getshopping', {command: null, list: null, message: languageProcessor.errorTypes.unrecognizedCommandCouldBeList}) })
+    it('✅ one word but not a command', function () { textShouldResult('yippeeee', {command: getCommand, list: 'yippeeee'}) })
+    it('✅ getshopping', function () { textShouldResult('getshopping', {command: getCommand, list: 'getshopping'}) })
     it('❌ two word nonsense', function () { textShouldError('yipppeeee whippeee', {command: null, list: null, message: languageProcessor.errorTypes.unrecognizedCommand}) })
   })
 
@@ -55,7 +56,7 @@ describe('languageProcessor', function () {
     it('✅ Get Lists', function () { textShouldResult('Get Lists', {command: command}) })
     it('✅ show lists', function () { textShouldResult('show lists', {command: command}) })
     it('✅ display lists', function () { textShouldResult('display lists', {command: command}) })
-    it('❌ getlists', function () { textShouldError('getlists', {command: null, list: null, message: languageProcessor.errorTypes.unrecognizedCommandCouldBeList}) })
+    it('✅ one word but not a command', function () { textShouldResult('getlists', {command: languageProcessor.commandTypes.getList, list: 'getlists'}) })
   })
 
   describe('createList', function () {
@@ -181,11 +182,11 @@ describe('languageProcessor', function () {
     })
 
     it('reject', function () {
-      return Q.resolve(languageProcessor.processLanguagePromise({originalText: 'nonsense'}))
+      return Q.resolve(languageProcessor.processLanguagePromise({originalText: 'nonsense and more nonsense'}))
       .then(function (result) {
         should.fail('should fail')
       }, function (error) {
-        error.message.should.equal(languageProcessor.errorTypes.unrecognizedCommandCouldBeList)
+        error.message.should.equal(languageProcessor.errorTypes.unrecognizedCommand)
       })
     })
   })
