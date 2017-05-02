@@ -5,14 +5,14 @@ const validateListExistsPromise = (data) => {
   return listsMongoPromises.listsFindOnePromise(data.list, data.familyId)
     .then(lists => {
       if (lists.length === 0) {
-        data.error = modelConstants.errorTypes.notFound
+        data.errorMessage = modelConstants.errorTypes.notFound
         throw data
       } else {
         data.listExists = true
         return data
       }
     }, (error) => {
-      data.error = modelConstants.errorTypes.generalError
+      data.errorMessage = modelConstants.errorTypes.generalError
       data.systemError = error
       throw data
     })

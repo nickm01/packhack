@@ -53,7 +53,7 @@ const processLanguage = (data) => {
     setDataAccordingToResult(data, result)
     return data
   } catch (error) {
-    data.message = error.message
+    data.errorMessage = error.error
     setDataAccordingToResult(data, error.languageProcessorResult)
     throw data
   }
@@ -280,7 +280,7 @@ String.prototype.isACommand = function () {
 class LanguageProcessorError extends Error {
   constructor (message, languageProcessorResult) {
     super()
-    this.message = message
+    this.error = message
     this.languageProcessorResult = languageProcessorResult
   }
 }

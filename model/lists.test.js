@@ -34,7 +34,7 @@ describe('lists', () => {
         .then(result => {
           should.fail('expecting error')
         }, result => {
-          data.error = modelConstants.errorTypes.notFound
+          data.errorMessage = modelConstants.errorTypes.notFound
           result.should.equal(data)
         })
     })
@@ -48,7 +48,7 @@ describe('lists', () => {
         .then(result => {
           should.fail('expecting error')
         }, result => {
-          data.error = modelConstants.errorTypes.generalError
+          data.errorMessage = modelConstants.errorTypes.generalError
           data.systemError = 'someError'
           result.should.equal(data)
         })

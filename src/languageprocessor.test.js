@@ -34,8 +34,8 @@ const shouldEqualExpectedActual = function (expected, actual, originalText) {
   if (expected.person) {
     actual.person.should.equal(expected.person)
   }
-  if (expected.message) {
-    actual.message.should.equal(expected.message)
+  if (expected.errorMessage) {
+    actual.errorMessage.should.equal(expected.errorMessage)
   }
   actual.originalText.should.equal(originalText)
 }
@@ -186,7 +186,7 @@ describe('languageProcessor', function () {
       .then(function (result) {
         should.fail('should fail')
       }, function (error) {
-        error.message.should.equal(languageProcessor.errorTypes.unrecognizedCommand)
+        error.errorMessage.should.equal(languageProcessor.errorTypes.unrecognizedCommand)
       })
     })
   })
