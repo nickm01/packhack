@@ -4,6 +4,7 @@
 const should = require('chai').should()
 const languageProcessor = require('./languageProcessor')
 const Q = require('q')
+const errors = require('./errors')
 
 // This is a help these unit tests be more succinct
 const textShouldResult = (text, expectedResult, cachedListName) => {
@@ -43,10 +44,10 @@ const shouldEqualExpectedActual = function (expected, actual, originalText) {
 describe('languageProcessor', function () {
   const getCommand = languageProcessor.commandTypes.getList
   describe('basics', function () {
-    it('❌ nothing', function () { textShouldError('', {command: null, list: null, message: languageProcessor.errorTypes.noText}) })
+    it('❌ nothing', function () { textShouldError('', {command: null, list: null, message: errors.errorTypes.noText}) })
     it('✅ one word but not a command', function () { textShouldResult('yippeeee', {command: getCommand, list: 'yippeeee'}) })
     it('✅ getshopping', function () { textShouldResult('getshopping', {command: getCommand, list: 'getshopping'}) })
-    it('❌ two word nonsense', function () { textShouldError('yipppeeee whippeee', {command: null, list: null, message: languageProcessor.errorTypes.unrecognizedCommand}) })
+    it('❌ two word nonsense', function () { textShouldError('yipppeeee whippeee', {command: null, list: null, message: errors.errorTypes.unrecognizedCommand}) })
   })
 
   describe('getLists', function () {
@@ -65,13 +66,13 @@ describe('languageProcessor', function () {
     it('✅ create list', function () { textShouldResult('create list', {command: command, list: 'list'}) })
     it('✅ CREATE Something', function () { textShouldResult('CREATE SomeThing', {command: command, list: 'something'}) })
     it('✅ create with special characters', function () { textShouldResult('create 👍❤️😜!@#$%^&*()', {command: command, list: '👍❤️😜!@#$%^&*()'}) })
-    it('❌ create #get', function () { textShouldError('create #get', {command: command, list: null, message: languageProcessor.errorTypes.listNameInvalid}) })
-    it('❌ create Get', function () { textShouldError('create Get', {command: command, list: null, message: languageProcessor.errorTypes.listNameInvalid}) })
-    it('❌ create #create', function () { textShouldError('create #create', {command: command, list: null, message: languageProcessor.errorTypes.listNameInvalid}) })
-    it('❌ create', function () { textShouldError('create', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
-    it('❌ create only with cachedListName', function () { textShouldError('create', {command: command, list: null, message: languageProcessor.errorTypes.noList}) }, 'cachedListName')
-    it('❌ create #list with multiple words', function () { textShouldError('create #list with multiple words', {command: command, list: null, message: languageProcessor.errorTypes.listNameInvalid}) })
-    it('❌ create list with multiple words', function () { textShouldError('create list with multiple words', {command: command, list: null, message: languageProcessor.errorTypes.listNameInvalid}) })
+    it('❌ create #get', function () { textShouldError('create #get', {command: command, list: null, message: errors.errorTypes.listNameInvalid}) })
+    it('❌ create Get', function () { textShouldError('create Get', {command: command, list: null, message: errors.errorTypes.listNameInvalid}) })
+    it('❌ create #create', function () { textShouldError('create #create', {command: command, list: null, message: errors.errorTypes.listNameInvalid}) })
+    it('❌ create', function () { textShouldError('create', {command: command, list: null, message: errors.errorTypes.noList}) })
+    it('❌ create only with cachedListName', function () { textShouldError('create', {command: command, list: null, message: errors.errorTypes.noList}) }, 'cachedListName')
+    it('❌ create #list with multiple words', function () { textShouldError('create #list with multiple words', {command: command, list: null, message: errors.errorTypes.listNameInvalid}) })
+    it('❌ create list with multiple words', function () { textShouldError('create list with multiple words', {command: command, list: null, message: errors.errorTypes.listNameInvalid}) })
   })
 
   describe('getList', function () {
@@ -82,14 +83,14 @@ describe('languageProcessor', function () {
     it('✅ display lisT', function () { textShouldResult('display lisT', {command: command, list: 'list'}) })
     it('✅ get + cached listname', function () { textShouldResult('get', {command: command, list: 'cachedlistname'}, 'cachedListName') })
     it('✅ get #stuff + cached listname', function () { textShouldResult('get #stuff', {command: command, list: 'stuff'}, 'cachedListName') })
-    it('❌ get', function () { textShouldError('get', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
-    it('❌ get one two', function () { textShouldError('get one two', {command: command, message: languageProcessor.errorTypes.listNameInvalid}) })
+    it('❌ get', function () { textShouldError('get', {command: command, list: null, message: errors.errorTypes.noList}) })
+    it('❌ get one two', function () { textShouldError('get one two', {command: command, message: errors.errorTypes.listNameInvalid}) })
   })
 
   describe('addListItem', function () {
     const command = languageProcessor.commandTypes.addListItem
     it('✅ add item with cachedListName', function () { textShouldResult('add item', {command: command, list: 'cachedlistname', supplementaryText: 'item'}, 'cachedListName') })
-    it('❌ add item with no cachedListName', function () { textShouldError('add item', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
+    it('❌ add item with no cachedListName', function () { textShouldError('add item', {command: command, list: null, message: errors.errorTypes.noList}) })
     it('✅ #list add item', function () { textShouldResult('#list add item', {command: command, list: 'list', supplementaryText: 'item'}) })
     it('✅ #list add multiple items', function () { textShouldResult('#list add item1, item2, item3', {command: command, list: 'list', supplementaryText: 'item1, item2, item3'}) })
     it('✅ list add item', function () { textShouldResult('list add item', {command: command, list: 'list', supplementaryText: 'item'}) })
@@ -105,7 +106,7 @@ describe('languageProcessor', function () {
   describe('removeListItem', function () {
     const command = languageProcessor.commandTypes.removeListItem
     it('✅ remove item with cachedListName', function () { textShouldResult('remove item', {command: command, list: 'cachedlistname', supplementaryText: 'item'}, 'cachedListName') })
-    it('❌ remove item with no cachedListName', function () { textShouldError('remove item', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
+    it('❌ remove item with no cachedListName', function () { textShouldError('remove item', {command: command, list: null, message: errors.errorTypes.noList}) })
     it('✅ #list remove item', function () { textShouldResult('#list remove item', {command: command, list: 'list', supplementaryText: 'item'}) })
     it('✅ #list remove multiple items', function () { textShouldResult('#list remove item1, item2, item3', {command: command, list: 'list', supplementaryText: 'item1, item2, item3'}) })
     it('✅ list remove item', function () { textShouldResult('list remove item', {command: command, list: 'list', supplementaryText: 'item'}) })
@@ -126,17 +127,17 @@ describe('languageProcessor', function () {
     it('✅ clear list', function () { textShouldResult('clear list', {command: command, list: 'list'}) })
     it('✅ CLEar List', function () { textShouldResult('CLEar SomeThing', {command: command, list: 'something'}) })
     it('✅ clear + cached listname', function () { textShouldResult('clear', {command: command, list: 'cachedlistname'}, 'cachedListName') })
-    it('❌ clear', function () { textShouldError('clear', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
-    it('❌ clear one two', function () { textShouldError('clear one two', {command: command, message: languageProcessor.errorTypes.listNameInvalid}) })
+    it('❌ clear', function () { textShouldError('clear', {command: command, list: null, message: errors.errorTypes.noList}) })
+    it('❌ clear one two', function () { textShouldError('clear one two', {command: command, message: errors.errorTypes.listNameInvalid}) })
   })
 
   describe('deleteList', function () {
     const command = languageProcessor.commandTypes.deleteList
     it('✅ delete #list', function () { textShouldResult('delete #list', {command: command, list: 'list'}) })
     it('✅ delete list', function () { textShouldResult('delete list', {command: command, list: 'list'}) })
-    it('❌ delete + cached listname', function () { textShouldError('delete', {command: command, list: null, message: languageProcessor.errorTypes.noList}, 'cachedListName') })
-    it('❌ delete', function () { textShouldError('delete', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
-    it('❌ delete one two', function () { textShouldError('delete one two', {command: command, message: languageProcessor.errorTypes.listNameInvalid}) })
+    it('❌ delete + cached listname', function () { textShouldError('delete', {command: command, list: null, message: errors.errorTypes.noList}, 'cachedListName') })
+    it('❌ delete', function () { textShouldError('delete', {command: command, list: null, message: errors.errorTypes.noList}) })
+    it('❌ delete one two', function () { textShouldError('delete one two', {command: command, message: errors.errorTypes.listNameInvalid}) })
   })
 
   describe('sendList', function () {
@@ -146,9 +147,9 @@ describe('languageProcessor', function () {
     it('✅ send @someone', function () { textShouldResult('send @someone', {command: command, list: 'cachedlistname', person: 'someone'}, 'cachedListName') })
     it('✅ send someone list', function () { textShouldResult('send someone list', {command: command, list: 'list', person: 'someone'}, 'cachedListName') })
     it('✅ send someone list hello', function () { textShouldResult('send someone list hello', {command: command, list: 'list', person: 'someone', supplementaryText: 'hello'}, 'cachedListName') })
-    it('❌ send @someone no cache', function () { textShouldError('send @someone', {command: command, list: null, message: languageProcessor.errorTypes.noList}) })
-    it('❌ send', function () { textShouldError('send', {command: command, list: null, message: languageProcessor.errorTypes.noPerson}) })
-    it('❌ send #list', function () { textShouldError('send #list', {command: command, list: null, message: languageProcessor.errorTypes.noPerson}) })
+    it('❌ send @someone no cache', function () { textShouldError('send @someone', {command: command, list: null, message: errors.errorTypes.noList}) })
+    it('❌ send', function () { textShouldError('send', {command: command, list: null, message: errors.errorTypes.noPerson}) })
+    it('❌ send #list', function () { textShouldError('send #list', {command: command, list: null, message: errors.errorTypes.noPerson}) })
     it('✅ send list to someone', function () { textShouldResult('send list to someone', {command: command, list: 'list', person: 'someone'}, 'cachedListName') })
     it('✅ send #list to @someone', function () { textShouldResult('send list to someone', {command: command, list: 'list', person: 'someone'}, 'cachedListName') })
     it('✅ send list hello to someone', function () { textShouldResult('send list hello to someone', {command: command, list: 'list', person: 'someone', supplementaryText: 'hello'}, 'cachedListName') })
@@ -186,7 +187,7 @@ describe('languageProcessor', function () {
       .then(function (result) {
         should.fail('should fail')
       }, function (error) {
-        error.errorMessage.should.equal(languageProcessor.errorTypes.unrecognizedCommand)
+        error.errorMessage.should.equal(errors.errorTypes.unrecognizedCommand)
       })
     })
   })

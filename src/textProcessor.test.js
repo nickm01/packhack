@@ -8,6 +8,7 @@ const lists = require('../model/lists')
 const sinon = require('sinon')
 const Q = require('q')
 const modelConstants = require('../model/modelconstants')
+const errors = require('./errors')
 
 describe('textProcessor', () => {
   var languageProcessorMock, listsMock
@@ -75,7 +76,7 @@ describe('textProcessor', () => {
         should.fail('should fail')
       }, errorResult => {
         errorResult.listExists.should.equal(true)
-        errorResult.errorMessage.should.equal(languageProcessor.errorTypes.listAlreadyExists)
+        errorResult.errorMessage.should.equal(errors.errorTypes.listAlreadyExists)
       })
     })
 
@@ -88,10 +89,9 @@ describe('textProcessor', () => {
         should.fail('should fail')
       }, errorResult => {
         should.not.exist(errorResult.listExists)
-        errorResult.errorMessage.should.equal(languageProcessor.errorTypes.generalError)
+        errorResult.errorMessage.should.equal(errors.errorTypes.generalError)
       })
     })
-
   })
 
   describe('integration tests', function () {
@@ -150,7 +150,7 @@ describe('textProcessor', () => {
         return textProcessor.processTextPromise(data).then(function (result) {
           should.fail('should error')
         }, (error) => {
-          error.errorMessage.should.equal(languageProcessor.errorTypes.unrecognizedCommand)
+          error.errorMessage.should.equal(errors.errorTypes.unrecognizedCommand)
           error.originalText.should.equal(data.originalText)
           error.words.length.should.equal(3)
           error.randomDataToCheckPassthrough.should.equal('123')
@@ -208,7 +208,7 @@ describe('textProcessor', () => {
           should.not.exist(result.supplementaryText)
           result.randomDataToCheckPassthrough.should.equal(initialData.randomDataToCheckPassthrough)
           result.words.length.should.equal(2)
-          result.errorMessage.should.equal(languageProcessor.errorTypes.listAlreadyExists)
+          result.errorMessage.should.equal(errors.errorTypes.listAlreadyExists)
         })
       })
     })

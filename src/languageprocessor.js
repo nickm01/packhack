@@ -2,6 +2,7 @@
 
 const stringProcessor = require('./stringprocessor')
 const Q = require('q')
+const errors = require('./errors')
 
 const commandTypes = {
   getlists: 'getlists',
@@ -31,17 +32,6 @@ const commandData = [
   {command: commandTypes.help, actuals: ['help', 'flock', 'packhack', 'assist', '?', 'intro']}, // TODO: needs to be flushed out
   {command: commandTypes.pushIntro, actuals: ['**welcome']} // TODO: needs to be flushed out
 ]
-
-// TODO: Move
-const errorTypes = {
-  noText: 'noText',
-  unrecognizedCommand: 'unrecognizedCommand',
-  noList: 'noList',
-  listNameInvalid: 'listNameInvalid',
-  noPerson: 'noPerson',
-  listAlreadyExists: 'listAlreadyExists',
-  generalError: 'generalError'
-}
 
 // MAIN PROCESS
 const processLanguage = (data) => {
@@ -90,7 +80,7 @@ LanguageProcessorResult.prototype.convertToWords = function () {
 }
 
 LanguageProcessorResult.prototype.checkZeroWords = function () {
-  if (this.words.length === 0) { throw new LanguageProcessorError(errorTypes.noText, this) }
+  if (this.words.length === 0) { throw new LanguageProcessorError(errors.errorTypes.noText, this) }
   return this
 }
 
@@ -124,7 +114,7 @@ LanguageProcessorResult.prototype.guessGetIfNoCommandSingleWord = function () {
 
 LanguageProcessorResult.prototype.errorIfNoCommand = function () {
   if (!this.commandObj) {
-    throw new LanguageProcessorError(errorTypes.unrecognizedCommand, this)
+    throw new LanguageProcessorError(errors.errorTypes.unrecognizedCommand, this)
   }
   return this
 }
@@ -138,7 +128,7 @@ LanguageProcessorResult.prototype.postProcess = function () {
 
 LanguageProcessorResult.prototype.setListFromSecondWord = function () {
   if (this.words.length < 2) {
-    throw new LanguageProcessorError(errorTypes.noList, this)
+    throw new LanguageProcessorError(errors.errorTypes.noList, this)
   } else {
     return this.setListFromWord(this.words[1])
   }
@@ -165,14 +155,14 @@ LanguageProcessorResult.prototype.validateNewListName = function () {
       return (this.list === actualText)
     }).length > 0
   }).length > 0) {
-    throw new LanguageProcessorError(errorTypes.listNameInvalid, this)
+    throw new LanguageProcessorError(errors.errorTypes.listNameInvalid, this)
   }
   return this.validateMultipleWordListName()
 }
 
 LanguageProcessorResult.prototype.validateMultipleWordListName = function () {
   if (this.words.length > 2) {
-    throw new LanguageProcessorError(errorTypes.listNameInvalid, this)
+    throw new LanguageProcessorError(errors.errorTypes.listNameInvalid, this)
   }
   return this
 }
@@ -213,7 +203,7 @@ LanguageProcessorResult.prototype.postProcessSend = function () {
   const len = this.words.length
   if (len === 1 ||
       (len === 2 && this.words[1].charAt(0) === '#')) {
-    throw new LanguageProcessorError(errorTypes.noPerson, this)
+    throw new LanguageProcessorError(errors.errorTypes.noPerson, this)
   }
 
   // if this is of the structure "send list to someone"
@@ -244,7 +234,7 @@ LanguageProcessorResult.prototype.setListFromCache = function () {
   if (this.previouslyCachedListName) {
     this.setListFromWord(this.previouslyCachedListName)
   } else {
-    throw new LanguageProcessorError(errorTypes.noList, this)
+    throw new LanguageProcessorError(errors.errorTypes.noList, this)
   }
   return this
 }
@@ -303,6 +293,5 @@ const processLanguagePromise = (data) => {
 module.exports = {
   processLanguage,
   processLanguagePromise,
-  errorTypes,
   commandTypes
 }
