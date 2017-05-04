@@ -5,6 +5,7 @@ const validateListExistsPromise = (data) => {
   return listsMongoPromises.listsFindOnePromise(data.list, data.familyId)
     .then(lists => {
       if (lists.length === 0) {
+        data.listExists = false
         data.errorMessage = modelConstants.errorTypes.notFound
         throw data
       } else {

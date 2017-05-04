@@ -32,12 +32,15 @@ const commandData = [
   {command: commandTypes.pushIntro, actuals: ['**welcome']} // TODO: needs to be flushed out
 ]
 
+// TODO: Move
 const errorTypes = {
   noText: 'noText',
   unrecognizedCommand: 'unrecognizedCommand',
   noList: 'noList',
   listNameInvalid: 'listNameInvalid',
-  noPerson: 'noPerson'
+  noPerson: 'noPerson',
+  listAlreadyExists: 'listAlreadyExists',
+  generalError: 'generalError'
 }
 
 // MAIN PROCESS
