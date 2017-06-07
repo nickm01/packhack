@@ -2,6 +2,7 @@
 
 const languageProcessor = require('./languageprocessor')
 const lists = require('../model/lists')
+const listItems = require('../model/listItems')
 const Q = require('q')
 const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
@@ -11,6 +12,7 @@ const processTextPromise = (data) => {
   return languageProcessor.processLanguagePromise(data)
   .then(conditionallyValidateListExists)
   .then(conditionallyValidateListDoesNotExists)
+  .then(conditionallyProcessListItemsForGetList)
 }
 
 const conditionallyValidateListExists = (data) => {
@@ -36,6 +38,17 @@ const conditionallyValidateListDoesNotExists = (data) => {
         result.errorMessage = errors.errorTypes.generalError
         throw result
       }
+    })
+  } else {
+    return Q.resolve(data)
+  }
+}
+
+const conditionallyProcessListItemsForGetList = (data) => {
+  if (data.command === commandTypes.getList) {
+    return listItems.findPromise(data).then(result => {
+      result.responseText = '• ' + result.listItems.join('\n• ')
+      return result
     })
   } else {
     return Q.resolve(data)

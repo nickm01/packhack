@@ -4,6 +4,7 @@
 const should = require('chai').should()
 const textProcessor = require('./textprocessor')
 const lists = require('../model/lists')
+const listItems = require('../model/listItems')
 const sinon = require('sinon')
 const Q = require('q')
 const modelConstants = require('../model/modelconstants')
@@ -23,23 +24,27 @@ describe('textProcessor Integration', () => {
   })
   describe('when "get list"', function () {
     var listsMock
+    var data = {
+      originalText: 'get list',
+      listExists: true,
+      randomDataToCheckPassthrough: '123',
+      listItems: []
+    }
 
     beforeEach(() => {
       listsMock = sinon.mock(lists)
+      listsMock.expects('validateListExistsPromise').once().withArgs(data).returns(Q.resolve(data))
+      sinon.stub(listItems, 'findPromise').callsFake(function (result) {
+        return Q.resolve(result)
+      })
     })
 
     afterEach(() => {
       listsMock.restore()
-      listsMock.verify()
+      listItems.findPromise.restore()
     })
 
     it('should be successful and pass data through', function () {
-      var data = {
-        originalText: 'get list',
-        listExists: true,
-        randomDataToCheckPassthrough: '123'
-      }
-      listsMock.expects('validateListExistsPromise').once().withArgs(data).returns(Q.resolve(data))
       return textProcessor.processTextPromise(data).then(function (result) {
         result.originalText.should.equal(data.originalText)
         result.listExists.should.be.true
@@ -51,6 +56,18 @@ describe('textProcessor Integration', () => {
         result.words.length.should.equal(2)
       }, () => {
         should.fail('should not error')
+      })
+    })
+
+    describe('when list has 2 items', function () {
+      beforeEach(() => {
+        data.listItems = ['item1', 'item2']
+      })
+
+      it('should create responseText with 2 list items', function () {
+        return textProcessor.processTextPromise(data).then(function (result) {
+          result.responseText.should.equal('• item1\n• item2')
+        })
       })
     })
   })

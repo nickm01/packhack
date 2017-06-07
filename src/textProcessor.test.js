@@ -21,9 +21,7 @@ describe('textProcessor', () => {
 
   afterEach(() => {
     languageProcessorMock.restore()
-    languageProcessorMock.verify()
     listsMock.restore()
-    listsMock.verify()
   })
 
   describe('when "get list"', () => {
