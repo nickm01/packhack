@@ -9,6 +9,7 @@ const sinon = require('sinon')
 const Q = require('q')
 const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
+const commandTypes = require('./commandtypes')
 
 describe('textProcessor', () => {
   var languageProcessorMock, listsMock
@@ -50,7 +51,7 @@ describe('textProcessor', () => {
 
   describe('when "create #MyList"', () => {
     const originalText = 'create #MyList'
-    const command = languageProcessor.commandTypes.createList
+    const command = commandTypes.createList
     const list = 'MyList'
     const data = {originalText, command, list}
 
@@ -94,7 +95,7 @@ describe('textProcessor', () => {
     })
   })
 
-  describe('integration tests', function () {
+  describe('*** INTEGRATION TESTS', function () {
     describe('when "get list"', function () {
       var listsMock
 
@@ -117,7 +118,7 @@ describe('textProcessor', () => {
         return textProcessor.processTextPromise(data).then(function (result) {
           result.originalText.should.equal(data.originalText)
           result.listExists.should.be.true
-          result.command.should.equal(languageProcessor.commandTypes.getList)
+          result.command.should.equal(commandTypes.getList)
           result.list.should.equal('list')
           should.not.exist(result.person)
           should.not.exist(result.supplementaryText)
@@ -176,7 +177,7 @@ describe('textProcessor', () => {
         return textProcessor.processTextPromise(initialData).then(function (result) {
           result.originalText.should.equal(initialData.originalText)
           result.listExists.should.equal(false)
-          result.command.should.equal(languageProcessor.commandTypes.createList)
+          result.command.should.equal(commandTypes.createList)
           result.list.should.equal('thelist')
           should.not.exist(result.person)
           should.not.exist(result.supplementaryText)
@@ -202,7 +203,7 @@ describe('textProcessor', () => {
         }, (result) => {
           result.originalText.should.equal(initialData.originalText)
           result.listExists.should.equal(true)
-          result.command.should.equal(languageProcessor.commandTypes.createList)
+          result.command.should.equal(commandTypes.createList)
           result.list.should.equal('thelist')
           should.not.exist(result.person)
           should.not.exist(result.supplementaryText)

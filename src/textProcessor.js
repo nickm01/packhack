@@ -5,6 +5,7 @@ const lists = require('../model/lists')
 const Q = require('q')
 const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
+const commandTypes = require('./commandtypes')
 
 const processTextPromise = (data) => {
   return languageProcessor.processLanguagePromise(data)
@@ -13,7 +14,7 @@ const processTextPromise = (data) => {
 }
 
 const conditionallyValidateListExists = (data) => {
-  if (data.list && data.command !== languageProcessor.commandTypes.createList) {
+  if (data.list && data.command !== commandTypes.createList) {
     return lists.validateListExistsPromise(data)
   } else {
     return Q.resolve(data)
@@ -21,7 +22,7 @@ const conditionallyValidateListExists = (data) => {
 }
 
 const conditionallyValidateListDoesNotExists = (data) => {
-  if (data.command === languageProcessor.commandTypes.createList) {
+  if (data.command === commandTypes.createList) {
     return lists.validateListExistsPromise(data).then(result => {
       // Found an existing list, then it's an error
       result.errorMessage = errors.errorTypes.listAlreadyExists

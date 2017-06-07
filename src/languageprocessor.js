@@ -3,20 +3,7 @@
 const stringProcessor = require('./stringprocessor')
 const Q = require('q')
 const errors = require('./errors')
-
-const commandTypes = {
-  getlists: 'getlists',
-  getList: 'getList',
-  createList: 'createList',
-  clearList: 'clearList',
-  deleteList: 'deleteList',
-  addListItem: 'addListItem',
-  removeListItem: 'removeListItem',
-  sendList: 'sendList',
-  addReminder: 'addReminder',
-  help: 'help',
-  pushIntro: 'pushIntro'
-}
+const commandTypes = require('./commandtypes')
 
 // Note more complex constructs should be at the end
 const commandData = [
@@ -292,6 +279,5 @@ const processLanguagePromise = (data) => {
 
 module.exports = {
   processLanguage,
-  processLanguagePromise,
-  commandTypes
+  processLanguagePromise
 }
