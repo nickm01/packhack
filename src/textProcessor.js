@@ -2,7 +2,6 @@
 
 const languageProcessor = require('./languageprocessor')
 const lists = require('../model/lists')
-const listItems = require('../model/listItems')
 const Q = require('q')
 const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
@@ -12,7 +11,8 @@ const processTextPromise = (data) => {
   return languageProcessor.processLanguagePromise(data)
   .then(conditionallyValidateListExists)
   .then(conditionallyValidateListDoesNotExists)
-  .then(conditionallyProcessListItemsForGetList)
+  .then(commandSpecificProcessorPromise)
+  .catch(processError)
 }
 
 const conditionallyValidateListExists = (data) => {
@@ -44,13 +44,21 @@ const conditionallyValidateListDoesNotExists = (data) => {
   }
 }
 
-const conditionallyProcessListItemsForGetList = (data) => {
-  if (data.command === commandTypes.getList) {
-    return listItems.findPromise(data).then(result => {
-      result.responseText = '• ' + result.listItems.join('\n• ')
-      return result
-    })
+const commandSpecificProcessorPromise = (data) => {
+  if (data.command && data.command === commandTypes.getList) {
+    const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
+    return processor.processResponseTextPromise(data)
   } else {
+    return Q.resolve(data)
+  }
+}
+
+const processError = (data) => {
+  if (data.command && data.command === commandTypes.getList) {
+    const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
+    return processor.processErrorPromise(data)
+  } else {
+    data.responseText = 'Sorry don\'t understand. Type \'packhack\' for help.'
     return Q.resolve(data)
   }
 }

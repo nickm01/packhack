@@ -72,10 +72,10 @@ describe('textProcessor', () => {
       languageProcessorMock.expects('processLanguagePromise').once().withArgs(data).returns(Q.resolve(data))
       listsMock.expects('validateListExistsPromise').once().returns(Q.resolve(resultantData))
       return textProcessor.processTextPromise(data).then(result => {
-        should.fail('should fail')
+        result.listExists.should.equal(true)
+        result.errorMessage.should.equal(errors.errorTypes.listAlreadyExists)
       }, errorResult => {
-        errorResult.listExists.should.equal(true)
-        errorResult.errorMessage.should.equal(errors.errorTypes.listAlreadyExists)
+        should.fail('should not fail')
       })
     })
 
@@ -85,10 +85,10 @@ describe('textProcessor', () => {
       languageProcessorMock.expects('processLanguagePromise').once().withArgs(data).returns(Q.resolve(data))
       listsMock.expects('validateListExistsPromise').once().returns(Q.reject(resultantData))
       return textProcessor.processTextPromise(data).then(result => {
-        should.fail('should fail')
+        should.not.exist(result.listExists)
+        result.errorMessage.should.equal(errors.errorTypes.generalError)
       }, errorResult => {
-        should.not.exist(errorResult.listExists)
-        errorResult.errorMessage.should.equal(errors.errorTypes.generalError)
+        should.fail('should not fail')
       })
     })
   })
