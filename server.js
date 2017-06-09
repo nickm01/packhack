@@ -11,7 +11,7 @@ var logging = require('./logging')
 var reminders = require('./reminders')
 var listItems = require('./listitems')
 var messagePreProcessor = require('./messagepreprocessor')
-var stringProcessor = require('./src/stringprocessor')
+//var stringProcessor = require('./src/stringprocessor')
 var textProcessor = require('./src/textprocessor')
 
 mongoOp.intialize()
