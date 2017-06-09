@@ -11,150 +11,150 @@ const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
 const commandTypes = require('./commandtypes')
 
-describe('textProcessor Integration', () => {
-  var listsMock
+describe('textProcessor + languageProcessor', () => {
+  describe('getlist', () => {
+    var listsMock, data
 
-  beforeEach(() => {
-    listsMock = sinon.mock(lists)
-  })
+    const listExists = () => {
+      data.listExist = true
+      listsMock.expects('validateListExistsPromise').once().returns(Q.resolve(data))
+    }
 
-  afterEach(() => {
-    listsMock.restore()
-    listsMock.verify()
-  })
-  describe('when "get list" and list exists', function () {
-    var listsMock
-    var data
+    const listNotExists = () => {
+      data.listExist = false
+      listsMock.expects('validateListExistsPromise').once().returns(Q.reject(data))
+    }
 
-    beforeEach(() => {
-      data = {
-        originalText: 'get list',
-        listExists: true,
-        randomDataToCheckPassthrough: '123',
-        listItems: []
-      }
-      listsMock = sinon.mock(lists)
-      listsMock.expects('validateListExistsPromise').once().withArgs(data).returns(Q.resolve(data))
-      sinon.stub(listItems, 'findPromise').callsFake(function (result) {
-        return Q.resolve(result)
-      })
-    })
+    const listItemsExist = (items) => {
+      data.listItems = items
+      sinon.stub(listItems, 'findPromise').callsFake(result => { return Q.resolve(result) })
+    }
 
-    afterEach(() => {
-      listsMock.restore()
-      listItems.findPromise.restore()
-    })
-
-    it('should be successful and pass data through', function () {
-      return textProcessor.processTextPromise(data).then(function (result) {
-        result.originalText.should.equal(data.originalText)
-        result.listExists.should.be.true
-        result.command.should.equal(commandTypes.getList)
-        result.list.should.equal('list')
-        should.not.exist(result.person)
-        should.not.exist(result.supplementaryText)
-        result.randomDataToCheckPassthrough.should.equal('123')
-        result.words.length.should.equal(2)
+    const shouldRespondWith = (output) => {
+      return textProcessor.processTextPromise(data).then(result => {
+        result.responseText.should.equal(output)
       }, () => {
         should.fail('should not error')
       })
-    })
-
-    describe('and when list has 2 items', function () {
-      beforeEach(() => {
-        data.listItems = ['item1', 'item2']
-      })
-
-      it('should create responseText with 2 list items', function () {
-        return textProcessor.processTextPromise(data).then(function (result) {
-          result.responseText.should.equal('• item1\n• item2')
-        })
-      })
-    })
-
-    describe('and when list has 0 items', function () {
-      beforeEach(() => {
-        data.listItems = []
-      })
-
-      it('should create responseText with no items found', function () {
-        return textProcessor.processTextPromise(data).then(function (result) {
-          result.responseText.should.equal('Currently no items in #list.')
-        })
-      })
-    })
-  })
-
-  describe('when "get list" and list does not exists', function () {
-    var listsMock
-    var data = {
-      originalText: 'get list',
-      listExists: false,
-      randomDataToCheckPassthrough: '123',
-      listItems: [],
-      errorMessage: modelConstants.errorTypes.notFound
     }
 
     beforeEach(() => {
       listsMock = sinon.mock(lists)
-      listsMock.expects('validateListExistsPromise').once().returns(Q.reject(data))
+      data = {}
     })
 
     afterEach(() => {
       listsMock.restore()
+      data = undefined
+      if (listItems.findPromise.restore) { listItems.findPromise.restore() }
     })
 
-    it('should respond with appropriate error', function () {
-      return textProcessor.processTextPromise(data).then(function (result) {
-        result.responseText.should.equal('Sorry, couldn\'t find #list\nType "get lists" to see whats avauilable.')
+    it('"get list" and list exists and 2 items', () => {
+      data.originalText = 'get list'
+      listExists()
+      listItemsExist(['item1', 'item2'])
+      shouldRespondWith('• item1\n• item2')
+    })
+
+    it('"get #list" and list exists and 2 items', () => {
+      data.originalText = 'get #list'
+      listExists()
+      listItemsExist(['item1', 'item2'])
+      shouldRespondWith('• item1\n• item2')
+    })
+
+    it('"#list" and list exists and 2 items', () => {
+      data.originalText = 'get #list'
+      listExists()
+      listItemsExist(['item1', 'item2'])
+      shouldRespondWith('• item1\n• item2')
+    })
+
+    it('"get #list" and list exists and 0 items', () => {
+      data.originalText = 'get #list'
+      listExists()
+      listItemsExist([])
+      shouldRespondWith('Currently no items in #list.')
+    })
+
+    it('"get #list" and list does not exist', () => {
+      data.originalText = 'get #list'
+      listNotExists()
+      shouldRespondWith('Sorry, couldn\'t find #list\nType "get lists" to see what\'s available.')
+    })
+
+    it('"get list" with check for passthrough', () => {
+      data.originalText = 'get list'
+      listExists()
+      listItemsExist([])
+      data.someNonsense = 'nonsense'
+      return textProcessor.processTextPromise(data).then(result => {
+        result.someNonsense.should.equal('nonsense')
       })
+    })
+
+    it('"list" when list exists', () => {
+      data.originalText = 'list'
+      listExists()
+      listItemsExist(['bananas'])
+      return shouldRespondWith('• bananas')
+    })
+
+    it('"list" when list does not exists', () => {
+      data.originalText = 'list'
+      listNotExists()
+      return shouldRespondWith('Sorry don\'t understand. Type \'packhack\' for help.')
+    })
+
+    it('"get" when previously cached list', () => {
+      data.originalText = 'get'
+      data.cachedListName = 'list'
+      listExists()
+      listItemsExist(['coconuts'])
+      return shouldRespondWith('• coconuts')
+    })
+
+    it('"get" when no cached list should result in an error', () => {
+      data.originalText = 'get'
+      return shouldRespondWith('Sorry please specify a list\ne.g. "get shopping"')
     })
   })
 
-  describe('when "nonsense and nonsense"', function () {
-    var listsMock
-
-    beforeEach(() => {
-      listsMock = sinon.mock(lists)
-    })
-
-    afterEach(() => {
-      listsMock.restore()
-      listsMock.verify()
-    })
-
-    it('should respond with don\'t understand', function () {
+  describe('"nonsense and nonsense"', () => {
+    it('should respond with don\'t understand', () => {
+      var listsMock = sinon.mock(lists)
       var data = {
         originalText: 'nonsense and nonsense',
         randomDataToCheckPassthrough: '123'
       }
       listsMock.expects('validateListExistsPromise').never()
-      return textProcessor.processTextPromise(data).then(function (result) {
+      return textProcessor.processTextPromise(data).then(result => {
         result.errorMessage.should.equal(errors.errorTypes.unrecognizedCommand)
         result.originalText.should.equal(data.originalText)
         result.words.length.should.equal(3)
         result.randomDataToCheckPassthrough.should.equal('123')
         result.responseText.should.equal('Sorry don\'t understand. Type \'packhack\' for help.')
+        listsMock.restore()
       })
     })
   })
 
-  describe('when "create #thelist"', function () {
+  describe('createList', () => {
     afterEach(() => {
       lists.validateListExistsPromise.restore()
     })
 
-    it('should only succeed if list does not exist', function () {
+    it('should only succeed if list does not exist', () => {
       var initialData = {
         originalText: 'create #thelist',
         randomDataToCheckPassthrough: '123'
       }
-      sinon.stub(lists, 'validateListExistsPromise').callsFake(function (data) {
+      sinon.stub(lists, 'validateListExistsPromise').callsFake(data => {
         data.errorMessage = modelConstants.errorTypes.notFound
         data.listExists = false
         return Q.reject(data)
       })
-      return textProcessor.processTextPromise(initialData).then(function (result) {
+      return textProcessor.processTextPromise(initialData).then(result => {
         result.originalText.should.equal(initialData.originalText)
         result.listExists.should.equal(false)
         result.command.should.equal(commandTypes.createList)

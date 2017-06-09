@@ -13,6 +13,7 @@ const processTextPromise = (data) => {
   .then(conditionallyValidateListDoesNotExists)
   .then(commandSpecificProcessorPromise)
   .catch(processError)
+  .catch(fallBackError)
 }
 
 const conditionallyValidateListExists = (data) => {
@@ -58,9 +59,13 @@ const processError = (data) => {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processErrorPromise(data)
   } else {
-    data.responseText = 'Sorry don\'t understand. Type \'packhack\' for help.'
-    return Q.resolve(data)
+    throw data
   }
+}
+
+const fallBackError = (data) => {
+  data.responseText = 'Sorry don\'t understand. Type \'packhack\' for help.'
+  return Q.resolve(data)
 }
 
 module.exports = {

@@ -12,6 +12,7 @@ var reminders = require('./reminders')
 var listItems = require('./listitems')
 var messagePreProcessor = require('./messagepreprocessor')
 var stringProcessor = require('./src/stringprocessor')
+var textProcessor = require('./src/textprocessor')
 
 mongoOp.intialize()
 
@@ -86,31 +87,39 @@ router.route("/twilio")
 
       // Get list items
       } else if (bodyText.startsWith('get #') || bodyText.startsWith('show #') || bodyText.startsWith('list #') || bodyText.startsWith('retrieve #') || bodyText.startsWith('display #')) {
-        var listName = stringProcessor.removeFirstWord(bodyText).substr(1)
-        console.log('*** Get List:' + listName)
-        var list = {'listKey': listName, 'familyId': familyId}
-
-        listItems.listItemsTextForList(list, function (err, text) {
-          if (err) {
-            logging.logError(fromPhoneNumber, familyId, bodyText, err)
-          } else {
-            cacheListName(list.listKey, res)
-          }
-          if (text != null) {
-            var smsText
-            if (text === '') {
-              smsText = 'Currently no items in #' + list.listKey + '.'
-            } else {
-              if (err) {
-                smsText = text
-              } else {
-                smsText = '\n#' + list.listKey + ':' + text
-              }
-            }
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, smsText, res)
-          }
+      //   var listName = stringProcessor.removeFirstWord(bodyText).substr(1)
+      //   console.log('*** Get List:' + listName)
+      //   var list = {'listKey': listName, 'familyId': familyId}
+      //
+      //   listItems.listItemsTextForList(list, function (err, text) {
+      //     if (err) {
+      //       logging.logError(fromPhoneNumber, familyId, bodyText, err)
+      //     } else {
+      //       cacheListName(list.listKey, res)
+      //     }
+      //     if (text != null) {
+      //       var smsText
+      //       if (text === '') {
+      //         smsText = 'Currently no items in #' + list.listKey + '.'
+      //       } else {
+      //         if (err) {
+      //           smsText = text
+      //         } else {
+      //           smsText = '\n#' + list.listKey + ':' + text
+      //         }
+      //       }
+      //       sendSMSResponse(fromPhoneNumber, familyId, bodyText, smsText, res)
+      //     }
+      //   })
+        const data = {
+          originalText: bodyText,
+          familyId: familyId
+        }
+        textProcessor.processTextPromise(data).then(result => {
+          sendSMSResponse(fromPhoneNumber, data.familyId, data.originalText, data.responseText, res)
         })
-      // Help message if didn't use #
+
+      // TODO: Needs to be removed
       } else if (bodyText.startsWith('get ')) {
         sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Lists always start with a "#".\nPlease use the format "get #list".', res)
 
