@@ -8,6 +8,8 @@ const errors = require('./errors')
 const commandTypes = require('./commandtypes')
 
 const processTextPromise = (data) => {
+  console.log('1')
+  console.log(data)
   return languageProcessor.processLanguagePromise(data)
   .then(conditionallyValidateListExists)
   .then(conditionallyValidateListDoesNotExists)
@@ -17,6 +19,8 @@ const processTextPromise = (data) => {
 }
 
 const conditionallyValidateListExists = (data) => {
+  console.log('2')
+  console.log(data)
   if (data.list && data.command !== commandTypes.createList) {
     return lists.validateListExistsPromise(data)
   } else {
@@ -46,6 +50,8 @@ const conditionallyValidateListDoesNotExists = (data) => {
 }
 
 const commandSpecificProcessorPromise = (data) => {
+  console.log('3')
+  console.log(data)
   if (data.command && data.command === commandTypes.getList) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processResponseTextPromise(data)

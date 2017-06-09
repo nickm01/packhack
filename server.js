@@ -116,6 +116,8 @@ router.route("/twilio")
           familyId: familyId
         }
         textProcessor.processTextPromise(data).then(result => {
+          console.log('4')
+          console.log(data)
           sendSMSResponse(fromPhoneNumber, data.familyId, data.originalText, data.responseText, res)
         })
 
