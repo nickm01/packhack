@@ -61,6 +61,8 @@ const commandSpecificProcessorPromise = (data) => {
 }
 
 const processError = (data) => {
+  console.log('8')
+  console.log(data)
   if (data.command && data.command === commandTypes.getList) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processErrorPromise(data)
@@ -70,6 +72,8 @@ const processError = (data) => {
 }
 
 const fallBackError = (data) => {
+  console.log('9')
+  console.log(data)
   data.responseText = 'Sorry don\'t understand. Type \'packhack\' for help.'
   return Q.resolve(data)
 }

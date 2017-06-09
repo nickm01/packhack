@@ -2,6 +2,8 @@ const listsPromises = require('./lists.promises')
 const modelConstants = require('./modelconstants')
 
 const validateListExistsPromise = (data) => {
+  console.log('7')
+  console.log(data)
   return listsPromises.findOnePromise(data.list, data.familyId)
     .then(lists => {
       if (lists.length === 0) {
