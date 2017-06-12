@@ -7,7 +7,8 @@ const processResponseTextPromise = (data) => {
     if (result.listItems.length === 0) {
       result.responseText = 'Currently no items in #' + result.list + '.'
     } else {
-      result.responseText = '• ' + result.listItems.join('\n• ')
+      const listItemNames = result.listItems.map(item => { return item.listItemName })
+      result.responseText = '• ' + listItemNames.join('\n• ')
     }
     return result
   })

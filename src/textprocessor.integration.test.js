@@ -15,6 +15,9 @@ describe('textProcessor + languageProcessor', () => {
   describe('getlist', () => {
     var listsMock, data
 
+    const item1 = {listItemName: 'item1'}
+    const item2 = {listItemName: 'item2'}
+
     const listExists = () => {
       data.listExist = true
       listsMock.expects('validateListExistsPromise').once().returns(Q.resolve(data))
@@ -56,21 +59,21 @@ describe('textProcessor + languageProcessor', () => {
     it('"get list" and list exists and 2 items', () => {
       data.originalText = 'get list'
       listExists()
-      listItemsExist(['item1', 'item2'])
+      listItemsExist([item1, item2])
       return shouldRespondWith('• item1\n• item2')
     })
 
     it('"get #list" and list exists and 2 items', () => {
       data.originalText = 'get #list'
       listExists()
-      listItemsExist(['item1', 'item2'])
+      listItemsExist([item1, item2])
       return shouldRespondWith('• item1\n• item2')
     })
 
     it('"#list" and list exists and 2 items', () => {
       data.originalText = 'get #list'
       listExists()
-      listItemsExist(['item1', 'item2'])
+      listItemsExist([item1, item2])
       return shouldRespondWith('• item1\n• item2')
     })
 
@@ -100,7 +103,7 @@ describe('textProcessor + languageProcessor', () => {
     it('"list" when list exists', () => {
       data.originalText = 'list'
       listExists()
-      listItemsExist(['bananas'])
+      listItemsExist([{listItemName: 'bananas'}])
       return shouldRespondWith('• bananas')
     })
 
@@ -114,7 +117,7 @@ describe('textProcessor + languageProcessor', () => {
       data.originalText = 'get'
       data.cachedListName = 'list'
       listExists()
-      listItemsExist(['coconuts'])
+      listItemsExist([{listItemName: 'coconuts'}])
       return shouldRespondWith('• coconuts')
     })
 

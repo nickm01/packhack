@@ -1,6 +1,8 @@
 /* eslint-env mocha */
 // Above line makes it work with Mocha
 
+// TODO: Remove
+
 const should = require('chai').should()
 const textProcessor = require('./textprocessor')
 const languageProcessor = require('./languageprocessor')
