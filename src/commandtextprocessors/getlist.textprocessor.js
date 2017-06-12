@@ -3,11 +3,7 @@ const errors = require('./../errors')
 const Q = require('q')
 
 const processResponseTextPromise = (data) => {
-  console.log('5')
-  console.log(data)
   return listItems.findPromise(data).then(result => {
-    console.log('6')
-    console.log(data)
     if (result.listItems.length === 0) {
       result.responseText = 'Currently no items in #' + result.list + '.'
     } else {

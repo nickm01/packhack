@@ -4,7 +4,7 @@
 const should = require('chai').should()
 const textProcessor = require('./textprocessor')
 const lists = require('../model/lists')
-const listItems = require('../model/listItems')
+const listItems = require('../model/listitems')
 const sinon = require('sinon')
 const Q = require('q')
 const modelConstants = require('../model/modelconstants')
@@ -27,7 +27,9 @@ describe('textProcessor + languageProcessor', () => {
 
     const listItemsExist = (items) => {
       data.listItems = items
-      sinon.stub(listItems, 'findPromise').callsFake(result => { return Q.resolve(result) })
+      sinon.stub(listItems, 'findPromise').callsFake(result => {
+        return Q.resolve(result)
+      })
     }
 
     const shouldRespondWith = (output) => {
@@ -46,41 +48,43 @@ describe('textProcessor + languageProcessor', () => {
     afterEach(() => {
       listsMock.restore()
       data = undefined
-      if (listItems.findPromise.restore) { listItems.findPromise.restore() }
+      if (listItems.findPromise.restore) {
+        listItems.findPromise.restore()
+      }
     })
 
     it('"get list" and list exists and 2 items', () => {
       data.originalText = 'get list'
       listExists()
       listItemsExist(['item1', 'item2'])
-      shouldRespondWith('• item1\n• item2')
+      return shouldRespondWith('• item1\n• item2')
     })
 
     it('"get #list" and list exists and 2 items', () => {
       data.originalText = 'get #list'
       listExists()
       listItemsExist(['item1', 'item2'])
-      shouldRespondWith('• item1\n• item2')
+      return shouldRespondWith('• item1\n• item2')
     })
 
     it('"#list" and list exists and 2 items', () => {
       data.originalText = 'get #list'
       listExists()
       listItemsExist(['item1', 'item2'])
-      shouldRespondWith('• item1\n• item2')
+      return shouldRespondWith('• item1\n• item2')
     })
 
     it('"get #list" and list exists and 0 items', () => {
       data.originalText = 'get #list'
       listExists()
       listItemsExist([])
-      shouldRespondWith('Currently no items in #list.')
+      return shouldRespondWith('Currently no items in #list.')
     })
 
     it('"get #list" and list does not exist', () => {
       data.originalText = 'get #list'
       listNotExists()
-      shouldRespondWith('Sorry, couldn\'t find #list\nType "get lists" to see what\'s available.')
+      return shouldRespondWith('Sorry, couldn\'t find #list\nType "get lists" to see what\'s available.')
     })
 
     it('"get list" with check for passthrough', () => {

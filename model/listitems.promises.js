@@ -1,7 +1,7 @@
 const mongoOp = require('./mongo')
 
-const findPromise = ({listKey, familyId}) => {
-  return mongoOp.ListItems.find({listKey, familyId})
+const findPromise = (list, familyId) => {
+  return mongoOp.ListItems.find({listKey: list, familyId})
     .exec()
 }
 

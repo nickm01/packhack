@@ -116,8 +116,7 @@ router.route("/twilio")
           familyId: familyId
         }
         textProcessor.processTextPromise(data).then(result => {
-          console.log('4')
-          console.log(data)
+          cacheListName(data.list, res) // TODO: Make sure this isn't the case for delete
           sendSMSResponse(fromPhoneNumber, data.familyId, data.originalText, data.responseText, res)
         })
 

@@ -8,8 +8,6 @@ const errors = require('./errors')
 const commandTypes = require('./commandtypes')
 
 const processTextPromise = (data) => {
-  console.log('1')
-  console.log(data)
   return languageProcessor.processLanguagePromise(data)
   .then(conditionallyValidateListExists)
   .then(conditionallyValidateListDoesNotExists)
@@ -19,8 +17,6 @@ const processTextPromise = (data) => {
 }
 
 const conditionallyValidateListExists = (data) => {
-  console.log('2')
-  console.log(data)
   if (data.list && data.command !== commandTypes.createList) {
     return lists.validateListExistsPromise(data)
   } else {
@@ -50,8 +46,6 @@ const conditionallyValidateListDoesNotExists = (data) => {
 }
 
 const commandSpecificProcessorPromise = (data) => {
-  console.log('3')
-  console.log(data)
   if (data.command && data.command === commandTypes.getList) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processResponseTextPromise(data)
@@ -61,8 +55,6 @@ const commandSpecificProcessorPromise = (data) => {
 }
 
 const processError = (data) => {
-  console.log('8')
-  console.log(data)
   if (data.command && data.command === commandTypes.getList) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processErrorPromise(data)
@@ -72,8 +64,6 @@ const processError = (data) => {
 }
 
 const fallBackError = (data) => {
-  console.log('9')
-  console.log(data)
   data.responseText = 'Sorry don\'t understand. Type \'packhack\' for help.'
   return Q.resolve(data)
 }
