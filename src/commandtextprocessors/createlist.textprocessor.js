@@ -1,12 +1,13 @@
 // const errors = require('./../errors')
 const lists = require('../../model/lists')
+const phrases = require('./../phrases')
 // const Q = require('q')
 
 const processResponseTextPromise = (data) => {
   console.log('7')
   console.log(data)
   return lists.saveNewPromise(data).then(result => {
-    data.responseText = '👍'
+    data.responseText = phrases.success
     return data
   })
 }

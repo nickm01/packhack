@@ -6,6 +6,7 @@ const Q = require('q')
 const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
 const commandTypes = require('./commandtypes')
+const phrases = require('./phrases')
 
 const processTextPromise = (data) => {
   console.log('6')
@@ -88,7 +89,7 @@ const processError = (data) => {
 }
 
 const fallBackError = (data) => {
-  data.responseText = 'Sorry don\'t understand. Type \'packhack\' for help.'
+  data.responseText = phrases.generalMisundertanding
   return Q.resolve(data)
 }
 
