@@ -46,7 +46,11 @@ const conditionallyValidateListDoesNotExists = (data) => {
 }
 
 const commandSpecificProcessorPromise = (data) => {
-  if (data.command && data.command === commandTypes.getList) {
+  // TODO: Remove 'if' once all commands are done
+  if (data.command && (
+    data.command === commandTypes.getList ||
+    data.command === commandTypes.createList
+  )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processResponseTextPromise(data)
   } else {
@@ -55,7 +59,11 @@ const commandSpecificProcessorPromise = (data) => {
 }
 
 const processError = (data) => {
-  if (data.command && data.command === commandTypes.getList) {
+  // TODO: Remove 'if' once all commands are done
+  if (data.command && (
+    data.command === commandTypes.getList ||
+    data.command === commandTypes.createList
+  )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processErrorPromise(data)
   } else {

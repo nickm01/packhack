@@ -49,49 +49,49 @@ describe('textProcessor', () => {
     })
   })
 
-  describe('when "create #MyList"', () => {
-    const originalText = 'create #MyList'
-    const command = commandTypes.createList
-    const list = 'MyList'
-    const data = {originalText, command, list}
-
-    it('should resolve if list does not exist already', () => {
-      const errorMessage = modelConstants.errorTypes.notFound
-      const listExists = false
-      const resultantData = {originalText, command, list, errorMessage, listExists}
-      languageProcessorMock.expects('processLanguagePromise').once().withArgs(data).returns(Q.resolve(data))
-      listsMock.expects('validateListExistsPromise').once().withArgs(data).returns(Q.reject(resultantData))
-      return textProcessor.processTextPromise(data).then(result => {
-        result.listExists.should.equal(false)
-      }, errorResult => {
-        should.fail('should not fail')
-      })
-    })
-
-    it('should reject if list exists already', () => {
-      const listExists = true
-      const resultantData = {originalText, command, list, listExists}
-      languageProcessorMock.expects('processLanguagePromise').once().withArgs(data).returns(Q.resolve(data))
-      listsMock.expects('validateListExistsPromise').once().returns(Q.resolve(resultantData))
-      return textProcessor.processTextPromise(data).then(result => {
-        result.listExists.should.equal(true)
-        result.errorMessage.should.equal(errors.errorTypes.listAlreadyExists)
-      }, errorResult => {
-        should.fail('should not fail')
-      })
-    })
-
-    it('should reject if general error in list lookup', () => {
-      const errorMessage = modelConstants.errorTypes.generalError
-      const resultantData = {originalText, command, list, errorMessage}
-      languageProcessorMock.expects('processLanguagePromise').once().withArgs(data).returns(Q.resolve(data))
-      listsMock.expects('validateListExistsPromise').once().returns(Q.reject(resultantData))
-      return textProcessor.processTextPromise(data).then(result => {
-        should.not.exist(result.listExists)
-        result.errorMessage.should.equal(errors.errorTypes.generalError)
-      }, errorResult => {
-        should.fail('should not fail')
-      })
-    })
-  })
+  // describe('when "create #MyList"', () => {
+  //   const originalText = 'create #MyList'
+  //   const command = commandTypes.createList
+  //   const list = 'MyList'
+  //   const data = {originalText, command, list}
+  //
+  //   it('should resolve if list does not exist already', () => {
+  //     const errorMessage = modelConstants.errorTypes.notFound
+  //     const listExists = false
+  //     const resultantData = {originalText, command, list, errorMessage, listExists}
+  //     languageProcessorMock.expects('processLanguagePromise').once().withArgs(data).returns(Q.resolve(data))
+  //     listsMock.expects('validateListExistsPromise').once().withArgs(data).returns(Q.reject(resultantData))
+  //     return textProcessor.processTextPromise(data).then(result => {
+  //       result.listExists.should.equal(false)
+  //     }, errorResult => {
+  //       should.fail('should not fail')
+  //     })
+  //   })
+  //
+  //   it('should reject if list exists already', () => {
+  //     const listExists = true
+  //     const resultantData = {originalText, command, list, listExists}
+  //     languageProcessorMock.expects('processLanguagePromise').once().withArgs(data).returns(Q.resolve(data))
+  //     listsMock.expects('validateListExistsPromise').once().returns(Q.resolve(resultantData))
+  //     return textProcessor.processTextPromise(data).then(result => {
+  //       result.listExists.should.equal(true)
+  //       result.errorMessage.should.equal(errors.errorTypes.listAlreadyExists)
+  //     }, errorResult => {
+  //       should.fail('should not fail')
+  //     })
+  //   })
+  //
+  //   it('should reject if general error in list lookup', () => {
+  //     const errorMessage = modelConstants.errorTypes.generalError
+  //     const resultantData = {originalText, command, list, errorMessage}
+  //     languageProcessorMock.expects('processLanguagePromise').once().withArgs(data).returns(Q.resolve(data))
+  //     listsMock.expects('validateListExistsPromise').once().returns(Q.reject(resultantData))
+  //     return textProcessor.processTextPromise(data).then(result => {
+  //       should.not.exist(result.listExists)
+  //       result.errorMessage.should.equal(errors.errorTypes.generalError)
+  //     }, errorResult => {
+  //       should.fail('should not fail')
+  //     })
+  //   })
+  // })
 })

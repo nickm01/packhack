@@ -19,6 +19,22 @@ const validateListExistsPromise = (data) => {
     })
 }
 
+const saveNewPromise = (data) => {
+  const list = data.list.toLowerCase()
+  const listDescription = data.list
+  return listsPromises.saveNewPromise(list, data.familyId, listDescription)
+    .then(list => {
+      data.list = list.listKey
+      data.listDescription = list.listDescription
+      return data
+    }, (error) => {
+      data.errorMessage = modelConstants.errorTypes.generalError
+      data.systemError = error
+      throw data
+    })
+}
+
 module.exports = {
-  validateListExistsPromise
+  validateListExistsPromise,
+  saveNewPromise
 }
