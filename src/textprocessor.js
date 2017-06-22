@@ -30,16 +30,24 @@ const conditionallyValidateListDoesNotExists = (data) => {
   console.log('6a')
   console.log(data)
   if (data.command === commandTypes.createList) {
+    console.log('6a1')
+    console.log(data)
     return lists.validateListExistsPromise(data).then(result => {
       // Found an existing list, then it's an error
       result.errorMessage = errors.errorTypes.listAlreadyExists
+      console.log('6a2')
+      console.log(result)
       throw result
     }, result => {
       // Errored and sadidn't find list, then it's not an error
       if (result.errorMessage === modelConstants.errorTypes.notFound) {
         result.errorMessage = null
+        console.log('6a3')
+        console.log(result)
         return result
       } else {
+        console.log('6a4')
+        console.log(result)
         result.errorMessage = errors.errorTypes.generalError
         throw result
       }
@@ -65,6 +73,8 @@ const commandSpecificProcessorPromise = (data) => {
 }
 
 const processError = (data) => {
+  console.log('10-error')
+  console.log(data)
   // TODO: Remove 'if' once all commands are done
   if (data.command && (
     data.command === commandTypes.getList ||
