@@ -25,10 +25,9 @@ describe('lists', () => {
     })
 
     it('should error if there no results', () => {
-      const emptyArray = []
       const data = {list: 'myList', familyId: 123, someBaloney: 'sausages'}
       sinon.stub(listsPromises, 'findOnePromise').callsFake(() => {
-        return Q.resolve(emptyArray)
+        return Q.resolve(null)
       })
       return lists.validateListExistsPromise(data)
         .then(result => {

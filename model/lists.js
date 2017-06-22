@@ -5,10 +5,8 @@ const validateListExistsPromise = (data) => {
   console.log(19)
   console.log(data)
   return listsPromises.findOnePromise(data.list, data.familyId)
-    .then(lists => {
-      console.log(20)
-      console.log(lists)
-      if (!lists || !lists.length || lists.length === 0) {
+    .then(list => {
+      if (!list) {
         data.listExists = false
         data.errorMessage = modelConstants.errorTypes.notFound
         throw data
