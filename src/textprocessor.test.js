@@ -20,12 +20,12 @@ describe('textProcessor + languageProcessor', () => {
     const item2 = {listItemName: 'item2'}
 
     const listExists = () => {
-      data.listExist = true
+      data.listExists = true
       listsMock.expects('validateListExistsPromise').once().returns(Q.resolve(data))
     }
 
     const listNotExists = () => {
-      data.listExist = false
+      data.listExists = false
       data.errorMessage = modelConstants.errorTypes.notFound
       listsMock.expects('validateListExistsPromise').once().returns(Q.reject(data))
     }
