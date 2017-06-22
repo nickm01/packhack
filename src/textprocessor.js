@@ -8,6 +8,8 @@ const errors = require('./errors')
 const commandTypes = require('./commandtypes')
 
 const processTextPromise = (data) => {
+  console.log('6')
+  console.log(data)
   return languageProcessor.processLanguagePromise(data)
   .then(conditionallyValidateListExists)
   .then(conditionallyValidateListDoesNotExists)
@@ -25,6 +27,8 @@ const conditionallyValidateListExists = (data) => {
 }
 
 const conditionallyValidateListDoesNotExists = (data) => {
+  console.log('6a')
+  console.log(data)
   if (data.command === commandTypes.createList) {
     return lists.validateListExistsPromise(data).then(result => {
       // Found an existing list, then it's an error
@@ -46,6 +50,8 @@ const conditionallyValidateListDoesNotExists = (data) => {
 }
 
 const commandSpecificProcessorPromise = (data) => {
+  console.log('6b')
+  console.log(data)
   // TODO: Remove 'if' once all commands are done
   if (data.command && (
     data.command === commandTypes.getList ||

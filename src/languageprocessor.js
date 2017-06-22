@@ -23,6 +23,8 @@ const commandData = [
 // MAIN PROCESS
 const processLanguage = (data) => {
   try {
+    console.log('4')
+    console.log(data)
     const result = new LanguageProcessorResult({text: data.originalText, cachedListName: data.cachedListName})
       .convertToWords()
       .checkZeroWords()
@@ -31,6 +33,8 @@ const processLanguage = (data) => {
       .errorIfNoCommand()
       .postProcess()
     setDataAccordingToResult(data, result)
+    console.log('5')
+    console.log(data)
     return data
   } catch (error) {
     data.errorMessage = error.error
