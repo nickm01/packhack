@@ -86,7 +86,12 @@ router.route("/twilio")
         })
 
       // Get list items
-      } else if (bodyText.startsWith('get #') || bodyText.startsWith('show #') || bodyText.startsWith('list #') || bodyText.startsWith('retrieve #') || bodyText.startsWith('display #')) {
+      } else if (bodyText.startsWith('get #') ||
+        bodyText.startsWith('show #') ||
+        bodyText.startsWith('list #') ||
+        bodyText.startsWith('retrieve #') ||
+        bodyText.startsWith('display #') ||
+        bodyText.startsWith('create #')) {
       //   var listName = stringProcessor.removeFirstWord(bodyText).substr(1)
       //   console.log('*** Get List:' + listName)
       //   var list = {'listKey': listName, 'familyId': familyId}
@@ -165,34 +170,34 @@ router.route("/twilio")
         });
 
       // Create list.
-      } else if (bodyText.startsWith('create #')) {
-        var newListName = bodyText.substr(8)
-        mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
-
-          if (list != null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'List already exists!', res);
-          } else {
-
-            if (newListName.includes(' ')) {
-              sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Sorry, but please don't include spaces in list names.", res);
-              return;
-            }
-
-            var newList = new mongoOp.Lists({
-              "listKey" : newListName,
-              "listDescription" : "",
-              "familyId" : familyId
-            });
-            newList.save(function (err, data) {
-              if (err) logging.logError(fromPhoneNumber, familyId, bodyText, err);
-              else {
-                console.log('----saved ', data );
-                cacheListName(newListName,res);
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
-              }
-            });
-          }
-        });
+      // } else if (bodyText.startsWith('create #')) {
+      //   var newListName = bodyText.substr(8)
+      //   mongoOp.Lists.findOne({'listKey': newListName, 'familyId': familyId}, 'listKey', function(err, list) {
+      //
+      //     if (list != null) {
+      //       sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'List already exists!', res);
+      //     } else {
+      //
+      //       if (newListName.includes(' ')) {
+      //         sendSMSResponse(fromPhoneNumber, familyId, bodyText, "Sorry, but please don't include spaces in list names.", res);
+      //         return;
+      //       }
+      //
+      //       var newList = new mongoOp.Lists({
+      //         "listKey" : newListName,
+      //         "listDescription" : "",
+      //         "familyId" : familyId
+      //       });
+      //       newList.save(function (err, data) {
+      //         if (err) logging.logError(fromPhoneNumber, familyId, bodyText, err);
+      //         else {
+      //           console.log('----saved ', data );
+      //           cacheListName(newListName,res);
+      //           sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
+      //         }
+      //       });
+      //     }
+      //   });
 
       // Clear list.
       } else if (bodyText.startsWith('clear #')) {
