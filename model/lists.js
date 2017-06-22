@@ -4,7 +4,9 @@ const modelConstants = require('./modelconstants')
 const validateListExistsPromise = (data) => {
   return listsPromises.findOnePromise(data.list, data.familyId)
     .then(lists => {
-      if (lists.length === 0) {
+      console.log('15-1')
+      console.log(lists)
+      if (!lists.length || lists.length === 0) {
         data.listExists = false
         data.errorMessage = modelConstants.errorTypes.notFound
         throw data
