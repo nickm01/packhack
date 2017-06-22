@@ -7,7 +7,7 @@ const findOnePromise = (list, familyId) => {
 
 const saveNewPromise = (list, familyId, listDescription) => {
   var newList = new mongoOp.Lists({listKey: list, familyId, listDescription})
-  return newList.save().exec()
+  return newList.save()
 }
 
 module.exports = {

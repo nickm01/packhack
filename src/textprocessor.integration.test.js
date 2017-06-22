@@ -160,6 +160,8 @@ describe('textProcessor + languageProcessor', () => {
 
       it('when "create my list" should error')
 
+      it('when "create create" should error - reserved word')
+
       // it('"create list" list does not exist > allow', () => {
       //   var initialData = {
       //     originalText: 'create #theList',
