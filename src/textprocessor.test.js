@@ -157,11 +157,17 @@ describe('textProcessor + languageProcessor', () => {
         return shouldRespondWith(phrases.success)
       })
 
-      it('when "create mylist" and mylist exists should error')
+      it('when "create mylist" and mylist exists should error', () => {
+        data.originalText = 'create mylist'
+        listExists()
+        return shouldRespondWith(phrases.listAlreadyExists)
+      })
 
-      it('when "create my list" should error')
+      it('when "create my list" should error - list has spaces')
 
       it('when "create create" should error - reserved word')
+
+      it('when "create mylist" general error')
 
       // it('"create list" list does not exist > allow', () => {
       //   var initialData = {
