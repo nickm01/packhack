@@ -3,6 +3,8 @@ const lists = require('../../model/lists')
 // const Q = require('q')
 
 const processResponseTextPromise = (data) => {
+  console.log('7')
+  console.log(data)
   return lists.saveNewPromise(data).then(result => {
     data.responseText = '👍'
     return data

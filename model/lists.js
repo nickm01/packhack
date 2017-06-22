@@ -20,6 +20,8 @@ const validateListExistsPromise = (data) => {
 }
 
 const saveNewPromise = (data) => {
+  console.log('8')
+  console.log(data)
   const list = data.list.toLowerCase()
   const listDescription = data.list
   return listsPromises.saveNewPromise(list, data.familyId, listDescription)
