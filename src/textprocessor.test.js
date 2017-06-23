@@ -90,7 +90,7 @@ describe('textProcessor + languageProcessor', () => {
       it('"get #list" and list does not exist', () => {
         data.originalText = 'get #list'
         listNotExists()
-        return shouldRespondWith('Sorry, couldn\'t find #list\nType "get lists" to see what\'s available.')
+        return shouldRespondWith(phrases.listNotFound + 'list\n' + phrases.suggestGetLists)
       })
 
       it('"get list" with check for passthrough', () => {
@@ -113,7 +113,7 @@ describe('textProcessor + languageProcessor', () => {
       it('"list" when list does not exists', () => {
         data.originalText = 'list'
         listNotExists()
-        return shouldRespondWith('Sorry don\'t understand. Type \'packhack\' for help.')
+        return shouldRespondWith(phrases.generalMisundertanding)
       })
 
       it('"get" when previously cached list', () => {
@@ -126,7 +126,7 @@ describe('textProcessor + languageProcessor', () => {
 
       it('"get" when no cached list should result in an error', () => {
         data.originalText = 'get'
-        return shouldRespondWith('Sorry please specify a list\ne.g. "get shopping"')
+        return shouldRespondWith(phrases.noList)
       })
     })
 
@@ -163,7 +163,10 @@ describe('textProcessor + languageProcessor', () => {
         return shouldRespondWith(phrases.listAlreadyExists)
       })
 
-      it('when "create my list" should error - list has spaces')
+      it('when "create my list" should error - list has spaces', () => {
+        data.originalText = 'create my list'
+        return shouldRespondWith(phrases.listNameInvalid)
+      })
 
       it('when "create create" should error - reserved word')
 

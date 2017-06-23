@@ -1,6 +1,5 @@
 const listItems = require('../../model/listitems')
 const errors = require('./../errors')
-const Q = require('q')
 const phrases = require('./../phrases')
 
 const processResponseTextPromise = (data) => {
@@ -15,11 +14,12 @@ const processResponseTextPromise = (data) => {
   })
 }
 
-const processErrorPromise = (data) => {
-  if (!data.listExist) {
+const processError = (data) => {
+  if (!data.listExists) {
     // Deal with the 'guess' that they are after a list not typing a command
+    // TODO: This actually isn't tested yet for real
     if (data.errorMessage === errors.errorTypes.noList) {
-      data.responseText = phrases.getListNoList
+      data.responseText = phrases.noList
     } else if (data.words.length === 1 && data.originalText.charAt(0) !== '#') {
       data.command = undefined
       data.list = undefined
@@ -28,10 +28,10 @@ const processErrorPromise = (data) => {
       data.responseText = phrases.listNotFound + data.list + '\n' + phrases.suggestGetLists
     }
   }
-  return Q.resolve(data)
+  return data
 }
 
 module.exports = {
   processResponseTextPromise,
-  processErrorPromise
+  processError
 }

@@ -82,7 +82,21 @@ const processError = (data) => {
     data.command === commandTypes.createList
   )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
-    return processor.processErrorPromise(data)
+
+    // if there is specific processing, use it.
+    // if there is no responseText, fall back to standard pattern matching.
+    if (processor.processError) {
+      processor.processError(data)
+    }
+    if (!data.responseText) {
+      const matchedPhrase = errors.errorTypes[data.errorMessage]
+      if (matchedPhrase) {
+        data.responseText = phrases[matchedPhrase]
+      } else {
+        // TODO: ???General error
+      }
+    }
+    return data
   } else {
     throw data
   }
