@@ -126,7 +126,7 @@ describe('textProcessor + languageProcessor', () => {
 
       it('"get" when no cached list should result in an error', () => {
         data.originalText = 'get'
-        return shouldRespondWith(phrases.noList)
+        return shouldRespondWith(phrases.noList + '\n' + phrases.getListExample)
       })
     })
 
@@ -173,11 +173,20 @@ describe('textProcessor + languageProcessor', () => {
         return shouldRespondWith(phrases.listNameInvalid)
       })
 
-      it('when "create mylist" general error')
+      it('when "create mylist" general error', () => {
+        data.originalText = 'create myList'
+        data.errorMessage = modelConstants.errorTypes.General
+        listsMock.expects('validateListExistsPromise').once().returns(Q.reject(data))
+        return shouldRespondWith(phrases.generalError)
+      })
+
+      it('when "create" with no cached list - no list error', () => {
+        data.originalText = 'create'
+        data.cachedListName = null
+        return shouldRespondWith(phrases.noList + '\n' + phrases.createListExample)
+      })
 
       it('when "create" with cached list - no list error')
-      // TODO: should give create-specific suggestion and not use get... need to generalize
-
       // it('"create list" list does not exist > allow', () => {
       //   var initialData = {
       //     originalText: 'create #theList',

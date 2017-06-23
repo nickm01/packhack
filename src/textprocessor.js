@@ -90,8 +90,18 @@ const processError = (data) => {
     }
     if (!data.responseText) {
       const matchedPhrase = errors.errorTypes[data.errorMessage]
+      console.log(222)
+      console.log(matchedPhrase)
       if (matchedPhrase) {
         data.responseText = phrases[matchedPhrase]
+        // Add suggestions according to type of error
+        console.log(333)
+        console.log(data.responseText)
+        if (data.errorMessage === errors.errorTypes.noList) {
+          console.log(444)
+          data.responseText += '\n' + phrases[data.command + 'Example']
+          console.log(data)
+        }
       } else {
         // TODO: ???General error
       }

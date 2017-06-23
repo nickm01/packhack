@@ -19,7 +19,8 @@ const processError = (data) => {
     // Deal with the 'guess' that they are after a list not typing a command
     // TODO: This actually isn't tested yet NOR has 'get list' without the #
     if (data.errorMessage === errors.errorTypes.noList) {
-      data.responseText = phrases.noList
+      // Slip through to standard processing.
+      console.log('nolist-check')
     } else if (data.words.length === 1 && data.originalText.charAt(0) !== '#') {
       data.command = undefined
       data.list = undefined
