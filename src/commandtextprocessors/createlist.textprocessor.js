@@ -10,5 +10,4 @@ const processResponseTextPromise = (data) => {
 
 module.exports = {
   processResponseTextPromise
-//  processError
 }

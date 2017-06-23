@@ -91,7 +91,7 @@ router.route("/twilio")
         bodyText.startsWith('list #') ||
         bodyText.startsWith('retrieve #') ||
         bodyText.startsWith('display #') ||
-        bodyText.startsWith('create #')) {
+        bodyText.startsWith('create')) {
       //   var listName = stringProcessor.removeFirstWord(bodyText).substr(1)
       //   console.log('*** Get List:' + listName)
       //   var list = {'listKey': listName, 'familyId': familyId}

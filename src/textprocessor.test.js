@@ -143,7 +143,7 @@ describe('textProcessor + languageProcessor', () => {
           result.originalText.should.equal(data.originalText)
           result.words.length.should.equal(3)
           result.randomDataToCheckPassthrough.should.equal('123')
-          result.responseText.should.equal('Sorry don\'t understand. Type \'packhack\' for help.')
+          result.responseText.should.equal(phrases.generalMisundertanding)
           listsMock.restore()
         })
       })
@@ -168,9 +168,14 @@ describe('textProcessor + languageProcessor', () => {
         return shouldRespondWith(phrases.listNameInvalid)
       })
 
-      it('when "create create" should error - reserved word')
+      it('when "create create" should error - reserved word', () => {
+        data.originalText = 'create #create'
+        return shouldRespondWith(phrases.listNameInvalid)
+      })
 
       it('when "create mylist" general error')
+
+      it('when "create" with cached list - no list error')
 
       // it('"create list" list does not exist > allow', () => {
       //   var initialData = {
