@@ -2,7 +2,7 @@
 // Where possible should match the error codes
 
 module.exports = {
-  success: '👍 Done.',
+  success: 'Done 👍',
   generalMisundertanding: '😕 Sorry don\'t understand. Type \'packhack\' for help.',
   listNotFound: '😕 Sorry, couldn\'t find #',
   suggestGetLists: 'Type \'get lists\' to see what\'s available.',

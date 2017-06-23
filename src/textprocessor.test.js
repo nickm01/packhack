@@ -176,6 +176,7 @@ describe('textProcessor + languageProcessor', () => {
       it('when "create mylist" general error')
 
       it('when "create" with cached list - no list error')
+      // TODO: should give create-specific suggestion and not use get... need to generalize
 
       // it('"create list" list does not exist > allow', () => {
       //   var initialData = {
