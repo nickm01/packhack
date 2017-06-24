@@ -182,11 +182,14 @@ describe('textProcessor + languageProcessor', () => {
 
       it('when "create" with no cached list - no list error', () => {
         data.originalText = 'create'
-        data.cachedListName = null
         return shouldRespondWith(phrases.noList + '\n' + phrases.createListExample)
       })
 
-      it('when "create" with cached list - no list error')
+      it('when "create" with cached list - no list error', () => {
+        data.originalText = 'create'
+        data.cachedListName = 'some-cached-list'
+        return shouldRespondWith(phrases.noList + '\n' + phrases.createListExample)
+      })
       // it('"create list" list does not exist > allow', () => {
       //   var initialData = {
       //     originalText: 'create #theList',
