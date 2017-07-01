@@ -211,12 +211,19 @@ describe('textProcessor + languageProcessor', () => {
       it('when "delete mylist" and list does not exist', () => {
         data.originalText = 'delete mylist'
         listNotExists()
-        listsMock.expects('deletePromise').never()
         return shouldRespondWith(phrases.listNotFound + 'mylist.\n' + phrases.suggestGetLists)
       })
 
-      it('when "delete" and no cache')
-      it('when "delete" and with cache')
+      it('when "delete" and no cache', () => {
+        data.originalText = 'delete'
+        return shouldRespondWith(phrases.noList + '\n' + phrases.deleteListExample)
+      })
+
+      it('when "delete" and with cache should ignore cache', () => {
+        data.originalText = 'delete'
+        data.cachedListName = 'mylist'
+        return shouldRespondWith(phrases.noList + '\n' + phrases.deleteListExample)
+      })
     })
   })
 })

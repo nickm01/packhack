@@ -15,5 +15,6 @@ module.exports = {
   listNameInvalid: '😕 Sorry, list name is invalid.\nPlease don\t use spaces or reserved commands like \'create\'.',
   // command specific exmaples
   createListExample: 'e.g. \'create my-new-list\'',
-  getListExample: 'e.g. \'create my-list\''
+  getListExample: 'e.g. \'create my-list\'',
+  deleteListExample: 'e.g. \'delete shopping\''
 }

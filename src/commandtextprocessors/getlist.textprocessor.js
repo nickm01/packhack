@@ -18,7 +18,9 @@ const processError = (data) => {
   if (!data.listExists) {
     // Deal with the 'guess' that they are after a list not typing a command
     // TODO: This actually isn't tested yet NOR has 'get list' without the #
-    if (data.errorMessage !== errors.errorTypes.noList && data.words.length === 1 && data.originalText.charAt(0) !== '#') {
+    if (data.errorMessage !== errors.errorTypes.noList &&
+      data.words.length === 1 &&
+      data.originalText.charAt(0) !== '#') {
       data.command = undefined
       data.list = undefined
       throw data
