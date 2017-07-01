@@ -33,7 +33,7 @@ describe('lists', () => {
         .then(result => {
           should.fail('expecting error')
         }, result => {
-          result.errorMessage.should.equal(modelConstants.errorTypes.notFound)
+          result.errorMessage.should.equal(modelConstants.errorTypes.listNotFound)
           result.listExists.should.equal(false)
           result.someBaloney.should.equal('sausages')
         })
@@ -103,6 +103,38 @@ describe('lists', () => {
           result.listDescription.should.equal('myCapitalizedList')
         }, () => {
           should.fail('not expecting error')
+        })
+    })
+  })
+
+  describe('when deleting list', () => {
+    afterEach(() => {
+      listsPromises.deletePromise.restore()
+    })
+
+    it('should succeed for normal situation', () => {
+      const data = {list: 'mylist', familyId: 123}
+      sinon.stub(listsPromises, 'deletePromise').callsFake(() => {
+        return Q.resolve(null)
+      })
+      return lists.deletePromise(data)
+        .then(result => {
+          result.list.should.equal('mylist')
+        }, () => {
+          should.fail('not expecting error')
+        })
+    })
+
+    it('should fail for error situation', () => {
+      const data = {list: 'mylist', familyId: 123}
+      sinon.stub(listsPromises, 'deletePromise').callsFake(() => {
+        return Q.reject(null)
+      })
+      return lists.deletePromise(data)
+        .then(result => {
+          should.fail('expecting error')
+        }, result => {
+          result.errorMessage.should.equal(modelConstants.errorTypes.generalError)
         })
     })
   })

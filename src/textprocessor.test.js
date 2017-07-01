@@ -26,7 +26,7 @@ describe('textProcessor + languageProcessor', () => {
 
     const listNotExists = () => {
       data.listExists = false
-      data.errorMessage = modelConstants.errorTypes.notFound
+      data.errorMessage = modelConstants.errorTypes.listNotFound
       listsMock.expects('validateListExistsPromise').once().returns(Q.reject(data))
     }
 
@@ -90,7 +90,7 @@ describe('textProcessor + languageProcessor', () => {
       it('"get #list" and list does not exist', () => {
         data.originalText = 'get #list'
         listNotExists()
-        return shouldRespondWith(phrases.listNotFound + 'list\n' + phrases.suggestGetLists)
+        return shouldRespondWith(phrases.listNotFound + 'list.\n' + phrases.suggestGetLists)
       })
 
       it('"get list" with check for passthrough', () => {
@@ -175,7 +175,7 @@ describe('textProcessor + languageProcessor', () => {
 
       it('when "create mylist" general error', () => {
         data.originalText = 'create myList'
-        data.errorMessage = modelConstants.errorTypes.General
+        data.errorMessage = modelConstants.errorTypes.genealError
         listsMock.expects('validateListExistsPromise').once().returns(Q.reject(data))
         return shouldRespondWith(phrases.generalError)
       })
@@ -190,55 +190,33 @@ describe('textProcessor + languageProcessor', () => {
         data.cachedListName = 'some-cached-list'
         return shouldRespondWith(phrases.noList + '\n' + phrases.createListExample)
       })
-      // it('"create list" list does not exist > allow', () => {
-      //   var initialData = {
-      //     originalText: 'create #theList',
-      //     randomDataToCheckPassthrough: '123'
-      //   }
-      //   sinon.stub(lists, 'validateListExistsPromise').callsFake(data => {
-      //     data.errorMessage = modelConstants.errorTypes.notFound
-      //     data.listExists = false
-      //     return Q.reject(data)
-      //   })
-      //   return textProcessor.processTextPromise(initialData).then(result => {
-      //     result.originalText.should.equal(initialData.originalText)
-      //     result.listExists.should.equal(false)
-      //     result.command.should.equal(commandTypes.createList)
-      //     result.list.should.equal('thelist')
-      //     should.not.exist(result.person)
-      //     should.not.exist(result.supplementaryText)
-      //     result.randomDataToCheckPassthrough.should.equal(initialData.randomDataToCheckPassthrough)
-      //     result.words.length.should.equal(2)
-      //   }, () => {
-      //     should.fail('should not error')
-      //   })
-      // })
+    })
 
-      // TODO: Fix this once we do create
-      // it('should reject if list exists already', function () {
-      //   var initialData = {
-      //     originalText: 'create #thelist',
-      //     randomDataToCheckPassthrough: '123'
-      //   }
-      //   sinon.stub(lists, 'validateListExistsPromise').callsFake(function (data) {
-      //     data.listExists = true
-      //     return Q.resolve(data)
-      //   })
-      //   return textProcessor.processTextPromise(initialData).then(function (result) {
-      //     // Should error
-      //     should.fail('should not error')
-      //   }, (result) => {
-      //     result.originalText.should.equal(initialData.originalText)
-      //     result.listExists.should.equal(true)
-      //     result.command.should.equal(commandTypes.createList)
-      //     result.list.should.equal('thelist')
-      //     should.not.exist(result.person)
-      //     should.not.exist(result.supplementaryText)
-      //     result.randomDataToCheckPassthrough.should.equal(initialData.randomDataToCheckPassthrough)
-      //     result.words.length.should.equal(2)
-      //     result.errorMessage.should.equal(errors.errorTypes.listAlreadyExists)
-      //   })
-      // })
+    describe('deleteList', () => {
+      it('when "delete mylist" and list exists and delete succeeds', () => {
+        data.originalText = 'delete mylist'
+        listExists()
+        listsMock.expects('deletePromise').once().returns(Q.resolve(data))
+        return shouldRespondWith(phrases.success)
+      })
+
+      it('when "delete mylist" and list exists and delete fails', () => {
+        data.originalText = 'delete mylist'
+        data.errorMessage = modelConstants.errorTypes.generalError
+        listExists()
+        listsMock.expects('deletePromise').once().returns(Q.reject(data))
+        return shouldRespondWith(phrases.generalError)
+      })
+
+      it('when "delete mylist" and list does not exist', () => {
+        data.originalText = 'delete mylist'
+        listNotExists()
+        listsMock.expects('deletePromise').never()
+        return shouldRespondWith(phrases.listNotFound + 'mylist.\n' + phrases.suggestGetLists)
+      })
+
+      it('when "delete" and no cache')
+      it('when "delete" and with cache')
     })
   })
 })

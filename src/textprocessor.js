@@ -40,8 +40,8 @@ const conditionallyValidateListDoesNotExists = (data) => {
       console.log(result)
       throw result
     }, result => {
-      // Errored and sadidn't find list, then it's not an error
-      if (result.errorMessage === modelConstants.errorTypes.notFound) {
+      // Errored and didn't find list, then it's not an error
+      if (result.errorMessage === modelConstants.errorTypes.listNotFound) {
         result.errorMessage = null
         console.log('6a3')
         console.log(result)
@@ -64,7 +64,8 @@ const commandSpecificProcessorPromise = (data) => {
   // TODO: Remove 'if' once all commands are done
   if (data.command && (
     data.command === commandTypes.getList ||
-    data.command === commandTypes.createList
+    data.command === commandTypes.createList ||
+    data.command === commandTypes.deleteList
   )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processResponseTextPromise(data)
@@ -79,36 +80,46 @@ const processError = (data) => {
   // TODO: Remove 'if' once all commands are done
   if (data.command && (
     data.command === commandTypes.getList ||
-    data.command === commandTypes.createList
+    data.command === commandTypes.createList ||
+    data.command === commandTypes.deleteList
   )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
 
     // if there is specific processing, use it.
-    // if there is no responseText, fall back to standard pattern matching.
     if (processor.processError) {
       processor.processError(data)
     }
+    // if there is no responseText, fall back to standard pattern matching.
     if (!data.responseText) {
-      const matchedPhrase = errors.errorTypes[data.errorMessage]
-      console.log(222)
-      console.log(matchedPhrase)
-      if (matchedPhrase) {
-        data.responseText = phrases[matchedPhrase]
-        // Add suggestions according to type of error
-        console.log(333)
-        console.log(data.responseText)
-        if (data.errorMessage === errors.errorTypes.noList) {
-          console.log(444)
-          data.responseText += '\n' + phrases[data.command + 'Example']
-          console.log(data)
-        }
-      } else {
-        // TODO: ???General error
-      }
+      standardMatchedErrorMessage(data)
     }
     return data
   } else {
     throw data
+  }
+}
+
+const standardMatchedErrorMessage = (data) => {
+  const matchedPhrase = errors.errorTypes[data.errorMessage]
+  console.log(222)
+  console.log(matchedPhrase)
+  if (matchedPhrase) {
+    data.responseText = phrases[matchedPhrase]
+    // Add suggestions according to type of error
+    console.log(333)
+    console.log(data.responseText)
+    if (data.errorMessage === errors.errorTypes.noList) {
+      console.log(444)
+      data.responseText += '\n' + phrases[data.command + 'Example']
+      console.log(data)
+    } else if (data.errorMessage === errors.errorTypes.listNotFound) {
+      console.log(555)
+      data.responseText += data.list + '.\n' + phrases.suggestGetLists
+      console.log(data)
+    }
+  } else {
+    // TODO: ???General error
+    console.log('processError-fallthrough')
   }
 }
 

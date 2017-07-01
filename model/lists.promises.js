@@ -10,7 +10,13 @@ const saveNewPromise = (list, familyId, listDescription) => {
   return newList.save()
 }
 
+const deletePromise = (list, familyId) => {
+  return mongoOp.Lists.remove({listKey: list, familyId})
+      .exec()
+}
+
 module.exports = {
   findOnePromise,
-  saveNewPromise
+  saveNewPromise,
+  deletePromise
 }

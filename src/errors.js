@@ -7,6 +7,7 @@ const errorTypes = {
   listNameInvalid: 'listNameInvalid',
   noPerson: 'noPerson',
   listAlreadyExists: 'listAlreadyExists',
+  listNotFound: 'listNotFound',
   generalError: 'generalError'
 }
 

@@ -8,7 +8,7 @@ const validateListExistsPromise = (data) => {
     .then(list => {
       if (!list) {
         data.listExists = false
-        data.errorMessage = modelConstants.errorTypes.notFound
+        data.errorMessage = modelConstants.errorTypes.listNotFound
         throw data
       } else {
         data.listExists = true
@@ -36,7 +36,21 @@ const saveNewPromise = (data) => {
     })
 }
 
+const deletePromise = (data) => {
+  console.log('d19')
+  console.log(data)
+  return listsPromises.deletePromise(data.list, data.familyId)
+    .then(result => {
+      return data
+    }, (error) => {
+      data.errorMessage = modelConstants.errorTypes.generalError
+      data.systemError = error
+      throw data
+    })
+}
+
 module.exports = {
   validateListExistsPromise,
-  saveNewPromise
+  saveNewPromise,
+  deletePromise
 }

@@ -1,5 +1,5 @@
 const errorTypes = {
-  notFound: 'notFound',
+  listNotFound: 'listNotFound',
   generalError: 'generalError'
 }
 
