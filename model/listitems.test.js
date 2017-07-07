@@ -82,4 +82,50 @@ describe('list items', () => {
         })
     })
   })
+
+  describe.only('when deleting new list item', () => {
+    afterEach(() => {
+      listItemsPromises.deletePromise.restore()
+    })
+
+    it('should succeed for normal situation', () => {
+      const data = {list: 'mylist', familyId: 123, listItemName: 'myItem'}
+      sinon.stub(listItemsPromises, 'deletePromise').callsFake(() => {
+        return Q.resolve(data)
+      })
+      return listItems.deletePromise(data)
+        .then(result => {
+          result.list.should.equal('mylist')
+        }, () => {
+          should.fail('not expecting error')
+        })
+    })
+
+    it('should fail for error situation', () => {
+      const data = {list: 'mylist', familyId: 123, listItemName: 'myItem'}
+      sinon.stub(listItemsPromises, 'deletePromise').callsFake(() => {
+        return Q.reject(data)
+      })
+      return listItems.deletePromise(data)
+        .then(() => {
+          should.fail('not expecting error')
+        }, (result) => {
+          result.errorMessage.should.equal(modelConstants.errorTypes.generalError)
+        })
+    })
+
+    it('should fail when number of deletes is zero', () => {
+      const data = {list: 'mylist', familyId: 123, listItemName: 'myItem'}
+      sinon.stub(listItemsPromises, 'deletePromise').callsFake(() => {
+        const result = {n: 0}
+        return Q.resolve({result: result})
+      })
+      return listItems.deletePromise(data)
+        .then(() => {
+          should.fail('not expecting error')
+        }, (result) => {
+          result.errorMessage.should.equal(modelConstants.errorTypes.listItemNotFound)
+        })
+    })
+  })
 })

@@ -1,6 +1,7 @@
 const errorTypes = {
   listNotFound: 'listNotFound',
-  generalError: 'generalError'
+  generalError: 'generalError',
+  listItemNotFound: 'listItemNotFound'
 }
 
 module.exports = {
