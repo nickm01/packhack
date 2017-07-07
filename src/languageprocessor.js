@@ -168,6 +168,11 @@ LanguageProcessorResult.prototype.postProcessRemove = function () {
 
 // Tries to restructure to a standard "list add item" format, then gets the supplementaryText
 LanguageProcessorResult.prototype.postProcessItem = function (connector) {
+  // if nothing but add, just move on with no supplementaryText
+  if (this.words.length === 1) {
+    this.supplementaryText = ''
+    return this
+  }
   // Checks if second word is a command, but not first
   if (this.commandObj.actuals.indexOf(this.words[1].toLowerCase()) !== -1 &&
     this.commandObj.actuals.indexOf(this.words[0].toLowerCase()) === -1

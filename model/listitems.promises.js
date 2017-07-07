@@ -5,6 +5,12 @@ const findPromise = (list, familyId) => {
     .exec()
 }
 
+const saveNewPromise = (list, familyId, listItemName) => {
+  var newListItem = new mongoOp.ListItems({listKey: list, listItemName, familyId})
+  return newListItem.save()
+}
+
 module.exports = {
-  findPromise
+  findPromise,
+  saveNewPromise
 }

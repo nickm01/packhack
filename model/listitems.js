@@ -13,6 +13,18 @@ const findPromise = (data) => {
     })
 }
 
+const saveNewPromise = (data) => {
+  return listItemsPromises.saveNewPromise(data.list, data.familyId, data.listItemName)
+    .then(list => {
+      return data
+    }, (error) => {
+      data.errorMessage = modelConstants.errorTypes.generalError
+      data.systemError = error
+      throw data
+    })
+}
+
 module.exports = {
-  findPromise
+  findPromise,
+  saveNewPromise
 }

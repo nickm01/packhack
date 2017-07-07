@@ -50,4 +50,36 @@ describe('list items', () => {
         })
     })
   })
+
+  describe('when saving new list item', () => {
+    afterEach(() => {
+      listItemsPromises.saveNewPromise.restore()
+    })
+
+    it('should succeed for normal situation', () => {
+      const data = {list: 'mylist', familyId: 123, listItemName: 'myItem'}
+      sinon.stub(listItemsPromises, 'saveNewPromise').callsFake(() => {
+        return Q.resolve(data)
+      })
+      return listItems.saveNewPromise(data)
+        .then(result => {
+          result.list.should.equal('mylist')
+        }, () => {
+          should.fail('not expecting error')
+        })
+    })
+
+    it('should fail for error situation', () => {
+      const data = {list: 'mylist', familyId: 123, listItemName: 'myItem'}
+      sinon.stub(listItemsPromises, 'saveNewPromise').callsFake(() => {
+        return Q.reject(data)
+      })
+      return listItems.saveNewPromise(data)
+        .then(result => {
+          should.fail('expecting error')
+        }, result => {
+          result.errorMessage.should.equal(modelConstants.errorTypes.generalError)
+        })
+    })
+  })
 })

@@ -102,6 +102,7 @@ describe('languageProcessor', function () {
     it('✅ add remove stuff - deliberate confusion', function () { textShouldResult('add remove stuff', {command: command, list: 'cachedlistname', supplementaryText: 'remove stuff'}, 'cachedListName') })
     it('✅ add remove stuff to x- deliberate confusion', function () { textShouldResult('add remove stuff to x', {command: command, list: 'x', supplementaryText: 'remove stuff'}, 'cachedListName') })
     it('✅ append remove stuff to x - deliberate confusion', function () { textShouldResult('append remove stuff to x', {command: command, list: 'x', supplementaryText: 'remove stuff'}, 'cachedListName') })
+    it('✅ add', function () { textShouldResult('add', {command: command, list: null, supplementaryText: ''}) })
   })
 
   describe('removeListItem', function () {

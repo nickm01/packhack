@@ -13,8 +13,11 @@ module.exports = {
   // createList specific
   listAlreadyExists: '😕 Sorry, list already exists!',
   listNameInvalid: '😕 Sorry, list name is invalid.\nPlease don\t use spaces or reserved commands like \'create\'.',
+  // addListItem or removeListItem specific
+  noListItemToAdd: '😕 Sorry please specify item(s) to add.',
   // command specific exmaples
   createListExample: 'e.g. \'create my-new-list\'',
   getListExample: 'e.g. \'create my-list\'',
-  deleteListExample: 'e.g. \'delete shopping\''
+  deleteListExample: 'e.g. \'delete shopping\'',
+  addListItemExample: 'e.g. \'#my-list add bread, milk, coffee\'.\nOr simply, \'get my-list\', followed by \'add bread, milk, coffee'
 }

@@ -65,7 +65,8 @@ const commandSpecificProcessorPromise = (data) => {
   if (data.command && (
     data.command === commandTypes.getList ||
     data.command === commandTypes.createList ||
-    data.command === commandTypes.deleteList
+    data.command === commandTypes.deleteList ||
+    data.command === commandTypes.addListItem
   )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processResponseTextPromise(data)
@@ -81,7 +82,8 @@ const processError = (data) => {
   if (data.command && (
     data.command === commandTypes.getList ||
     data.command === commandTypes.createList ||
-    data.command === commandTypes.deleteList
+    data.command === commandTypes.deleteList ||
+    data.command === commandTypes.addListItem
   )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
 
