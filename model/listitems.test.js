@@ -83,7 +83,7 @@ describe('list items', () => {
     })
   })
 
-  describe.only('when deleting new list item', () => {
+  describe('when deleting new list item', () => {
     afterEach(() => {
       listItemsPromises.deletePromise.restore()
     })
