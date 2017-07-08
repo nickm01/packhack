@@ -1,6 +1,4 @@
 // Global string processing functions
-const lodash = require('lodash')
-
 function getFirstWord (str) {
   if (str.indexOf(' ') === -1) {
     return str
@@ -41,28 +39,17 @@ function stringToWords (str) {
   }
 }
 
-// TODO: Needs rework
+// split into array based on comma, and or double space separators
+// trims and removes empty items (based on truthiness)
 function splitByCommasAndsDoubleSpaces (str) {
   if (str) {
-    const items = str
+    return str
+      .replace(' and ', ',')
+      .replace('  ', ',')
       .split(',')
       .map(text => {
-        return text.split(' and ')
+        return text.trim()
       })
-    console.log('1')
-    console.log(items)
-    const itemsSplitByDoubleSpaceAsWell =
-      lodash.flatten(items)
-        .map(text => {
-          return text.split('  ')
-        })
-    console.log('2')
-    console.log(itemsSplitByDoubleSpaceAsWell)
-    const flatItems = lodash.flatten(itemsSplitByDoubleSpaceAsWell)
-    console.log('3')
-    console.log(flatItems)
-    return flatItems
-      .map(item => { return item.trim() })
       .filter(item => { return item })
   } else {
     return []
