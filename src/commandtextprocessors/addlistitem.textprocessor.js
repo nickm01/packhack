@@ -9,7 +9,6 @@ const processResponseTextPromise = (data) => {
   const listItemStrings = stringProcessor.splitByCommasAndsDoubleSpaces(data.supplementaryText)
   console.log(listItemStrings)
   if (listItemStrings.length === 0) {
-    console.log('0000000')
     data.responseText = phrases.noListItemToAdd + '\n' + phrases.addListItemExample
     return Q.reject(data)
   }

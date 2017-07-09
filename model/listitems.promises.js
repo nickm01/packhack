@@ -5,13 +5,13 @@ const findPromise = (list, familyId) => {
     .exec()
 }
 
-const saveNewPromise = (list, familyId, listItemName) => {
-  var newListItem = new mongoOp.ListItems({listKey: list, listItemName, familyId})
+const saveNewPromise = (listKey, familyId, listItemName) => {
+  var newListItem = new mongoOp.ListItems({listKey, listItemName, familyId})
   return newListItem.save()
 }
 
-const deletePromise = (list, familyId, listItemName) => {
-  return mongoOp.ListItems.remove({listKey: list, listItemName, familyId})
+const deletePromise = (listKey, familyId, listItemName) => {
+  return mongoOp.ListItems.remove({listKey, listItemName, familyId})
       .exec()
 }
 

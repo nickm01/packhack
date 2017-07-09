@@ -56,6 +56,9 @@ describe('textProcessor + languageProcessor', () => {
       if (listItems.findPromise.restore) {
         listItems.findPromise.restore()
       }
+      if (listItems.deletePromise.restore) {
+        listItems.deletePromise.restore()
+      }
     })
 
     describe('getlist', () => {
@@ -227,7 +230,7 @@ describe('textProcessor + languageProcessor', () => {
       })
     })
 
-    describe('addListItem', () => {
+    describe('list item specific tests', () => {
       var listItemsMock
 
       beforeEach(() => {
@@ -239,69 +242,179 @@ describe('textProcessor + languageProcessor', () => {
         listItemsMock.verify() // Use verify to confirm the sinon expects
       })
 
-      it('when "#mylist add bananas" and list exists and add succeeds', () => {
-        data.originalText = '#myList add bananas'
-        listExists()
-        listItemsMock.expects('saveNewPromise').once().returns(Q.resolve(data))
-        return shouldRespondWith(phrases.success)
+      describe('addListItem', () => {
+        it('when "#mylist add bananas" and list exists and add succeeds', () => {
+          data.originalText = '#myList add bananas'
+          listExists()
+          listItemsMock.expects('saveNewPromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
+
+        it('when "#mylist add bananas" and list does not exist', () => {
+          data.originalText = '#myList add bananas'
+          listNotExists()
+          return shouldRespondWith(phrases.listNotFound + 'mylist.\n' + phrases.suggestGetLists)
+        })
+
+        it('when "#mylist add bananas" and list exists and add fails', () => {
+          data.originalText = '#myList add bananas'
+          data.errorMessage = modelConstants.errorTypes.generalError
+          listExists()
+          listItemsMock.expects('saveNewPromise').once().returns(Q.reject(data))
+          return shouldRespondWith(phrases.generalError)
+        })
+
+        it('when "add bananas" and cachedListName and list exists', () => {
+          data.originalText = 'add bananas'
+          data.cachedListName = 'myList'
+          listExists()
+          listItemsMock.expects('saveNewPromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
+
+        it('when "add bananas" and no cachedListName then error', () => {
+          data.originalText = 'add bananas'
+          listExists()
+          listItemsMock.expects('saveNewPromise').never()
+          return shouldRespondWith(phrases.noList + '\n' + phrases.addListItemExample)
+        })
+
+        it('when "add bananas to thisList" and list exists', () => {
+          data.originalText = 'add bananas to thisList'
+          data.cachedListName = 'thisList'
+          listExists()
+          listItemsMock.expects('saveNewPromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
+
+        it('when "add bananas, coconuts, sausages" and cachedListName and list exists', () => {
+          data.originalText = 'add bananas, coconuts, sausages'
+          data.cachedListName = 'thisList'
+          listExists()
+          listItemsMock.expects('saveNewPromise').thrice().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
+
+        it('when "myList add" and no items specified and list exists', () => {
+          data.originalText = 'myList add'
+          listExists()
+          listItemsMock.expects('saveNewPromise').never()
+          return shouldRespondWith(phrases.noListItemToAdd + '\n' + phrases.addListItemExample)
+        })
+
+        it('when "add" and no cached list or items specified', () => {
+          data.originalText = 'add'
+          listItemsMock.expects('saveNewPromise').never()
+          return shouldRespondWith(phrases.noListItemToAdd + '\n' + phrases.addListItemExample)
+        })
+
+        it('when "add ripe bananas  sausages, coconuts  and beer to thisList" and list exists', () => {
+          data.originalText = 'add ripe bananas  sausages, coconuts  and beer to thisList'
+          listExists()
+          listItemsMock.expects('saveNewPromise').exactly(4).returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
       })
 
-      it('when "#mylist add bananas" and list does not exist', () => {
-        data.originalText = '#myList add bananas'
-        listNotExists()
-        return shouldRespondWith(phrases.listNotFound + 'mylist.\n' + phrases.suggestGetLists)
-      })
+      describe('removeListItem', () => {
+        it('when "#mylist remove bananas" and list exists and remove succeeds', () => {
+          data.originalText = '#myList remove bananas'
+          listExists()
+          listItemsMock.expects('deletePromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
 
-      it('when "#mylist add bananas" and list exists and add fails', () => {
-        data.originalText = '#myList add bananas'
-        data.errorMessage = modelConstants.errorTypes.generalError
-        listExists()
-        listItemsMock.expects('saveNewPromise').once().returns(Q.reject(data))
-        return shouldRespondWith(phrases.generalError)
-      })
+        it('when "#mylist remove bananas, chocolate" and list exists and remove succeeds', () => {
+          data.originalText = '#myList remove bananas, chocolate'
+          listExists()
+          listItemsMock.expects('deletePromise').twice().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
 
-      it('when "add bananas" and cachedListName and list exists', () => {
-        data.originalText = 'add bananas'
-        data.cachedListName = 'myList'
-        listExists()
-        listItemsMock.expects('saveNewPromise').once().returns(Q.resolve(data))
-        return shouldRespondWith(phrases.success)
-      })
+        it('when "#mylist remove bananas" and list does not exists', () => {
+          data.originalText = '#myList remove bananas'
+          listNotExists()
+          return shouldRespondWith(phrases.listNotFound + 'mylist.\n' + phrases.suggestGetLists)
+        })
 
-      it('when "add bananas to thisList" and list exists', () => {
-        data.originalText = 'add bananas to thisList'
-        data.cachedListName = 'thisList'
-        listExists()
-        listItemsMock.expects('saveNewPromise').once().returns(Q.resolve(data))
-        return shouldRespondWith(phrases.success)
-      })
+        it('when "#mylist remove bananas" and list exists and remove fails', () => {
+          data.originalText = '#myList remove bananas'
+          data.errorMessage = modelConstants.errorTypes.generalError
+          listExists()
+          listItemsMock.expects('deletePromise').once().returns(Q.reject(data))
+          return shouldRespondWith(phrases.generalError)
+        })
 
-      it('when "add bananas, coconuts, sausages" and cachedListName and list exists', () => {
-        data.originalText = 'add bananas, coconuts, sausages'
-        data.cachedListName = 'thisList'
-        listExists()
-        listItemsMock.expects('saveNewPromise').thrice().returns(Q.resolve(data))
-        return shouldRespondWith(phrases.success)
-      })
+        it('when "remove bananas" and cachedListName and list exists and remove succeeds', () => {
+          data.originalText = 'remove bananas'
+          data.cachedListName = 'thisList'
+          listExists()
+          listItemsMock.expects('deletePromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
 
-      it('when "myList add" and no items specified and list exists', () => {
-        data.originalText = 'myList add'
-        listExists()
-        listItemsMock.expects('saveNewPromise').never()
-        return shouldRespondWith(phrases.noListItemToAdd + '\n' + phrases.addListItemExample)
-      })
+        it('when "remove bananas" and no cachedListName then error', () => {
+          data.originalText = 'remove bananas'
+          listExists()
+          listItemsMock.expects('deletePromise').never()
+          return shouldRespondWith(phrases.noList + '\n' + phrases.removeListItemExample)
+        })
 
-      it('when "add" and no cached list or items specified', () => {
-        data.originalText = 'add'
-        listItemsMock.expects('saveNewPromise').never()
-        return shouldRespondWith(phrases.noListItemToAdd + '\n' + phrases.addListItemExample)
-      })
+        it('when "#mylist remove bananas" and list exists and list item does not exist', () => {
+          data.originalText = '#mylist remove bananas'
+          listExists()
+          data.errorMessage = modelConstants.errorTypes.listItemNotFound
+          listItemsMock.expects('deletePromise').once().returns(Q.reject(data))
+          return shouldRespondWith(phrases.listItemNotFound +
+            'bananas.\n' +
+            phrases.suggestGetPartOne +
+            'mylist' +
+            phrases.suggestGetPartTwo)
+        })
 
-      it('when "add ripe bananas  sausages, cocunuts  and beer to thisList" and list exists', () => {
-        data.originalText = 'add ripe bananas  sausages, cocunuts  and beer to thisList'
-        listExists()
-        listItemsMock.expects('saveNewPromise').exactly(4).returns(Q.resolve(data))
-        return shouldRespondWith(phrases.success)
+        it('when "#mylist remove bananas and coconuts" and coconuts do not exist', () => {
+          data.originalText = '#mylist remove bananas and coconuts'
+          listExists()
+          listItemsMock.restore()
+          sinon.stub(listItems, 'deletePromise').callsFake((result, listItemName) => {
+            if (listItemName === 'bananas') {
+              return Q.resolve(data)
+            } else {
+              data.errorMessage = modelConstants.errorTypes.listItemNotFound
+              return Q.reject(data)
+            }
+          })
+          return shouldRespondWith(phrases.listItemNotFound +
+            'coconuts.\n' +
+            phrases.suggestGetPartOne +
+            'mylist' +
+            phrases.suggestGetPartTwo)
+        })
+
+        it('when "#mylist remove bananas and coconuts" and bananas do not exist', () => {
+          data.originalText = '#mylist remove bananas and coconuts'
+          listExists()
+          listItemsMock.restore()
+          sinon.stub(listItems, 'deletePromise').callsFake((result, listItemName) => {
+            if (listItemName === 'coconuts') {
+              return Q.resolve(data)
+            } else {
+              data.errorMessage = modelConstants.errorTypes.listItemNotFound
+              return Q.reject(data)
+            }
+          })
+          return shouldRespondWith(phrases.listItemNotFound +
+            'bananas.\n' +
+            phrases.suggestGetPartOne +
+            'mylist' +
+            phrases.suggestGetPartTwo)
+        })
+
+        it('when "remove" and no cached list or items specified', () => {
+          data.originalText = 'remove'
+          listItemsMock.expects('deletePromise').never()
+          return shouldRespondWith(phrases.noListItemToRemove + '\n' + phrases.removeListItemExample)
+        })
       })
     })
   })

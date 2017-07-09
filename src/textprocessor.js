@@ -28,27 +28,17 @@ const conditionallyValidateListExists = (data) => {
 }
 
 const conditionallyValidateListDoesNotExists = (data) => {
-  console.log('6a')
-  console.log(data)
   if (data.command === commandTypes.createList) {
-    console.log('6a1')
-    console.log(data)
     return lists.validateListExistsPromise(data).then(result => {
       // Found an existing list, then it's an error
       result.errorMessage = errors.errorTypes.listAlreadyExists
-      console.log('6a2')
-      console.log(result)
       throw result
     }, result => {
       // Errored and didn't find list, then it's not an error
       if (result.errorMessage === modelConstants.errorTypes.listNotFound) {
         result.errorMessage = null
-        console.log('6a3')
-        console.log(result)
         return result
       } else {
-        console.log('6a4')
-        console.log(result)
         result.errorMessage = errors.errorTypes.generalError
         throw result
       }
@@ -66,7 +56,8 @@ const commandSpecificProcessorPromise = (data) => {
     data.command === commandTypes.getList ||
     data.command === commandTypes.createList ||
     data.command === commandTypes.deleteList ||
-    data.command === commandTypes.addListItem
+    data.command === commandTypes.addListItem ||
+    data.command === commandTypes.removeListItem
   )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processResponseTextPromise(data)
@@ -83,7 +74,8 @@ const processError = (data) => {
     data.command === commandTypes.getList ||
     data.command === commandTypes.createList ||
     data.command === commandTypes.deleteList ||
-    data.command === commandTypes.addListItem
+    data.command === commandTypes.addListItem ||
+    data.command === commandTypes.removeListItem
   )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
 
