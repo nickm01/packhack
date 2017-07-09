@@ -76,7 +76,7 @@ router.route("/twilio")
       //   });
 
       // Basic welcome message
-      } else if (bodyText.startsWith("** welcome ")) {
+      if (bodyText.startsWith("** welcome ")) {
         response = true;
         var welcomeSendUserId = bodyText.substr(11);
         console.log('*** Send welcome to ' + welcomeSendUserId);

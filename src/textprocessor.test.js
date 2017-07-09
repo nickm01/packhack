@@ -259,6 +259,8 @@ describe('textProcessor + languageProcessor', () => {
         listsMock.expects('findAllPromise').once().returns(Q.reject(data))
         return shouldRespondWith(phrases.generalError)
       })
+
+      // TODO: "get" with no cache should actually be get lists
     })
 
     describe('list item specific tests', () => {
