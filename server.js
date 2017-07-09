@@ -61,19 +61,19 @@ router.route("/twilio")
       // MAIN LOGIC
 
       // get lists
-      if (bodyText === "get lists" || bodyText === "get" || bodyText === "lists") {
-        mongoOp.Lists.find({'familyId': familyId}, 'listKey', function(err, lists) {
-          if(err){
-            logging.logError(fromPhoneNumber, familyId, bodyText, err);
-          } else {
-            var concatText = "";
-
-            lists.forEach(function(list){
-              concatText = concatText.concat('\n#' + list.listKey);
-            });
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, concatText, res);
-          }
-        });
+      // if (bodyText === "get lists" || bodyText === "get" || bodyText === "lists") {
+      //   mongoOp.Lists.find({'familyId': familyId}, 'listKey', function(err, lists) {
+      //     if(err){
+      //       logging.logError(fromPhoneNumber, familyId, bodyText, err);
+      //     } else {
+      //       var concatText = "";
+      //
+      //       lists.forEach(function(list){
+      //         concatText = concatText.concat('\n#' + list.listKey);
+      //       });
+      //       sendSMSResponse(fromPhoneNumber, familyId, bodyText, concatText, res);
+      //     }
+      //   });
 
       // Basic welcome message
       } else if (bodyText.startsWith("** welcome ")) {
@@ -87,6 +87,10 @@ router.route("/twilio")
 
       // New Processing
       } else if (bodyText.startsWith('get #') ||
+        bodyText.startsWith('get lists') ||
+        bodyText.startsWith('lists') ||
+        bodyText.startsWith('show lists') ||
+        bodyText.startsWith('display lists') ||
         bodyText.startsWith('show #') ||
         bodyText.startsWith('list #') ||
         bodyText.startsWith('retrieve #') ||

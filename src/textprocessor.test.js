@@ -230,6 +230,37 @@ describe('textProcessor + languageProcessor', () => {
       })
     })
 
+    describe('getLists', () => {
+      it('when "get lists" and lists exist', () => {
+        data.originalText = 'get lists'
+        data.lists = ['one', 'two']
+        listsMock.expects('findAllPromise').once().returns(Q.resolve(data))
+        return shouldRespondWith('#one\n#two')
+      })
+
+      it('when "lists" and single list exist', () => {
+        data.originalText = 'lists'
+        data.lists = ['one']
+        listsMock.expects('findAllPromise').once().returns(Q.resolve(data))
+        return shouldRespondWith('#one')
+      })
+
+      it('when "get lists" but no lists', () => {
+        data.originalText = 'get lists'
+        data.lists = []
+        console.log('xxx:' + data.lists.length)
+        listsMock.expects('findAllPromise').once().returns(Q.resolve(data))
+        return shouldRespondWith(phrases.noListsExist + '/n' + phrases.createListExample)
+      })
+
+      it('when "get lists" and general error', () => {
+        data.originalText = 'get lists'
+        data.errorMessage = modelConstants.errorTypes.generalError
+        listsMock.expects('findAllPromise').once().returns(Q.reject(data))
+        return shouldRespondWith(phrases.generalError)
+      })
+    })
+
     describe('list item specific tests', () => {
       var listItemsMock
 

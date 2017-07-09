@@ -10,6 +10,8 @@ module.exports = {
   generalError: '😬 Sorry something unexpected happened.\nPlease try again.',
   // getList specifc
   noItems: 'Currently no items in #',
+  // getLists specific
+  noListsExist: '🤔 No lists exist.  Perhaps create one?',
   // createList specific
   listAlreadyExists: '😕 Sorry, list already exists!',
   listNameInvalid: '😕 Sorry, list name is invalid.\nPlease don\t use spaces or reserved commands like \'create\'.',

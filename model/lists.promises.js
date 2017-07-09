@@ -5,6 +5,11 @@ const findOnePromise = (list, familyId) => {
     .exec()
 }
 
+const findAllPromise = (familyId) => {
+  return mongoOp.Lists.find({familyId})
+    .exec()
+}
+
 const saveNewPromise = (list, familyId, listDescription) => {
   var newList = new mongoOp.Lists({listKey: list, familyId, listDescription})
   return newList.save()
@@ -17,6 +22,7 @@ const deletePromise = (list, familyId) => {
 
 module.exports = {
   findOnePromise,
+  findAllPromise,
   saveNewPromise,
   deletePromise
 }

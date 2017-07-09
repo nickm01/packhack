@@ -55,6 +55,25 @@ describe('lists', () => {
     })
   })
 
+  describe('when retrieving all lists', () => {
+    afterEach(() => {
+      listsPromises.findAllPromise.restore()
+    })
+
+    it('should return multiple lists when multiple exist', () => {
+      const data = {familyId: 123, someBaloney: 'sausages'}
+      sinon.stub(listsPromises, 'findAllPromise').callsFake(function () {
+        return Q.resolve(['a', 'b', 'c'])
+      })
+      return lists.findAllPromise(data)
+        .then(result => {
+          data.lists.length.should.equal(3)
+        }, result => {
+          should.fail('not expecting error')
+        })
+    })
+  })
+
   describe('when saving new list', () => {
     afterEach(() => {
       listsPromises.saveNewPromise.restore()

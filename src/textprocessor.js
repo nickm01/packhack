@@ -54,14 +54,17 @@ const commandSpecificProcessorPromise = (data) => {
   // TODO: Remove 'if' once all commands are done
   if (data.command && (
     data.command === commandTypes.getList ||
+    data.command === commandTypes.getLists ||
     data.command === commandTypes.createList ||
     data.command === commandTypes.deleteList ||
     data.command === commandTypes.addListItem ||
     data.command === commandTypes.removeListItem
   )) {
+    console.log('6c')
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processResponseTextPromise(data)
   } else {
+    console.log('6d')
     return Q.resolve(data)
   }
 }
@@ -72,6 +75,7 @@ const processError = (data) => {
   // TODO: Remove 'if' once all commands are done
   if (data.command && (
     data.command === commandTypes.getList ||
+    data.command === commandTypes.getLists ||
     data.command === commandTypes.createList ||
     data.command === commandTypes.deleteList ||
     data.command === commandTypes.addListItem ||

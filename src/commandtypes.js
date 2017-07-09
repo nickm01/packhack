@@ -1,7 +1,7 @@
 // Global user-facing commandTypes
 
 module.exports = {
-  getlists: 'getlists',
+  getLists: 'getLists',
   getList: 'getList',
   createList: 'createList',
   clearList: 'clearList',

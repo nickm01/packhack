@@ -7,7 +7,7 @@ const commandTypes = require('./commandtypes')
 
 // Note more complex constructs should be at the end
 const commandData = [
-  {command: commandTypes.getlists, actuals: ['lists', 'get lists', 'show lists', 'display lists']},
+  {command: commandTypes.getLists, actuals: ['lists', 'get lists', 'show lists', 'display lists']},
   {command: commandTypes.getList, actuals: ['get', 'show', 'display'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
   {command: commandTypes.createList, actuals: ['create'], postProcessing: 'postProcessCreate'},
   {command: commandTypes.clearList, actuals: ['clear', 'empty', 'flush'], postProcessing: 'postProcessBasicListCommandIncludingCache'},

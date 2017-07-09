@@ -21,6 +21,14 @@ const validateListExistsPromise = (data) => {
     })
 }
 
+const findAllPromise = (data) => {
+  return listsPromises.findAllPromise(data.familyId)
+    .then(lists => {
+      data.lists = lists
+      return data
+    })
+}
+
 const saveNewPromise = (data) => {
   const list = data.list.toLowerCase()
   const listDescription = data.list
@@ -51,6 +59,7 @@ const deletePromise = (data) => {
 
 module.exports = {
   validateListExistsPromise,
+  findAllPromise,
   saveNewPromise,
   deletePromise
 }

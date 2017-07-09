@@ -52,7 +52,7 @@ describe('languageProcessor', function () {
   })
 
   describe('getLists', function () {
-    const command = commandTypes.getlists
+    const command = commandTypes.getLists
     it('✅ lists', function () { textShouldResult('lists', {command: command}) })
     it('✅ get lists', function () { textShouldResult('get lists', {command: command}) })
     it('✅ Get Lists', function () { textShouldResult('Get Lists', {command: command}) })
@@ -68,6 +68,7 @@ describe('languageProcessor', function () {
     it('✅ CREATE Something', function () { textShouldResult('CREATE SomeThing', {command: command, list: 'something'}) })
     it('✅ create with special characters', function () { textShouldResult('create 👍❤️😜!@#$%^&*()', {command: command, list: '👍❤️😜!@#$%^&*()'}) })
     it('❌ create #get', function () { textShouldError('create #get', {command: command, list: null, message: errors.errorTypes.listNameInvalid}) })
+    // TODO: Shouldn't allow create lists
     it('❌ create Get', function () { textShouldError('create Get', {command: command, list: null, message: errors.errorTypes.listNameInvalid}) })
     it('❌ create #create', function () { textShouldError('create #create', {command: command, list: null, message: errors.errorTypes.listNameInvalid}) })
     it('❌ create', function () { textShouldError('create', {command: command, list: null, message: errors.errorTypes.noList}) })
