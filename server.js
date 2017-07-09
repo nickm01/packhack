@@ -122,7 +122,8 @@ router.route("/twilio")
       //   })
         const data = {
           originalText: bodyText,
-          familyId: familyId
+          familyId: familyId,
+          cachedListName: cachedListName
         }
         textProcessor.processTextPromise(data).then(result => {
           cacheListName(data.list, res) // TODO: Make sure this isn't the case for delete
