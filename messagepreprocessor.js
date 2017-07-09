@@ -3,9 +3,9 @@ function preProcessMessage (messageText, cachedListName, fromUserName) {
   var returnText = messageText
 
   // For cached list name - add to the beginning
-  if (cachedListName != null && (returnText.startsWith('add ') || returnText.startsWith('remove '))) {
-    returnText = '#' + cachedListName + ' ' + returnText
-  }
+  // if (cachedListName != null && (returnText.startsWith('add ') || returnText.startsWith('remove '))) {
+  //   returnText = '#' + cachedListName + ' ' + returnText
+  // }
 
   // For get shorthand... if a signle word that starts with #, then add get
   if (returnText.startsWith('#') && returnText.indexOf(' ') < 0) {

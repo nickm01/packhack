@@ -92,7 +92,10 @@ router.route("/twilio")
         bodyText.startsWith('retrieve #') ||
         bodyText.startsWith('display #') ||
         bodyText.startsWith('create') ||
-        bodyText.startsWith('delete')) {
+        bodyText.startsWith('delete') ||
+        bodyText.includes('add') ||  // TODO: This contidition is weak
+        bodyText.includes('remove') // TODO: This contidition is weak
+      ) {
       //   var listName = stringProcessor.removeFirstWord(bodyText).substr(1)
       //   console.log('*** Get List:' + listName)
       //   var list = {'listKey': listName, 'familyId': familyId}
@@ -126,49 +129,48 @@ router.route("/twilio")
           sendSMSResponse(fromPhoneNumber, data.familyId, data.originalText, data.responseText, res)
         })
 
-      // TODO: Needs to be removed
-      } else if (bodyText.startsWith('get ')) {
-        sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Lists always start with a "#".\nPlease use the format "get #list".', res)
+      // } else if (bodyText.startsWith('get ')) {
+      //   sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Lists always start with a "#".\nPlease use the format "get #list".', res)
 
-      } else if (bodyText.startsWith('#')) {
-
-        var listName = getFirstWord(bodyText).substr(1);
-        mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
-
-          if (list == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
-          } else {
-            var addVerbPhrase = '#' + listName + ' add ';
-            var removeVerbPhrase = '#' + listName + ' remove ';
-
-            //Add item
-            if (bodyText.startsWith(addVerbPhrase)) {
-              var listItemName = bodyText.substr(addVerbPhrase.length);
-
-              var newItem = new mongoOp.ListItems({
-                "listKey" : listName,
-                "listItemName" : listItemName,
-                "familyId" : familyId
-              });
-              newItem.save(function (err, data) {
-                if (err) logging.logError(fromPhoneNumber, familyId, bodyText, err);
-                else {
-                  console.log('----saved ', data );
-                  cacheListName(listName,res);
-                  sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
-                }
-              });
-
-            //Remove list item
-            } else if (bodyText.startsWith(removeVerbPhrase)) {
-              var listItemName = bodyText.substr(removeVerbPhrase.length);
-              listItems.deleteListItemByName(familyId, listName, listItemName, function(err){
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, err ? err : config.successText, res);
-              });
-            }
-
-          }
-        });
+      // } else if (bodyText.startsWith('#')) {
+      //
+      //   var listName = getFirstWord(bodyText).substr(1);
+      //   mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
+      //
+      //     if (list == null) {
+      //       sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
+      //     } else {
+      //       var addVerbPhrase = '#' + listName + ' add ';
+      //       var removeVerbPhrase = '#' + listName + ' remove ';
+      //
+      //       //Add item
+      //       if (bodyText.startsWith(addVerbPhrase)) {
+      //         var listItemName = bodyText.substr(addVerbPhrase.length);
+      //
+      //         var newItem = new mongoOp.ListItems({
+      //           "listKey" : listName,
+      //           "listItemName" : listItemName,
+      //           "familyId" : familyId
+      //         });
+      //         newItem.save(function (err, data) {
+      //           if (err) logging.logError(fromPhoneNumber, familyId, bodyText, err);
+      //           else {
+      //             console.log('----saved ', data );
+      //             cacheListName(listName,res);
+      //             sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
+      //           }
+      //         });
+      //
+      //       //Remove list item
+      //       } else if (bodyText.startsWith(removeVerbPhrase)) {
+      //         var listItemName = bodyText.substr(removeVerbPhrase.length);
+      //         listItems.deleteListItemByName(familyId, listName, listItemName, function(err){
+      //           sendSMSResponse(fromPhoneNumber, familyId, bodyText, err ? err : config.successText, res);
+      //         });
+      //       }
+      //
+      //     }
+      //   });
 
       // Create list.
       // } else if (bodyText.startsWith('create #')) {
