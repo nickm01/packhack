@@ -8,7 +8,8 @@ const processResponseTextPromise = (data) => {
     if (data.lists.length === 0) {
       data.responseText = phrases.noListsExist + '/n' + phrases.createListExample
     } else {
-      data.responseText = '#' + data.lists.join('\n#')
+      const listKeys = data.lists.map(list => { return list.listKey })
+      data.responseText = '#' + listKeys.join('\n#')
     }
     return data
   })

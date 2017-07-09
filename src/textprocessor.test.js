@@ -233,14 +233,14 @@ describe('textProcessor + languageProcessor', () => {
     describe('getLists', () => {
       it('when "get lists" and lists exist', () => {
         data.originalText = 'get lists'
-        data.lists = ['one', 'two']
+        data.lists = [{listKey: 'one'}, {listKey: 'two'}]
         listsMock.expects('findAllPromise').once().returns(Q.resolve(data))
         return shouldRespondWith('#one\n#two')
       })
 
       it('when "lists" and single list exist', () => {
         data.originalText = 'lists'
-        data.lists = ['one']
+        data.lists = [{listKey: 'one'}]
         listsMock.expects('findAllPromise').once().returns(Q.resolve(data))
         return shouldRespondWith('#one')
       })
