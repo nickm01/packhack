@@ -176,6 +176,8 @@ describe('textProcessor + languageProcessor', () => {
         return shouldRespondWith(phrases.listNameInvalid)
       })
 
+      // TODO: Should include lists and get as a reserved word
+
       it('when "create mylist" general error', () => {
         data.originalText = 'create myList'
         data.errorMessage = modelConstants.errorTypes.genealError
@@ -447,6 +449,50 @@ describe('textProcessor + languageProcessor', () => {
           data.originalText = 'remove'
           listItemsMock.expects('deletePromise').never()
           return shouldRespondWith(phrases.noListItemToRemove + '\n' + phrases.removeListItemExample)
+        })
+      })
+
+      describe.only('clearList', () => {
+        it('when "clear #mylist" and list exists and succeeds', () => {
+          data.originalText = 'clear #myList'
+          listExists()
+          listItemsMock.expects('deletePromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
+
+        it('when "clear #mylist" and list does not exist', () => {
+          data.originalText = 'clear #myList'
+          listNotExists()
+          return shouldRespondWith(phrases.listNotFound + 'mylist.\n' + phrases.suggestGetLists)
+        })
+
+        it('when "clear #mylist" and list exists and failure', () => {
+          data.originalText = 'clear #myList'
+          data.errorMessage = modelConstants.errorTypes.generalError
+          listExists()
+          listItemsMock.expects('deletePromise').once().returns(Q.reject(data))
+          return shouldRespondWith(phrases.generalError)
+        })
+
+        it('when "clear #mylist" and list already clear', () => {
+          data.originalText = 'clear #myList'
+          data.errorMessage = modelConstants.errorTypes.listItemNotFound
+          listExists()
+          listItemsMock.expects('deletePromise').once().returns(Q.reject(data))
+          return shouldRespondWith(phrases.listAlreadyClear)
+        })
+
+        it('when "clear" and cachedListName exists', () => {
+          data.originalText = 'clear'
+          data.cachedListName = 'mylist'
+          listExists()
+          listItemsMock.expects('deletePromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
+
+        it('when "clear" and no cachedListName exists', () => {
+          data.originalText = 'clear'
+          return shouldRespondWith(phrases.noList + '\n' + phrases.clearListExample)
         })
       })
     })

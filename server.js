@@ -97,6 +97,7 @@ router.route("/twilio")
         bodyText.startsWith('display #') ||
         bodyText.startsWith('create') ||
         bodyText.startsWith('delete') ||
+        bodyText.startsWith('clear') ||
         bodyText.includes('add') ||  // TODO: This contidition is weak
         bodyText.includes('remove') // TODO: This contidition is weak
       ) {
@@ -209,30 +210,30 @@ router.route("/twilio")
       //   });
 
       // Clear list.
-      } else if (bodyText.startsWith('clear #')) {
-        var listName = bodyText.substr(7)
-        mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
-
-          if (list == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
-          } else {
-
-            mongoOp.ListItems.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
-              if (err) {
-                logging.logError(fromPhoneNumber, familyId, bodyText, err);
-                return;
-              }
-              console.log('----cleared ' + list.listKey + ' ' + removeResult.result.n);
-              if (removeResult.result.n === 0) {
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, "#" + list.listKey + " already empty.", res);
-              } else {
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
-              }
-            });
-
-          }
-
-        });
+      // } else if (bodyText.startsWith('clear #')) {
+      //   var listName = bodyText.substr(7)
+      //   mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
+      //
+      //     if (list == null) {
+      //       sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
+      //     } else {
+      //
+      //       mongoOp.ListItems.remove({"listKey" : list.listKey, 'familyId': familyId}, function(err, removeResult) {
+      //         if (err) {
+      //           logging.logError(fromPhoneNumber, familyId, bodyText, err);
+      //           return;
+      //         }
+      //         console.log('----cleared ' + list.listKey + ' ' + removeResult.result.n);
+      //         if (removeResult.result.n === 0) {
+      //           sendSMSResponse(fromPhoneNumber, familyId, bodyText, "#" + list.listKey + " already empty.", res);
+      //         } else {
+      //           sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
+      //         }
+      //       });
+      //
+      //     }
+      //
+      //   });
 
       // delete list.
       // } else if (bodyText.startsWith('delete #')) {
