@@ -1,7 +1,7 @@
 const mongoOp = require('./mongo')
 
-const findOnePromise = (list, familyId) => {
-  return mongoOp.Lists.findOne({listKey: list, familyId})
+const findOnePromise = (listKey, familyId) => {
+  return mongoOp.Lists.findOne({listKey, familyId})
     .exec()
 }
 
@@ -10,13 +10,14 @@ const findAllPromise = (familyId) => {
     .exec()
 }
 
-const saveNewPromise = (list, familyId, listDescription) => {
-  var newList = new mongoOp.Lists({listKey: list, familyId, listDescription})
+const saveNewPromise = (listKey, familyId, listDescription) => {
+  var newList = new mongoOp.Lists({listKey, familyId, listDescription})
   return newList.save()
 }
 
-const deletePromise = (list, familyId) => {
-  return mongoOp.Lists.remove({listKey: list, familyId})
+const deletePromise = (listKey, familyId) => {
+  const filter = listKey ? {listKey, familyId} : {familyId}
+  return mongoOp.Lists.remove(filter)
       .exec()
 }
 
