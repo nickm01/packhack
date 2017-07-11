@@ -16,8 +16,7 @@ const saveNewPromise = (listKey, familyId, listDescription) => {
 }
 
 const deletePromise = (listKey, familyId) => {
-  const filter = listKey ? {listKey, familyId} : {familyId}
-  return mongoOp.Lists.remove(filter)
+  return mongoOp.Lists.remove({listKey, familyId})
       .exec()
 }
 

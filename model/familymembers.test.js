@@ -7,7 +7,7 @@ const sinon = require('sinon')
 const Q = require('q')
 //const modelConstants = require('./modelconstants')
 
-describe.only('familyMembers', () => {
+describe('familyMembers', () => {
   describe('when retrieving person phone number', () => {
     afterEach(() => {
       familyMembersPromises.findFromNamePromise.restore()
