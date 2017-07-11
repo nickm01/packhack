@@ -86,15 +86,14 @@ router.route("/twilio")
         })
 
       // New Processing
-      } else if (bodyText.startsWith('get #') ||
-        bodyText.startsWith('get lists') ||
+      } else if (bodyText.startsWith('get ') ||
         bodyText.startsWith('lists') ||
         bodyText.startsWith('show lists') ||
         bodyText.startsWith('display lists') ||
-        bodyText.startsWith('show #') ||
-        bodyText.startsWith('list #') ||
-        bodyText.startsWith('retrieve #') ||
-        bodyText.startsWith('display #') ||
+        bodyText.startsWith('show ') ||
+        bodyText.startsWith('list ') ||
+        bodyText.startsWith('retrieve ') ||
+        bodyText.startsWith('display ') ||
         bodyText.startsWith('create') ||
         bodyText.startsWith('delete') ||
         bodyText.startsWith('clear') ||
