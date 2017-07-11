@@ -452,7 +452,7 @@ describe('textProcessor + languageProcessor', () => {
         })
       })
 
-      describe.only('clearList', () => {
+      describe('clearList', () => {
         it('when "clear #mylist" and list exists and succeeds', () => {
           data.originalText = 'clear #myList'
           listExists()
