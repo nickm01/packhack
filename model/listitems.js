@@ -27,6 +27,8 @@ const saveNewPromise = (data) => {
 const deletePromise = (data, listItemName) => {
   return listItemsPromises.deletePromise(data.list, data.familyId, listItemName)
     .then(result => {
+      console.log('deletePromise1')
+      console.log(result)
       if (result.result && result.result.n === 0) {
         data.errorMessage = modelConstants.errorTypes.listItemNotFound
         throw data
