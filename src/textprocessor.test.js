@@ -37,9 +37,10 @@ describe('textProcessor + languageProcessor', () => {
       })
     }
 
-    const shouldRespondWith = (output) => {
+    const shouldRespondWith = (expected) => {
       return textProcessor.processTextPromise(data).then(result => {
-        result.responseText.should.equal(output)
+        const expectedDynamic = data.list ? expected.replace('%#list', '#' + data.list) : expected
+        result.responseText.should.equal(expectedDynamic)
       }, () => {
         should.fail('should not error')
       })
@@ -87,13 +88,13 @@ describe('textProcessor + languageProcessor', () => {
         data.originalText = 'get #list'
         listExists()
         listItemsExist([])
-        return shouldRespondWith('Currently no items in #list.')
+        return shouldRespondWith(phrases.noItems)
       })
 
       it('"get #list" and list does not exist', () => {
         data.originalText = 'get #list'
         listNotExists()
-        return shouldRespondWith(phrases.listNotFound + 'list.\n' + phrases.suggestGetLists)
+        return shouldRespondWith(phrases.listNotFound + '\n' + phrases.suggestGetLists)
       })
 
       it('"get list" with check for passthrough', () => {
@@ -214,10 +215,10 @@ describe('textProcessor + languageProcessor', () => {
         return shouldRespondWith(phrases.generalError)
       })
 
-      it('when "delete mylist" and list does not exist', () => {
-        data.originalText = 'delete mylist'
+      it('when "delete list" and list does not exist', () => {
+        data.originalText = 'delete list'
         listNotExists()
-        return shouldRespondWith(phrases.listNotFound + 'mylist.\n' + phrases.suggestGetLists)
+        return shouldRespondWith(phrases.listNotFound + '\n' + phrases.suggestGetLists)
       })
 
       it('when "delete" and no cache', () => {
@@ -288,7 +289,7 @@ describe('textProcessor + languageProcessor', () => {
         it('when "#mylist add bananas" and list does not exist', () => {
           data.originalText = '#myList add bananas'
           listNotExists()
-          return shouldRespondWith(phrases.listNotFound + 'mylist.\n' + phrases.suggestGetLists)
+          return shouldRespondWith(phrases.listNotFound + '\n' + phrases.suggestGetLists)
         })
 
         it('when "#mylist add bananas" and list exists and add fails', () => {
@@ -369,7 +370,7 @@ describe('textProcessor + languageProcessor', () => {
         it('when "#mylist remove bananas" and list does not exists', () => {
           data.originalText = '#myList remove bananas'
           listNotExists()
-          return shouldRespondWith(phrases.listNotFound + 'mylist.\n' + phrases.suggestGetLists)
+          return shouldRespondWith(phrases.listNotFound + '\n' + phrases.suggestGetLists)
         })
 
         it('when "#mylist remove bananas" and list exists and remove fails', () => {
@@ -463,7 +464,7 @@ describe('textProcessor + languageProcessor', () => {
         it('when "clear #mylist" and list does not exist', () => {
           data.originalText = 'clear #myList'
           listNotExists()
-          return shouldRespondWith(phrases.listNotFound + 'mylist.\n' + phrases.suggestGetLists)
+          return shouldRespondWith(phrases.listNotFound + '\n' + phrases.suggestGetLists)
         })
 
         it('when "clear #mylist" and list exists and failure', () => {

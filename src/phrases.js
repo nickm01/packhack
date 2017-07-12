@@ -4,16 +4,16 @@
 module.exports = {
   success: 'Done 👍',
   generalMisundertanding: '😕 Sorry don\'t understand. Type \'packhack\' for help.',
-  listNotFound: '😕 Sorry, couldn\'t find #',
+  listNotFound: '😕 Sorry, couldn\'t find %#list.',
   suggestGetLists: 'Type \'get lists\' to see what\'s available.',
   noList: '😕 Sorry please specify a list', // Additionally uses command-specific examples below
   generalError: '😬 Sorry something unexpected happened.\nPlease try again.',
   // getList specifc
-  noItems: 'Currently no items in #',
+  noItems: 'Currently no items in %#list.',
   // getLists specific
   noListsExist: '🤔 No lists exist.  Perhaps create one?',
   // createList specific
-  listAlreadyExists: '😕 Sorry, list already exists!',
+  listAlreadyExists: '😕 Sorry, %#list already exists!',
   listNameInvalid: '😕 Sorry, list name is invalid.\nPlease don\t use spaces or reserved commands like \'create\'.',
   // addListItem or removeListItem specific
   noListItemToAdd: '😕 Sorry please specify item(s) to add.',
@@ -22,7 +22,7 @@ module.exports = {
   suggestGetPartOne: 'Type \'get ',
   suggestGetPartTwo: '\' to see items in the list.',
   // clearList specific
-  listAlreadyClear: '🤔 Hmmm...\nLooks like list is already clear.',
+  listAlreadyClear: '🤔 Hmmm...\nLooks like %#list is already clear.',
   // command specific exmaples
   createListExample: 'e.g. \'create my-new-list\'',
   getListExample: 'e.g. \'get #my-list\', or simply \'my-list\'',

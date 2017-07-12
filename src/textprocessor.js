@@ -17,6 +17,7 @@ const processTextPromise = (data) => {
   .then(commandSpecificProcessorPromise)
   .catch(processError)
   .catch(fallBackError)
+  .then(replaceDynamicText)
 }
 
 const conditionallyValidateListExists = (data) => {
@@ -114,7 +115,7 @@ const standardMatchedErrorMessage = (data) => {
       console.log(data)
     } else if (data.errorMessage === errors.errorTypes.listNotFound) {
       console.log(555)
-      data.responseText += data.list + '.\n' + phrases.suggestGetLists
+      data.responseText += '\n' + phrases.suggestGetLists
       console.log(data)
     }
   } else {
@@ -126,6 +127,15 @@ const standardMatchedErrorMessage = (data) => {
 const fallBackError = (data) => {
   data.responseText = phrases.generalMisundertanding
   return Q.resolve(data)
+}
+
+const replaceDynamicText = (data) => {
+  console.log('44444dynamictext')
+  console.log(data)
+  if (data.list) {
+    data.responseText = data.responseText.replace('%#list', '#' + data.list)
+  }
+  return data
 }
 
 module.exports = {

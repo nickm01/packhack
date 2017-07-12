@@ -5,7 +5,7 @@ const phrases = require('./../phrases')
 const processResponseTextPromise = (data) => {
   return listItems.findPromise(data).then(result => {
     if (result.listItems.length === 0) {
-      result.responseText = phrases.noItems + result.list + '.'
+      result.responseText = phrases.noItems
     } else {
       const listItemNames = result.listItems.map(item => { return item.listItemName })
       result.responseText = '• ' + listItemNames.join('\n• ')
