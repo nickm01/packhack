@@ -5,7 +5,7 @@ const retrievePersonPhoneNumbersPromise = (data) => {
   console.log(7777)
   console.log(data)
   // TODO: Need to check for @all
-  return familyMembersPromises.findFromNamePromise(data.person, data.familyId)
+  return familyMembersPromises.findFromNameFamilyPromise(data.person, data.familyId)
     .then(familyMembers => {
       data.sendToPhoneNumbers = familyMembers.map(familyMember => {
         return familyMember.phoneNumber

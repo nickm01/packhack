@@ -5,18 +5,17 @@ const familyMembersPromises = require('./familymembers.promises')
 const should = require('chai').should()
 const sinon = require('sinon')
 const Q = require('q')
-//const modelConstants = require('./modelconstants')
 
 describe('familyMembers', () => {
   describe('when retrieving person phone number', () => {
     afterEach(() => {
-      familyMembersPromises.findFromNamePromise.restore()
+      familyMembersPromises.findFromNameFamilyPromise.restore()
     })
 
     it('should find if there is one result', () => {
       const members = [{phoneNumber: '999'}]
       const data = [{person: 'nick', familyId: 123}]
-      sinon.stub(familyMembersPromises, 'findFromNamePromise').callsFake(() => {
+      sinon.stub(familyMembersPromises, 'findFromNameFamilyPromise').callsFake(() => {
         return Q.resolve(members)
       })
       return familyMembers.retrievePersonPhoneNumbersPromise(data)

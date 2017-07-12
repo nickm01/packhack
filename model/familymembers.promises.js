@@ -1,7 +1,8 @@
 const mongoOp = require('./mongo')
 
-const findFromNamePromise = (name, familyId) => {
-  return mongoOp.FamilyMembers.find({name, familyId})
+const findFromNameFamilyPromise = (name, familyId) => {
+  const filter = name ? {name, familyId} : {familyId}
+  return mongoOp.FamilyMembers.find(filter)
     .exec()
 }
 
@@ -11,5 +12,5 @@ const findFromNamePromise = (name, familyId) => {
 // }
 
 module.exports = {
-  findFromNamePromise
+  findFromNameFamilyPromise
 }
