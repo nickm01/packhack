@@ -97,6 +97,7 @@ router.route("/twilio")
         bodyText.startsWith('create') ||
         bodyText.startsWith('delete') ||
         bodyText.startsWith('clear') ||
+        bodyText.startsWith('send ') ||
         bodyText.includes('add') ||  // TODO: This contidition is weak
         bodyText.includes('remove') // TODO: This contidition is weak
       ) {
@@ -255,47 +256,47 @@ router.route("/twilio")
       //   });
 
       // send list
-      } else if (bodyText.startsWith('send @')) {
-        var messageCommandRemoved = bodyText.substr(6);
-        var userName = getFirstWord(messageCommandRemoved);
-        var listName = bodyText.substr(6 + userName.length + 2); //will strip out #
-        console.log('send message to ' + userName + ' list: ' + listName);
-        mongoOp.FamilyMembers.findOne({'name': userName, 'familyId': familyId}, 'phoneNumber', function(err, familyMember) {
-          if (err) {
-            logging.logError(fromPhoneNumber, familyId, bodyText, err);
-            return;
-          }
-
-          //TODO: DUPLICATE CALL!!!!
-          mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber, 'familyId': familyId}, 'name', function(err, fromFamilyMember) {
-            if (err) {
-              logging.logError(fromPhoneNumber, familyId, bodyText, err);
-              return;
-            }
-
-            // Centralize!
-            mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
-              if (list == null) {
-                sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
-              } else {
-                mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
-                  if(err){
-                    logging.logError(fromPhoneNumber, familyId, bodyText, err);
-                  } else {
-                    console.log(familyMember);
-                    var concatText = "";
-                    listItems.forEach(function(listItem){
-                      concatText = concatText.concat('\n• ' + listItem.listItemName);
-                    });
-                    cacheListName(listName,res);
-                    sendSms.sendSms(familyMember.phoneNumber, "\n@" + fromFamilyMember.name + " sent you #"+ listName + ":" + concatText + "\nType 'get #" + listName + "'' to retrieve later.", function(){});
-                    sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
-                  }
-                });
-              }
-            });
-          });
-        });
+      // } else if (bodyText.startsWith('send @')) {
+      //   var messageCommandRemoved = bodyText.substr(6);
+      //   var userName = getFirstWord(messageCommandRemoved);
+      //   var listName = bodyText.substr(6 + userName.length + 2); //will strip out #
+      //   console.log('send message to ' + userName + ' list: ' + listName);
+      //   mongoOp.FamilyMembers.findOne({'name': userName, 'familyId': familyId}, 'phoneNumber', function(err, familyMember) {
+      //     if (err) {
+      //       logging.logError(fromPhoneNumber, familyId, bodyText, err);
+      //       return;
+      //     }
+      //
+      //     //TODO: DUPLICATE CALL!!!!
+      //     mongoOp.FamilyMembers.findOne({'phoneNumber': fromPhoneNumber, 'familyId': familyId}, 'name', function(err, fromFamilyMember) {
+      //       if (err) {
+      //         logging.logError(fromPhoneNumber, familyId, bodyText, err);
+      //         return;
+      //       }
+      //
+      //       // Centralize!
+      //       mongoOp.Lists.findOne({'listKey': listName, 'familyId': familyId}, 'listKey', function(err, list) {
+      //         if (list == null) {
+      //           sendSMSResponse(fromPhoneNumber, familyId, bodyText, '#' + listName + ' does not exist.', res);
+      //         } else {
+      //           mongoOp.ListItems.find({'listKey':listName, 'familyId': familyId}, function(err, listItems){
+      //             if(err){
+      //               logging.logError(fromPhoneNumber, familyId, bodyText, err);
+      //             } else {
+      //               console.log(familyMember);
+      //               var concatText = "";
+      //               listItems.forEach(function(listItem){
+      //                 concatText = concatText.concat('\n• ' + listItem.listItemName);
+      //               });
+      //               cacheListName(listName,res);
+      //               sendSms.sendSms(familyMember.phoneNumber, "\n@" + fromFamilyMember.name + " sent you #"+ listName + ":" + concatText + "\nType 'get #" + listName + "'' to retrieve later.", function(){});
+      //               sendSMSResponse(fromPhoneNumber, familyId, bodyText, 'Got it! ❤️FLOCK', res);
+      //             }
+      //           });
+      //         }
+      //       });
+      //     });
+      //   });
 
       // remind @nick some text date
       } else if (bodyText.startsWith('remind @')) {

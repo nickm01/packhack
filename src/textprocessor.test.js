@@ -3,8 +3,10 @@
 
 const should = require('chai').should()
 const textProcessor = require('./textprocessor')
+const smsProcessor = require('./smsprocessor')
 const lists = require('../model/lists')
 const listItems = require('../model/listitems')
+const familyMembers = require('../model/familymembers')
 const sinon = require('sinon')
 const Q = require('q')
 const modelConstants = require('../model/modelconstants')
@@ -494,6 +496,76 @@ describe('textProcessor + languageProcessor', () => {
         it('when "clear" and no cachedListName exists', () => {
           data.originalText = 'clear'
           return shouldRespondWith(phrases.noList + '\n' + phrases.clearListExample)
+        })
+      })
+    })
+
+    describe('family member specific tests', () => {
+      var familyMemberMock, sendSmsPromise
+      beforeEach(() => {
+        familyMemberMock = sinon.mock(familyMembers)
+      })
+
+      afterEach(() => {
+        familyMemberMock.restore()
+        familyMemberMock.verify() // Use verify to confirm the sinon expects
+        if (sendSmsPromise && sendSmsPromise.restore) {
+          sendSmsPromise.restore()
+        }
+      })
+
+      describe('sendList', () => {
+        it('when "send @someone #list" and person exist and list exists then sms and success', () => {
+          data.originalText = 'send @someone #list'
+          data.phoneNumbers = ['111']
+          listExists()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          sendSmsPromise = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+            to.should.equal('111')
+            message.should.equal('hello')
+            return Q.resolve(data)
+          })
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledOnce(sendSmsPromise)
+          })
+        })
+
+        it('when "send @someone #list" and person does not exist and list exists then person failure', () => {
+          data.originalText = 'send @someone #list'
+          data.errorMessage = modelConstants.errorTypes.personNotFound
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.reject(data))
+          return shouldRespondWith(phrases.personNotFound)
+        })
+
+        it('when "send @someone #list" and person exists and list does not exist then list failure', () => {
+          data.originalText = 'send @someone #list'
+          data.errorMessage = modelConstants.errorTypes.personNotFound
+          listNotExists()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.listNotFound + '\n' + phrases.suggestGetLists)
+        })
+
+        it('when "send @someone #list" and person does not exist and list does not exist then person failure', () => {
+          data.originalText = 'send @someone #list'
+          data.errorMessage = modelConstants.errorTypes.personNotFound
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.reject(data))
+          return shouldRespondWith(phrases.personNotFound)
+        })
+
+        // This is next!
+        it('when "send @all #list" then multiple sms and success', () => {
+          // data.originalText = 'send @all #list'
+          // data.phoneNumbers = ['111',]
+          // listExists()
+          // familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          // sendSmsPromise = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+          //   to.should.equal('111')
+          //   message.should.equal('hello')
+          //   return Q.resolve(data)
+          // })
+          // return shouldRespondWith(phrases.success).then(data => {
+          //   sinon.assert.calledOnce(sendSmsPromise)
+          // })
         })
       })
     })

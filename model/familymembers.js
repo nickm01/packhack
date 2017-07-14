@@ -7,7 +7,13 @@ const retrievePersonPhoneNumbersPromise = (data) => {
   // TODO: Need to check for @all
   return familyMembersPromises.findFromNameFamilyPromise(data.person, data.familyId)
     .then(familyMembers => {
-      data.sendToPhoneNumbers = familyMembers.map(familyMember => {
+      if (familyMembers.length === 0) {
+        console.log('7777c')
+        console.log(data)
+        data.errorMessage = modelConstants.errorTypes.personNotFound
+        throw data
+      }
+      data.phoneNumbers = familyMembers.map(familyMember => {
         return familyMember.phoneNumber
       })
       console.log('7777b')

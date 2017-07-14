@@ -2,6 +2,7 @@
 
 const languageProcessor = require('./languageprocessor')
 const lists = require('../model/lists')
+const familyMembers = require('../model/familymembers')
 const Q = require('q')
 const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
@@ -12,12 +13,24 @@ const processTextPromise = (data) => {
   console.log('6')
   console.log(data)
   return languageProcessor.processLanguagePromise(data)
+  .then(conditionallyValidatePersonExistsAndRetrievePhoneNumbers)
   .then(conditionallyValidateListExists)
   .then(conditionallyValidateListDoesNotExists)
   .then(commandSpecificProcessorPromise)
   .catch(processError)
   .catch(fallBackError)
   .then(replaceDynamicText)
+}
+
+const conditionallyValidatePersonExistsAndRetrievePhoneNumbers = (data) => {
+  console.log('__conditionallyValidatePersonExistsAndRetrievePhoneNumbers')
+  console.log(data)
+  if (data.person) {
+    // @all processing here
+    return familyMembers.retrievePersonPhoneNumbersPromise(data)
+  } else {
+    return Q.resolve(data)
+  }
 }
 
 const conditionallyValidateListExists = (data) => {
@@ -60,7 +73,8 @@ const commandSpecificProcessorPromise = (data) => {
     data.command === commandTypes.deleteList ||
     data.command === commandTypes.addListItem ||
     data.command === commandTypes.removeListItem ||
-    data.command === commandTypes.clearList
+    data.command === commandTypes.clearList ||
+    data.command === commandTypes.sendList
   )) {
     console.log('6c')
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
@@ -82,7 +96,8 @@ const processError = (data) => {
     data.command === commandTypes.deleteList ||
     data.command === commandTypes.addListItem ||
     data.command === commandTypes.removeListItem ||
-    data.command === commandTypes.clearList
+    data.command === commandTypes.clearList ||
+    data.command === commandTypes.sendList
   )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
 

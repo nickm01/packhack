@@ -6,11 +6,6 @@ const findFromNameFamilyPromise = (name, familyId) => {
     .exec()
 }
 
-// const findAllPromise = (familyId) => {
-//   return mongoOp.Lists.find({familyId})
-//     .exec()
-// }
-
 module.exports = {
   findFromNameFamilyPromise
 }
