@@ -3,7 +3,6 @@
 const languageProcessor = require('./languageprocessor')
 const lists = require('../model/lists')
 const familyMembers = require('../model/familymembers')
-const Q = require('q')
 const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
 const commandTypes = require('./commandtypes')
@@ -29,7 +28,7 @@ const conditionallyValidatePersonExistsAndRetrievePhoneNumbers = (data) => {
     // @all processing here
     return familyMembers.retrievePersonPhoneNumbersPromise(data)
   } else {
-    return Q.resolve(data)
+    return data
   }
 }
 
@@ -37,7 +36,7 @@ const conditionallyValidateListExists = (data) => {
   if (data.list && data.command !== commandTypes.createList) {
     return lists.validateListExistsPromise(data)
   } else {
-    return Q.resolve(data)
+    return data
   }
 }
 
@@ -58,7 +57,7 @@ const conditionallyValidateListDoesNotExists = (data) => {
       }
     })
   } else {
-    return Q.resolve(data)
+    return data
   }
 }
 
@@ -77,11 +76,13 @@ const commandSpecificProcessorPromise = (data) => {
     data.command === commandTypes.sendList
   )) {
     console.log('6c')
+    console.log(data)
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processResponseTextPromise(data)
   } else {
     console.log('6d')
-    return Q.resolve(data)
+    console.log(data)
+    return data
   }
 }
 
@@ -141,7 +142,7 @@ const standardMatchedErrorMessage = (data) => {
 
 const fallBackError = (data) => {
   data.responseText = phrases.generalMisundertanding
-  return Q.resolve(data)
+  return data
 }
 
 const replaceDynamicText = (data) => {
