@@ -24,6 +24,9 @@ module.exports = {
   suggestGetPartTwo: '\' to see items in the list.',
   // clearList specific
   listAlreadyClear: '🤔 Hmmm...\nLooks like %#list is already clear.',
+  // sendList specific
+  justSent: '%@fromPerson just sent you %#list:',
+  smsError: '😕 Sorry, send failure.\nPlease try again.',
   // command specific exmaples
   createListExample: 'e.g. \'create my-new-list\'',
   getListExample: 'e.g. \'get #my-list\', or simply \'my-list\'',

@@ -10,6 +10,7 @@ const errorTypes = {
   listNotFound: 'listNotFound',
   personNotFound: 'personNotFound',
   listItemNotFound: 'listItemNotFound',
+  smsError: 'smsError',
   generalError: 'generalError'
 }
 

@@ -41,7 +41,9 @@ describe('textProcessor + languageProcessor', () => {
 
     const shouldRespondWith = (expected) => {
       return textProcessor.processTextPromise(data).then(result => {
-        const expectedDynamic = data.list ? expected.replace('%#list', '#' + data.list) : expected
+        const expectedDynamic =
+          expected.replace('%#list', '#' + data.list)
+            .replace('%@person', '@' + data.person)
         result.responseText.should.equal(expectedDynamic)
       }, () => {
         should.fail('should not error')
@@ -501,32 +503,58 @@ describe('textProcessor + languageProcessor', () => {
     })
 
     describe('family member specific tests', () => {
-      var familyMemberMock, sendSmsPromise
+      var familyMemberMock, sendSmsPromiseStub, listItemsMock, retrievePersonPhoneNumbersPromiseStub
+
       beforeEach(() => {
         familyMemberMock = sinon.mock(familyMembers)
+        listItemsMock = sinon.mock(listItems)
       })
 
       afterEach(() => {
         familyMemberMock.restore()
         familyMemberMock.verify() // Use verify to confirm the sinon expects
-        if (sendSmsPromise && sendSmsPromise.restore) {
-          sendSmsPromise.restore()
+        if (sendSmsPromiseStub && sendSmsPromiseStub.restore) {
+          sendSmsPromiseStub.restore()
         }
+        if (retrievePersonPhoneNumbersPromiseStub && retrievePersonPhoneNumbersPromiseStub.restore) {
+          retrievePersonPhoneNumbersPromiseStub.restore()
+        }
+        listItemsMock.restore()
+        listItemsMock.verify() // Use verify to confirm the sinon expects
       })
 
       describe('sendList', () => {
-        it('when "send @someone #list" and person exist and list exists then sms and success', () => {
+        it('when "send @someone #list" and person exist and list exists and 2 items then sms and success', () => {
           data.originalText = 'send @someone #list'
           data.phoneNumbers = ['111']
+          data.fromPerson = 'nick'
           listExists()
+          listItemsExist([item1, item2])
           familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
-          sendSmsPromise = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+          sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
             to.should.equal('111')
-            message.should.equal('hello')
+            message.should.equal('@nick just sent you #list:\n• item1\n• item2')
             return Q.resolve(data)
           })
           return shouldRespondWith(phrases.success).then(data => {
-            sinon.assert.calledOnce(sendSmsPromise)
+            sinon.assert.calledOnce(sendSmsPromiseStub)
+          })
+        })
+
+        it('when "send @someone #list" and person exist and list exists and 0 items then sms and success', () => {
+          data.originalText = 'send @someone #list'
+          data.phoneNumbers = ['111']
+          data.fromPerson = 'nick'
+          listExists()
+          listItemsExist([])
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+            to.should.equal('111')
+            message.should.equal('@nick just sent you #list:\nCurrently no items in #list.')
+            return Q.resolve(data)
+          })
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledOnce(sendSmsPromiseStub)
           })
         })
 
@@ -552,20 +580,65 @@ describe('textProcessor + languageProcessor', () => {
           return shouldRespondWith(phrases.personNotFound)
         })
 
-        // This is next!
         it('when "send @all #list" then multiple sms and success', () => {
-          // data.originalText = 'send @all #list'
-          // data.phoneNumbers = ['111',]
-          // listExists()
-          // familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
-          // sendSmsPromise = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
-          //   to.should.equal('111')
-          //   message.should.equal('hello')
-          //   return Q.resolve(data)
-          // })
-          // return shouldRespondWith(phrases.success).then(data => {
-          //   sinon.assert.calledOnce(sendSmsPromise)
-          // })
+          data.originalText = 'send @all #list'
+          data.phoneNumbers = ['111', '222', '333', '444']
+          data.fromPerson = 'nick'
+          data.fromPhoneNumber = '222'
+          listExists()
+          listItemsExist([item1, item2])
+          familyMemberMock.restore()
+          retrievePersonPhoneNumbersPromiseStub = sinon.stub(familyMembers, 'retrievePersonPhoneNumbersPromise').callsFake(result => {
+            console.log('___retrievePersonPhoneNumbersPromiseStub')
+            console.log(result)
+            should.equal(result.person, null)
+            return Q.resolve(result)
+          })
+          var callCount = 0
+          sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+            to.should.equal(['111', '333', '444'][callCount])
+            callCount++
+            message.should.equal('@nick just sent you #list:\n• item1\n• item2')
+            return Q.resolve(data)
+          })
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledOnce(retrievePersonPhoneNumbersPromiseStub)
+            sinon.assert.calledThrice(sendSmsPromiseStub)
+          })
+        })
+
+        it('when "send @someone #list" and sms failure', () => {
+          data.originalText = 'send @someone #list'
+          data.phoneNumbers = ['111']
+          data.fromPerson = 'nick'
+          listExists()
+          listItemsExist([item1])
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+            data.errorMessage = errors.errorTypes.smsError
+            return Q.reject(data)
+          })
+          return shouldRespondWith(phrases.smsError).then(data => {
+            sinon.assert.calledOnce(sendSmsPromiseStub)
+          })
+        })
+
+        it('when "send @myself #list" should still send it', () => {
+          data.originalText = 'send @myself #list'
+          data.phoneNumbers = ['111']
+          data.fromPerson = 'myself'
+          data.fromPhoneNumber = '111'
+          listExists()
+          listItemsExist([item1, item2])
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+            to.should.equal('111')
+            message.should.equal('@myself just sent you #list:\n• item1\n• item2')
+            return Q.resolve(data)
+          })
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledOnce(sendSmsPromiseStub)
+          })
         })
       })
     })

@@ -3,12 +3,20 @@ const errors = require('./../errors')
 const phrases = require('./../phrases')
 
 const processResponseTextPromise = (data) => {
+  return buildListItemsText(data)
+    .then(result => {
+      result.responseText = result.listItemsText
+      return result
+    })
+}
+
+const buildListItemsText = (data) => {
   return listItems.findPromise(data).then(result => {
     if (result.listItems.length === 0) {
-      result.responseText = phrases.noItems
+      result.listItemsText = phrases.noItems
     } else {
       const listItemNames = result.listItems.map(item => { return item.listItemName })
-      result.responseText = '• ' + listItemNames.join('\n• ')
+      result.listItemsText = '• ' + listItemNames.join('\n• ')
     }
     return result
   })
@@ -31,5 +39,6 @@ const processError = (data) => {
 
 module.exports = {
   processResponseTextPromise,
+  buildListItemsText,
   processError
 }

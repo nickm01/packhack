@@ -7,6 +7,7 @@ const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
 const commandTypes = require('./commandtypes')
 const phrases = require('./phrases')
+const finalResponseTextProcessor = require('./finalresponsetextprocessor')
 
 const processTextPromise = (data) => {
   console.log('6')
@@ -18,14 +19,19 @@ const processTextPromise = (data) => {
   .then(commandSpecificProcessorPromise)
   .catch(processError)
   .catch(fallBackError)
-  .then(replaceDynamicText)
+  .then(data => {
+    data.responseText = finalResponseTextProcessor.replaceDynamicText(data, data.responseText)
+    return data
+  })
 }
 
 const conditionallyValidatePersonExistsAndRetrievePhoneNumbers = (data) => {
   console.log('__conditionallyValidatePersonExistsAndRetrievePhoneNumbers')
   console.log(data)
   if (data.person) {
-    // @all processing here
+    if (data.person === 'all') {
+      data.person = null
+    }
     return familyMembers.retrievePersonPhoneNumbersPromise(data)
   } else {
     return data
@@ -142,15 +148,6 @@ const standardMatchedErrorMessage = (data) => {
 
 const fallBackError = (data) => {
   data.responseText = phrases.generalMisundertanding
-  return data
-}
-
-const replaceDynamicText = (data) => {
-  console.log('44444dynamictext')
-  console.log(data)
-  if (data.list) {
-    data.responseText = data.responseText.replace('%#list', '#' + data.list)
-  }
   return data
 }
 

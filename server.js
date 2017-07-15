@@ -11,7 +11,6 @@ var logging = require('./logging')
 var reminders = require('./reminders')
 var listItems = require('./listitems')
 var messagePreProcessor = require('./messagepreprocessor')
-//var stringProcessor = require('./src/stringprocessor')
 var textProcessor = require('./src/textprocessor')
 
 mongoOp.intialize()
@@ -127,8 +126,10 @@ router.route("/twilio")
       //   })
         const data = {
           originalText: bodyText,
-          familyId: familyId,
-          cachedListName: cachedListName
+          familyId,
+          cachedListName,
+          fromPerson: fromUserName,
+          fromPhoneNumber
         }
         textProcessor.processTextPromise(data).then(result => {
           console.log(result)
