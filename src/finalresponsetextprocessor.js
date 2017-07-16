@@ -3,8 +3,8 @@ const replaceDynamicText = (data, str) => {
   console.log(data)
   var finalText = str
   if (data.list) {
-    finalText = finalText.replace('%#list', '#' + data.list)
-    finalText = finalText.replace('%#list', '#' + data.list) // TODO: Needs to find a iterative replace
+    // regex replace will replace every occurence
+    finalText = finalText.replace(/%#list/g, '#' + data.list)
   }
   if (data.person) {
     finalText = finalText.replace('%@person', '@' + data.person)
