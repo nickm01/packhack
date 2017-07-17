@@ -12,10 +12,10 @@ const commandData = [
   {command: commandTypes.createList, actuals: ['create'], postProcessing: 'postProcessCreate'},
   {command: commandTypes.clearList, actuals: ['clear', 'empty', 'flush'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
   {command: commandTypes.deleteList, actuals: ['delete'], postProcessing: 'postProcessDelete'},
-  {command: commandTypes.sendList, actuals: ['send'], postProcessing: 'postProcessSend'},
   {command: commandTypes.addListItem, actuals: ['add', 'append'], commandCanBeFirstOrSecondWord: true, postProcessing: 'postProcessAdd'},
   {command: commandTypes.removeListItem, actuals: ['remove'], commandCanBeFirstOrSecondWord: true, postProcessing: 'postProcessRemove'},
-  {command: commandTypes.addReminder, actuals: ['remind']}, // TODO: needs to be flushed out
+  {command: commandTypes.sendList, actuals: ['send'], postProcessing: 'postProcessSend'},
+  {command: commandTypes.addReminder, actuals: ['remind'], postProcessing: 'postProcessAddReminder'},
   {command: commandTypes.help, actuals: ['help', 'flock', 'packhack', 'assist', '?', 'intro']}, // TODO: needs to be flushed out
   {command: commandTypes.pushIntro, actuals: ['**welcome']} // TODO: needs to be flushed out
 ]
@@ -223,6 +223,34 @@ LanguageProcessorResult.prototype.postProcessSend = function () {
       }
     }
   }
+  return this
+}
+
+LanguageProcessorResult.prototype.postProcessAddReminder = function () {
+  console.log('___postProcessAddReminder')
+  console.log(this)
+  const len = this.words.length
+  if (len === 1 ||
+      (len === 2 && this.words[1].charAt(0) === '#')) {
+    throw new LanguageProcessorError(errors.errorTypes.noPerson, this)
+  }
+
+  // Retrieve person
+  this.setPersonFromWord(this.words[1])
+
+  // Retrieve list
+  const lists = this.words.slice(2).filter(word => {
+    return word.charAt(0) === '#'
+  })
+  if (lists.length > 0) {
+    this.setListFromWord(lists[0])
+  }
+
+  // SupplementaryText
+  this.supplementaryText = this.words.slice(2).filter(word => {
+    return word.charAt(0) !== '#'
+  }).join(' ')
+
   return this
 }
 

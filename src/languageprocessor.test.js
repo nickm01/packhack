@@ -162,6 +162,7 @@ describe('languageProcessor', function () {
   describe('addReminder', function () {
     const command = commandTypes.addReminder
     it('✅ remind @me tomorrow hello', function () { textShouldResult('remind @me tomorrow hello', {command: command}) })
+    it('✅ remind @someone #list tomorrow', function () { textShouldResult('remind @someone #list tomorrow', {command: command, list: 'list', person: 'someone'}) })
   })
 
   describe('help', function () {
