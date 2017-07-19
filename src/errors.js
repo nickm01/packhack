@@ -11,7 +11,8 @@ const errorTypes = {
   personNotFound: 'personNotFound',
   listItemNotFound: 'listItemNotFound',
   smsError: 'smsError',
-  generalError: 'generalError'
+  generalError: 'generalError',
+  noDateTime: 'noDateTime'
 }
 
 module.exports = {

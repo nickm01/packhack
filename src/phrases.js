@@ -27,6 +27,8 @@ module.exports = {
   // sendList specific
   justSent: '%@fromPerson just sent you %#list:',
   smsError: '😕 Sorry, send failure.\nPlease try again.',
+  // addRemind specific
+  noDateTime: '😕 Sorry couldn\'t work out that time.\nTry a date, day of week, time, phrases such as tomorrow or next week, or any combo."',
   // command specific exmaples
   createListExample: 'e.g. \'create my-new-list\'',
   getListExample: 'e.g. \'get #my-list\', or simply \'my-list\'',

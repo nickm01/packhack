@@ -11,7 +11,6 @@ const sinon = require('sinon')
 const Q = require('q')
 const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
-// const commandTypes = require('./commandtypes')
 const phrases = require('./phrases')
 
 describe('textProcessor + languageProcessor', () => {
@@ -39,7 +38,7 @@ describe('textProcessor + languageProcessor', () => {
       })
     }
 
-    const shouldRespondWith = (expected) => {
+    const shouldRespondWith = expected => {
       return textProcessor.processTextPromise(data).then(result => {
         const expectedDynamic =
           expected.replace('%#list', '#' + data.list)
@@ -57,6 +56,7 @@ describe('textProcessor + languageProcessor', () => {
 
     afterEach(() => {
       listsMock.restore()
+      listsMock.verify()
       data = undefined
       if (listItems.findPromise.restore) {
         listItems.findPromise.restore()
@@ -314,7 +314,6 @@ describe('textProcessor + languageProcessor', () => {
 
         it('when "add bananas" and no cachedListName then error', () => {
           data.originalText = 'add bananas'
-          listExists()
           listItemsMock.expects('saveNewPromise').never()
           return shouldRespondWith(phrases.noList + '\n' + phrases.addListItemExample)
         })
@@ -395,7 +394,6 @@ describe('textProcessor + languageProcessor', () => {
 
         it('when "remove bananas" and no cachedListName then error', () => {
           data.originalText = 'remove bananas'
-          listExists()
           listItemsMock.expects('deletePromise').never()
           return shouldRespondWith(phrases.noList + '\n' + phrases.removeListItemExample)
         })
@@ -513,14 +511,15 @@ describe('textProcessor + languageProcessor', () => {
       afterEach(() => {
         familyMemberMock.restore()
         familyMemberMock.verify() // Use verify to confirm the sinon expects
+        listItemsMock.restore()
+        listItemsMock.verify() // Use verify to confirm the sinon expects
+        // TODO: Can do better?
         if (sendSmsPromiseStub && sendSmsPromiseStub.restore) {
           sendSmsPromiseStub.restore()
         }
         if (retrievePersonPhoneNumbersPromiseStub && retrievePersonPhoneNumbersPromiseStub.restore) {
           retrievePersonPhoneNumbersPromiseStub.restore()
         }
-        listItemsMock.restore()
-        listItemsMock.verify() // Use verify to confirm the sinon expects
       })
 
       describe('sendList', () => {
@@ -638,6 +637,65 @@ describe('textProcessor + languageProcessor', () => {
           })
           return shouldRespondWith(phrases.success).then(data => {
             sinon.assert.calledOnce(sendSmsPromiseStub)
+          })
+        })
+      })
+
+      describe.only('addReminder', () => {
+        var validateListExistsPromiseStub, listItemsSaveNewPromiseStub, clock
+
+        beforeEach(() => {
+          const now = new Date('01/01/2018')
+          clock = sinon.useFakeTimers(now.getTime())
+        })
+
+        afterEach(() => {
+          // TODO: Better approach???
+          if (validateListExistsPromiseStub && validateListExistsPromiseStub.restore) {
+            validateListExistsPromiseStub.restore()
+          }
+          if (listItemsSaveNewPromiseStub && listItemsSaveNewPromiseStub.restore) {
+            listItemsSaveNewPromiseStub.restore()
+          }
+          if (clock) {
+            clock.restore()
+          }
+        })
+
+        it('when "remind @someone #list tomorrow go shopping" and all exists then add listItem and success', () => {
+          data.originalText = 'remind @someone #my-list tomorrow go shopping'
+          data.phoneNumbers = ['111']
+          data.fromPerson = 'nick'
+          data.timezone = 'America/New_York'
+
+          // Manually stub out lists
+          listsMock.restore()
+          data.listExists = true
+          validateListExistsPromiseStub = sinon.stub(lists, 'validateListExistsPromise').callsFake((data) => {
+            // Checks event list which is only set before the second call
+            console.log('___validateListExistsPromiseStub')
+            console.log(listItems.saveNewPromise.restore)
+            if (!data.eventList) {
+              data.list.should.equal('my-list')
+            } else {
+              data.list.should.equal('reminders')
+            }
+            return Q.resolve(data)
+          })
+
+          // Manually stub out listItems
+          listItemsMock.restore()
+          listItemsSaveNewPromiseStub = sinon.stub(listItems, 'saveNewPromise').callsFake((data) => {
+            console.log('___listItemsSaveNewPromiseStub')
+            data.listItemName.should.equal('@someone: #my-list go shopping Monday, Jan 1st')
+            return Q.resolve(data)
+          })
+
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledTwice(validateListExistsPromiseStub)
+            sinon.assert.calledOnce(listItemsSaveNewPromiseStub)
           })
         })
       })

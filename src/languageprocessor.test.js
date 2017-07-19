@@ -39,6 +39,9 @@ const shouldEqualExpectedActual = function (expected, actual, originalText) {
   if (expected.errorMessage) {
     actual.errorMessage.should.equal(expected.errorMessage)
   }
+  if (expected.supplementaryText) {
+    actual.supplementaryText.should.equal(expected.supplementaryText)
+  }
   actual.originalText.should.equal(originalText)
 }
 
@@ -162,7 +165,9 @@ describe('languageProcessor', function () {
   describe('addReminder', function () {
     const command = commandTypes.addReminder
     it('✅ remind @me tomorrow hello', function () { textShouldResult('remind @me tomorrow hello', {command: command}) })
-    it('✅ remind @someone #list tomorrow', function () { textShouldResult('remind @someone #list tomorrow', {command: command, list: 'list', person: 'someone'}) })
+    it('✅ remind @someone #list tomorrow', function () { textShouldResult('remind @someone #list tomorrow', {command: command, list: 'list', person: 'someone', supplementaryText: 'tomorrow'}) })
+    it('✅ remind @someone tomorrow #list', function () { textShouldResult('remind @someone tomorrow #list', {command: command, list: 'list', person: 'someone', supplementaryText: 'tomorrow'}) })
+    it('✅ remind @someone tomorrow do something', function () { textShouldResult('remind @someone tomorrow do something', {command: command, person: 'someone', supplementaryText: 'tomorrow do something'}) })
   })
 
   describe('help', function () {

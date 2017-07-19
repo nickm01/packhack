@@ -129,7 +129,8 @@ router.route("/twilio")
           familyId,
           cachedListName,
           fromPerson: fromUserName,
-          fromPhoneNumber
+          fromPhoneNumber,
+          timezone: timeZone // TODO: Capitalization issues
         }
         textProcessor.processTextPromise(data).then(result => {
           console.log(result)

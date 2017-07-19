@@ -9,8 +9,8 @@ const commandTypes = require('./commandtypes')
 const phrases = require('./phrases')
 const finalResponseTextProcessor = require('./finalresponsetextprocessor')
 
-const processTextPromise = (data) => {
-  console.log('6')
+const processTextPromise = data => {
+  console.log('___commandSpecificProcessorPromise')
   console.log(data)
   return languageProcessor.processLanguagePromise(data)
   .then(conditionallyValidatePersonExistsAndRetrievePhoneNumbers)
@@ -39,7 +39,9 @@ const conditionallyValidatePersonExistsAndRetrievePhoneNumbers = (data) => {
 }
 
 const conditionallyValidateListExists = (data) => {
+  console.log('___conditionallyValidateListExists')
   if (data.list && data.command !== commandTypes.createList) {
+    console.log('call lists.validateListExistsPromise')
     return lists.validateListExistsPromise(data)
   } else {
     return data
@@ -68,7 +70,7 @@ const conditionallyValidateListDoesNotExists = (data) => {
 }
 
 const commandSpecificProcessorPromise = (data) => {
-  console.log('6b')
+  console.log('___commandSpecificProcessorPromise')
   console.log(data)
   // TODO: Remove 'if' once all commands are done
   if (data.command && (
@@ -79,15 +81,14 @@ const commandSpecificProcessorPromise = (data) => {
     data.command === commandTypes.addListItem ||
     data.command === commandTypes.removeListItem ||
     data.command === commandTypes.clearList ||
-    data.command === commandTypes.sendList
+    data.command === commandTypes.sendList ||
+    data.command === commandTypes.addReminder
   )) {
     console.log('6c')
-    console.log(data)
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processResponseTextPromise(data)
   } else {
     console.log('6d')
-    console.log(data)
     return data
   }
 }
@@ -104,7 +105,8 @@ const processError = (data) => {
     data.command === commandTypes.addListItem ||
     data.command === commandTypes.removeListItem ||
     data.command === commandTypes.clearList ||
-    data.command === commandTypes.sendList
+    data.command === commandTypes.sendList ||
+    data.command === commandTypes.addReminder
   )) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
 
