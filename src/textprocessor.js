@@ -41,7 +41,6 @@ const conditionallyValidatePersonExistsAndRetrievePhoneNumbers = (data) => {
 const conditionallyValidateListExists = (data) => {
   console.log('___conditionallyValidateListExists')
   if (data.list && data.command !== commandTypes.createList) {
-    console.log('call lists.validateListExistsPromise')
     return lists.validateListExistsPromise(data)
   } else {
     return data

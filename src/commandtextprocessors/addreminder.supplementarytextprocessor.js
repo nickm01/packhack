@@ -1,11 +1,13 @@
-var moment = require('moment-timezone')
-var sherlock = require('../../other_modules/sherlock/sherlock')
+const moment = require('moment-timezone')
+const sherlock = require('../../other_modules/sherlock/sherlock')
 const errors = require('./../errors')
 
-// Inject rightNow for testing purposes
-function retrieveDateAndTitleFromSupplementaryText (data, rightNow) {
-  var nowLocalDate = convertDateToLiteralTimezoneEquivalent(rightNow, data.timezone, true)
-  console.log(' ----> nowLocalDate:' + nowLocalDate)
+const retrieveDateAndTitleFromSupplementaryText = data => {
+  console.log('___retrieveDateAndTitleFromSupplementaryText')
+  const rightNow = new Date()
+  const nowLocalDate = convertDateToLiteralTimezoneEquivalent(rightNow, data.timezone, true)
+  console.log('Server Now:')
+  console.log(nowLocalDate)
 
   // Process Local Date as GMT to ensure "tomorrow" is tomorrow locally
   sherlock._setNow(nowLocalDate)
@@ -13,38 +15,43 @@ function retrieveDateAndTitleFromSupplementaryText (data, rightNow) {
 
   if (sherlocked.startDate == null) {
     data.errorMessage = errors.errorTypes.noDateTime
-    return data
+    throw data
   } else {
     var startDateLocal = sherlocked.startDate
-    console.log(' ----> sherlocked.startDate:' + startDateLocal)
+    console.log('sherlocked.startDate:')
+    console.log(startDateLocal)
     var startDateGMT = convertDateToLiteralTimezoneEquivalent(startDateLocal, data.timezone, false)
-    console.log(' ----> startDateGMT:' + startDateGMT)
+    console.log('startDateGMT:')
+    console.log(startDateGMT)
     var userDateText = timezonedDateText(startDateLocal)
-    console.log(' ----> userDateText:' + userDateText)
-    console.log(' ----> sherlocked.eventTitle:' + sherlocked.eventTitle)
+    console.log('userDateText: ' + userDateText)
+    console.log('sherlocked.eventTitle: ' + sherlocked.eventTitle)
+    const title = sherlocked.eventTitle
+    if (!title) {
+      data.errorMessage = errors.errorTypes.noTitle
+      throw data
+    }
     data.eventStartDateGMT = startDateGMT
     data.eventUserDateText = userDateText
-    data.eventTitle = sherlocked.eventTitle
+    data.eventTitle = title.trim()
     return data
   }
 }
 
-function convertDateToLiteralTimezoneEquivalent (date, timezoneText, reverse) {
-  console.log('1: date: ' + date)
+const convertDateToLiteralTimezoneEquivalent = (date, timezoneText, reverse) => {
   var nowTimezone = moment.tz(date, timezoneText)
+  // var nowTimezone = moment.tz(date, 'GMT')
   var timezoneOffsetString = nowTimezone.format('Z')
   if (reverse === true) {
     timezoneOffsetString = reverseTimezoneOffset(timezoneOffsetString)
   }
   console.log('timezoneOffsetString: ' + timezoneOffsetString)
   var now = moment(date)
-  console.log('now: ' + now.toDate())
   now.utcOffset(timezoneOffsetString, true)
-  console.log('now: ' + now.toDate())
   return now.toDate()
 }
 
-function reverseTimezoneOffset (timezoneOffsetString) {
+const reverseTimezoneOffset = timezoneOffsetString => {
   var firstCharacter = timezoneOffsetString.substr(0, 1)
   if (firstCharacter === '-') {
     firstCharacter = '+'
@@ -54,10 +61,14 @@ function reverseTimezoneOffset (timezoneOffsetString) {
   return firstCharacter + timezoneOffsetString.substr(1)
 }
 
-function timezonedDateText (date) {
+const timezonedDateText = date => {
   var dateFormat = 'dddd h:mma, MMM Do'
-  if (date.getHours() === 0 && date.getMinutes() === 0) {
-    dateFormat = 'dddd, MMM Do'
+  if (date.getMinutes() === 0) {
+    if (date.getHours() === 0) {
+      dateFormat = dateFormat.replace(' h:mma', '')
+    } else {
+      dateFormat = dateFormat.replace(':mm', '')
+    }
   }
   // Note this isn't timezone friendly but so broad it doesn't make a difference
   var now = new Date()

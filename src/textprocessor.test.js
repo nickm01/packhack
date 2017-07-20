@@ -514,10 +514,10 @@ describe('textProcessor + languageProcessor', () => {
         listItemsMock.restore()
         listItemsMock.verify() // Use verify to confirm the sinon expects
         // TODO: Can do better?
-        if (sendSmsPromiseStub && sendSmsPromiseStub.restore) {
+        if (sendSmsPromiseStub) {
           sendSmsPromiseStub.restore()
         }
-        if (retrievePersonPhoneNumbersPromiseStub && retrievePersonPhoneNumbersPromiseStub.restore) {
+        if (retrievePersonPhoneNumbersPromiseStub) {
           retrievePersonPhoneNumbersPromiseStub.restore()
         }
       })
@@ -641,7 +641,7 @@ describe('textProcessor + languageProcessor', () => {
         })
       })
 
-      describe.only('addReminder', () => {
+      describe('addReminder', () => {
         var validateListExistsPromiseStub, listItemsSaveNewPromiseStub, clock
 
         beforeEach(() => {
@@ -651,15 +651,13 @@ describe('textProcessor + languageProcessor', () => {
 
         afterEach(() => {
           // TODO: Better approach???
-          if (validateListExistsPromiseStub && validateListExistsPromiseStub.restore) {
+          if (validateListExistsPromiseStub) {
             validateListExistsPromiseStub.restore()
           }
-          if (listItemsSaveNewPromiseStub && listItemsSaveNewPromiseStub.restore) {
+          if (listItemsSaveNewPromiseStub) {
             listItemsSaveNewPromiseStub.restore()
           }
-          if (clock) {
-            clock.restore()
-          }
+          clock.restore()
         })
 
         it('when "remind @someone #list tomorrow go shopping" and all exists then add listItem and success', () => {

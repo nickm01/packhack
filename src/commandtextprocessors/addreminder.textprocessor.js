@@ -13,7 +13,7 @@ var config = require('./../../config')
 // 4. create list item in reminders list (using -1 for all)
 const processResponseTextPromise = data => {
   console.log('___processResponseTextPromise - addReminder')
-  supplementaryTextProcessor.retrieveDateAndTitleFromSupplementaryText(data, new Date())
+  supplementaryTextProcessor.retrieveDateAndTitleFromSupplementaryText(data)
   // Need to switch out the intended list for reminder
   data.eventList = data.list
   data.list = config.remindersListKey
