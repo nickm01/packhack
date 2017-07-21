@@ -642,7 +642,11 @@ describe('textProcessor + languageProcessor', () => {
       })
 
       describe('addReminder', () => {
-        var validateListExistsPromiseStub, listItemsSaveNewReminderPromiseStub, clock
+        var
+          validateListExistsPromiseStub,
+          listItemsSaveNewReminderPromiseStub,
+          listSaveNewPromiseStub,
+          clock
 
         beforeEach(() => {
           const now = new Date('01/01/2017 GMT-0500')
@@ -653,12 +657,14 @@ describe('textProcessor + languageProcessor', () => {
         })
 
         afterEach(() => {
-          // TODO: Better approach???
           if (validateListExistsPromiseStub) {
             validateListExistsPromiseStub.restore()
           }
           if (listItemsSaveNewReminderPromiseStub) {
             listItemsSaveNewReminderPromiseStub.restore()
+          }
+          if (listSaveNewPromiseStub) {
+            listSaveNewPromiseStub.restore()
           }
           clock.restore()
         })
@@ -701,25 +707,43 @@ describe('textProcessor + languageProcessor', () => {
           })
         })
 
-        // it('when "remind @someone today shopping" and reminders list not yet created then should create', () => {
-        //   data.originalText = 'remind @someone tomorrow go shopping'
-        //   listNotExists()
-        //
-        //   // Manually stub out listItems
-        //   listItemsMock.restore()
-        //   listItemsSaveNewPromiseStub = sinon.stub(listItems, 'saveNewPromise').callsFake((data) => {
-        //     console.log('___listItemsSaveNewPromiseStub')
-        //     data.listItemName.should.equal('@someone: #my-list go shopping Monday, Jan 1st')
-        //     return Q.resolve(data)
-        //   })
-        //
-        //   familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
-        //
-        //   return shouldRespondWith(phrases.success).then(data => {
-        //     sinon.assert.calledTwice(validateListExistsPromiseStub)
-        //     sinon.assert.calledOnce(listItemsSaveNewPromiseStub)
-        //   })
-        // })
+        it('when "remind @someone today shopping" and reminders list not yet created then should create', () => {
+          data.originalText = 'remind @someone tomorrow go shopping'
+
+          // Manually stub out lists - validateListExistsPromise
+          listsMock.restore()
+
+          // validate should fail
+          data.listExists = false
+          data.errorMessage = modelConstants.errorTypes.listNotFound
+          validateListExistsPromiseStub = sinon.stub(lists, 'validateListExistsPromise').callsFake((data) => {
+            console.log('___validateListExistsPromiseStub')
+            return Q.reject(data)
+          })
+
+          // should create new list called reminders
+          listSaveNewPromiseStub = sinon.stub(lists, 'saveNewPromise').callsFake((data) => {
+            console.log('___listSaveNewPromiseStub')
+            data.list.should.equal('reminders')
+            return Q.resolve(data)
+          })
+
+          // Manually stub out listItems
+          listItemsMock.restore()
+          listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
+            console.log('___listItemsSaveNewReminderPromiseStub')
+            data.listItemName.should.equal('@someone: go shopping Monday, Jan 2nd')
+            return Q.resolve(data)
+          })
+
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledOnce(validateListExistsPromiseStub)
+            sinon.assert.calledOnce(listSaveNewPromiseStub)
+            sinon.assert.calledOnce(listItemsSaveNewReminderPromiseStub)
+          })
+        })
         it('when "remind @all tomorrow go shopping')
         it('when "remind @me tomorrow go shopping')
         it('when "remind @someone yesterday go shopping" and error due to past')

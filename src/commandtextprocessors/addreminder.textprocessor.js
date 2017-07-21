@@ -3,8 +3,8 @@ const phrases = require('./../phrases')
 const lists = require('../../model/lists')
 const listItems = require('../../model/listitems')
 const supplementaryTextProcessor = require('./addreminder.supplementarytextprocessor')
-var config = require('./../../config')
-// const errors = require('./../errors')
+const config = require('./../../config')
+const errors = require('./../errors')
 
 // this should....
 // 1. sherlock the supplementaryText
@@ -18,16 +18,22 @@ const processResponseTextPromise = data => {
   data.reminderList = data.list
   data.list = config.remindersListKey
   data.listItemName =
-    '@' + data.person +
-    ': #' + data.reminderList +
+    '@' + data.person + ':' +
+    (data.reminderList ? ' #' + data.reminderList : '') +
     ' ' + data.reminderTitle +
     ' ' + data.reminderUserDateText
   console.log(data)
   return lists.validateListExistsPromise(data)
-    .catch(data => {
-      // if it doesn't exist, then need to create
-      // TODO: implement
-      return data
+    .catch(result => {
+      console.log('___addReminder.processResponseTextPromise')
+      if (result.errorMessage === errors.errorTypes.listNotFound) {
+        result.errorMessage = null
+        console.log('X: ' + result.list)
+        return lists.saveNewPromise(result)
+      } else {
+        result.errorMessage = errors.errorTypes.generalError
+        throw result
+      }
     })
     .then(result => {
       return result
