@@ -28,7 +28,7 @@ const listItemsSchema = mongoose.Schema({
   'listItemName': String,
   'familyId': Number,
   'reminderWhen': String,
-  'reminderUserId': Number,
+  'reminderUserId': String,
   'reminderTitle': String,
   'reminderListKey': String
 }, { versionKey: false })

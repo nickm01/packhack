@@ -24,6 +24,26 @@ const saveNewPromise = (data) => {
     })
 }
 
+const saveNewReminderPromise = (data) => {
+  const list = {
+    listKey: data.list,
+    listItemName: data.reminderUserDateText,
+    familyId: data.familyId,
+    reminderWhen: data.reminderWhenGMT,
+    reminderUserId: data.person,
+    reminderTitle: data.reminderTitle,
+    reminderListKey: data.reminderList
+  }
+  return listItemsPromises.saveNewReminderPromise(list)
+    .then(list => {
+      return data
+    }, (error) => {
+      data.errorMessage = modelConstants.errorTypes.generalError
+      data.systemError = error
+      throw data
+    })
+}
+
 const deletePromise = (data, listItemName) => {
   return listItemsPromises.deletePromise(data.list, data.familyId, listItemName)
     .then(result => {
@@ -43,5 +63,6 @@ const deletePromise = (data, listItemName) => {
 module.exports = {
   findPromise,
   saveNewPromise,
+  saveNewReminderPromise,
   deletePromise
 }

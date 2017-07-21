@@ -31,9 +31,9 @@ const retrieveDateAndTitleFromSupplementaryText = data => {
       data.errorMessage = errors.errorTypes.noTitle
       throw data
     }
-    data.eventStartDateGMT = startDateGMT
-    data.eventUserDateText = userDateText
-    data.eventTitle = title.trim()
+    data.reminderWhenGMT = startDateGMT
+    data.reminderUserDateText = userDateText
+    data.reminderTitle = title.trim()
     return data
   }
 }

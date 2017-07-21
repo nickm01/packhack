@@ -33,8 +33,7 @@ cfg.remindersListKey = 'reminders'
 cfg.successText = 'Got it! ❤️FLOCK'
 
 // reminders
-cfg.allFamilyMembersID = -1
-
+cfg.allFamilyMembersID = -1 // TODO: Remove
 
 //var requiredConfig = [cfg.accountSid, cfg.authToken, cfg.sendingNumber];
 //var isConfigured = requiredConfig.every(function(configValue) {

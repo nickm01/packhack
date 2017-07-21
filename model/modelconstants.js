@@ -5,6 +5,9 @@ const errorTypes = {
   personNotFound: 'personNotFound'
 }
 
+const allFamilyMembersName = 'all'
+
 module.exports = {
-  errorTypes
+  errorTypes,
+  allFamilyMembersName
 }

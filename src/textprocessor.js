@@ -29,9 +29,6 @@ const conditionallyValidatePersonExistsAndRetrievePhoneNumbers = (data) => {
   console.log('__conditionallyValidatePersonExistsAndRetrievePhoneNumbers')
   console.log(data)
   if (data.person) {
-    if (data.person === 'all') {
-      data.person = null
-    }
     return familyMembers.retrievePersonPhoneNumbersPromise(data)
   } else {
     return data

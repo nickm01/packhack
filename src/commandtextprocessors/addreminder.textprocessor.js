@@ -15,13 +15,13 @@ const processResponseTextPromise = data => {
   console.log('___processResponseTextPromise - addReminder')
   supplementaryTextProcessor.retrieveDateAndTitleFromSupplementaryText(data)
   // Need to switch out the intended list for reminder
-  data.eventList = data.list
+  data.reminderList = data.list
   data.list = config.remindersListKey
   data.listItemName =
     '@' + data.person +
-    ': #' + data.eventList +
-    ' ' + data.eventTitle +
-    ' ' + data.eventUserDateText
+    ': #' + data.reminderList +
+    ' ' + data.reminderTitle +
+    ' ' + data.reminderUserDateText
   console.log(data)
   return lists.validateListExistsPromise(data)
     .catch(data => {
@@ -33,7 +33,7 @@ const processResponseTextPromise = data => {
       return result
     })
     .then(result => {
-      return listItems.saveNewPromise(result)
+      return listItems.saveNewReminderPromise(result)
     })
     .then(data => {
       data.responseText = phrases.success

@@ -23,9 +23,9 @@ describe('add reminder supplementary text processor', () => {
     clock = sinon.useFakeTimers(now.getTime())
     addremindersupplementarytextprocessor.retrieveDateAndTitleFromSupplementaryText(data)
     var expectedDataAppended = expected.dateGMT + ' GMT+0000 (GMT)'
-    data.eventStartDateGMT.toString().should.equal(expectedDataAppended)
-    data.eventUserDateText.should.equal(expected.dateText)
-    data.eventTitle.should.equal(expected.title)
+    data.reminderWhenGMT.toString().should.equal(expectedDataAppended)
+    data.reminderUserDateText.should.equal(expected.dateText)
+    data.reminderTitle.should.equal(expected.title)
   }
 
   const shouldError = (text, expectedError) => {

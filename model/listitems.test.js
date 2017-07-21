@@ -83,6 +83,53 @@ describe('list items', () => {
     })
   })
 
+  describe('when saving new reminder list item', () => {
+    afterEach(() => {
+      listItemsPromises.saveNewReminderPromise.restore()
+    })
+
+    it('should succeed for normal situation with correct properties', () => {
+      const data = {
+        list: 'mylist',
+        reminderUserDateText: 'listItemName',
+        familyId: 123,
+        reminderWhenGMT: new Date('01/01/2017 00:00:00'),
+        person: 'me',
+        reminderTitle: 'reminderTitle',
+        reminderList: 'listItemName'
+      }
+      sinon.stub(listItemsPromises, 'saveNewReminderPromise').callsFake((list) => {
+        list.listKey.should.equal(data.list)
+        list.listItemName.should.equal(data.reminderUserDateText)
+        list.familyId.should.equal(data.familyId)
+        list.reminderWhen.should.equal(data.reminderWhenGMT)
+        list.reminderUserId.should.equal(data.person)
+        list.reminderTitle.should.equal(data.reminderTitle)
+        list.reminderListKey.should.equal(data.reminderList)
+        return Q.resolve(data)
+      })
+      return listItems.saveNewReminderPromise(data)
+        .then(result => {
+          result.list.should.equal('mylist')
+        }, () => {
+          should.fail('not expecting error')
+        })
+    })
+
+    it('should fail for error situation', () => {
+      const data = {list: 'mylist', familyId: 123, listItemName: 'myItem'}
+      sinon.stub(listItemsPromises, 'saveNewReminderPromise').callsFake(() => {
+        return Q.reject(data)
+      })
+      return listItems.saveNewReminderPromise(data)
+        .then(result => {
+          should.fail('expecting error')
+        }, result => {
+          result.errorMessage.should.equal(modelConstants.errorTypes.generalError)
+        })
+    })
+  })
+
   describe('when deleting new list item', () => {
     afterEach(() => {
       listItemsPromises.deletePromise.restore()
