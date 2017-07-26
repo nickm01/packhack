@@ -4,6 +4,7 @@
 'use strict'
 const config = require('../config')
 const mongoOp = require('../model/mongo')
+const modelConstants = require('../model/modelconstants')
 const sendSms = require('../sendsms')
 const logging = require('../logging')
 const listItemFunctions = require('../listitems')
@@ -66,8 +67,8 @@ function deleteListItemByNamePromise (listItem) {
 
 function multipleOrSingleFamilyMembersForReminderUserIdPromise (listItem) {
   let promise
-  if (listItem.reminderUserId !== config.allFamilyMembersID) {
-    promise = mongoOp.FamilyMembers.findOne({'familyId': listItem.familyId, 'userId': listItem.reminderUserId})
+  if (listItem.reminderUserId !== modelConstants.allFamilyMembersName) {
+    promise = mongoOp.FamilyMembers.findOne({'familyId': listItem.familyId, 'name': listItem.reminderUserId})
       .exec()
       .then(familyMember => {
         return [{listItem, familyMember}]

@@ -744,7 +744,35 @@ describe('textProcessor + languageProcessor', () => {
             sinon.assert.calledOnce(listItemsSaveNewReminderPromiseStub)
           })
         })
-        it('when "remind @all tomorrow go shopping')
+        it('when "remind @all tomorrow go shopping', () => {
+          data.originalText = 'remind @all tomorrow go shopping'
+
+          // lists
+          listExists()
+
+          // familyMembers - manual stub
+          familyMemberMock.restore()
+          retrievePersonPhoneNumbersPromiseStub = sinon.stub(familyMembers, 'retrievePersonPhoneNumbersPromise').callsFake(result => {
+            console.log('___retrievePersonPhoneNumbersPromiseStub')
+            console.log(result)
+            result.person.should.equal('all')
+            return Q.resolve(result)
+          })
+
+          // listItems - manual stub
+          listItemsMock.restore()
+          listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
+            console.log('___listItemsSaveNewReminderPromiseStub')
+            data.listItemName.should.equal('@all: go shopping Monday, Jan 2nd')
+            return Q.resolve(data)
+          })
+
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledOnce(listSaveNewPromiseStub)
+            sinon.assert.calledOnce(listItemsSaveNewReminderPromiseStub)
+          })
+        })
+
         it('when "remind @me tomorrow go shopping')
         it('when "remind @someone yesterday go shopping" and error due to past')
         it('when "remind @someone today go shopping" and should try to schedule it in the future')
