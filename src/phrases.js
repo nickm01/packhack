@@ -30,7 +30,7 @@ module.exports = {
   // addRemind specific
   noDateTime: '😕 Sorry couldn\'t work out that time.\nTry a date, day of week, time, phrases such as tomorrow or next week, or any combo.',
   noTitle: '😕 Sorry couldn\'t work out a reminder title.\nTry ending one to the end.\ne.g. \'remind @someone tomorrow go shopping\'',
-  addReminderSuccess: 'Done 👍. All set for %%date',
+  addReminderSuccess: 'Set for %%date 👍',
   // command specific exmaples
   createListExample: 'e.g. \'create my-new-list\'',
   getListExample: 'e.g. \'get #my-list\', or simply \'my-list\'',

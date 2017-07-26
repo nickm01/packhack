@@ -97,7 +97,7 @@ describe('list items', () => {
         person: 'me',
         reminderTitle: 'reminderTitle',
         reminderList: 'listItemName',
-        listItemName: 'Sunday, Jan 1st'
+        listItemName: 'Sunday, Jan 1st' 
       }
       sinon.stub(listItemsPromises, 'saveNewReminderPromise').callsFake((list) => {
         list.listKey.should.equal(data.list)
