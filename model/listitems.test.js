@@ -96,11 +96,12 @@ describe('list items', () => {
         reminderWhenGMT: new Date('01/01/2017 00:00:00'),
         person: 'me',
         reminderTitle: 'reminderTitle',
-        reminderList: 'listItemName'
+        reminderList: 'listItemName',
+        listItemName: 'Sunday, Jan 1st'
       }
       sinon.stub(listItemsPromises, 'saveNewReminderPromise').callsFake((list) => {
         list.listKey.should.equal(data.list)
-        list.listItemName.should.equal(data.reminderUserDateText)
+        list.listItemName.should.equal(data.listItemName)
         list.familyId.should.equal(data.familyId)
         list.reminderWhen.should.equal(data.reminderWhenGMT)
         list.reminderUserId.should.equal(data.person)

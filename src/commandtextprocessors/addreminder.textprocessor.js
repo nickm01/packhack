@@ -36,9 +36,6 @@ const processResponseTextPromise = data => {
       }
     })
     .then(result => {
-      return result
-    })
-    .then(result => {
       return listItems.saveNewReminderPromise(result)
     })
     .then(data => {

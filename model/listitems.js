@@ -27,12 +27,14 @@ const saveNewPromise = (data) => {
 const saveNewReminderPromise = (data) => {
   const list = {
     listKey: data.list,
-    listItemName: data.reminderUserDateText,
+    listItemName: data.listItemName,
     familyId: data.familyId,
     reminderWhen: data.reminderWhenGMT,
     reminderUserId: data.person,
-    reminderTitle: data.reminderTitle,
-    reminderListKey: data.reminderList
+    reminderTitle: data.reminderTitle
+  }
+  if (data.reminderList) {
+    list.reminderListKey = data.reminderList
   }
   return listItemsPromises.saveNewReminderPromise(list)
     .then(list => {
