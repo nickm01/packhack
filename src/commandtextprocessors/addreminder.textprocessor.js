@@ -42,7 +42,7 @@ const processResponseTextPromise = data => {
       return listItems.saveNewReminderPromise(result)
     })
     .then(data => {
-      data.responseText = phrases.success
+      data.responseText = phrases.addReminderSuccess
       return data
     })
 }

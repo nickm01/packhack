@@ -12,6 +12,9 @@ const replaceDynamicText = (data, str) => {
   if (data.fromPerson) {
     finalText = finalText.replace('%@fromPerson', '@' + data.fromPerson)
   }
+  if (data.reminderUserDateText) {
+    finalText = finalText.replace('%%date', data.reminderUserDateText)
+  }
   console.log(finalText)
   return finalText
 }

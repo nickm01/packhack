@@ -43,6 +43,7 @@ describe('textProcessor + languageProcessor', () => {
         const expectedDynamic =
           expected.replace('%#list', '#' + data.list)
             .replace('%@person', '@' + data.person)
+            .replace('%%date', data.reminderUserDateText)
         result.responseText.should.equal(expectedDynamic)
       }, () => {
         should.fail('should not error')
@@ -701,7 +702,7 @@ describe('textProcessor + languageProcessor', () => {
 
           familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
 
-          return shouldRespondWith(phrases.success).then(data => {
+          return shouldRespondWith(phrases.addReminderSuccess).then(data => {
             sinon.assert.calledTwice(validateListExistsPromiseStub)
             sinon.assert.calledOnce(listItemsSaveNewReminderPromiseStub)
           })
@@ -738,7 +739,7 @@ describe('textProcessor + languageProcessor', () => {
 
           familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
 
-          return shouldRespondWith(phrases.success).then(data => {
+          return shouldRespondWith(phrases.addReminderSuccess).then(data => {
             sinon.assert.calledOnce(validateListExistsPromiseStub)
             sinon.assert.calledOnce(listSaveNewPromiseStub)
             sinon.assert.calledOnce(listItemsSaveNewReminderPromiseStub)
@@ -767,7 +768,7 @@ describe('textProcessor + languageProcessor', () => {
             return Q.resolve(data)
           })
 
-          return shouldRespondWith(phrases.success).then(data => {
+          return shouldRespondWith(phrases.addReminderSuccess).then(data => {
             sinon.assert.calledOnce(listSaveNewPromiseStub)
             sinon.assert.calledOnce(listItemsSaveNewReminderPromiseStub)
           })

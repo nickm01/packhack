@@ -97,6 +97,7 @@ router.route("/twilio")
         bodyText.startsWith('delete') ||
         bodyText.startsWith('clear') ||
         bodyText.startsWith('send ') ||
+        bodyText.startsWith('remind ') ||
         bodyText.includes('add') ||  // TODO: This contidition is weak
         bodyText.includes('remove') // TODO: This contidition is weak
       ) {
@@ -301,16 +302,16 @@ router.route("/twilio")
       //   });
 
       // remind @nick some text date
-      } else if (bodyText.startsWith('remind @')) {
-        var remindText = bodyText.substr(8)
-        console.log('%%%% timezone ' + timeZone)
-        reminders.addReminder(remindText, familyId, timeZone, function (err, additionalMessage) {
-          if (err == null) {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, additionalMessage + ' ❤️FLOCK', res)
-          } else {
-            sendSMSResponse(fromPhoneNumber, familyId, bodyText, err, res)
-          }
-        })
+      // } else if (bodyText.startsWith('remind @')) {
+      //   var remindText = bodyText.substr(8)
+      //   console.log('%%%% timezone ' + timeZone)
+      //   reminders.addReminder(remindText, familyId, timeZone, function (err, additionalMessage) {
+      //     if (err == null) {
+      //       sendSMSResponse(fromPhoneNumber, familyId, bodyText, additionalMessage + ' ❤️FLOCK', res)
+      //     } else {
+      //       sendSMSResponse(fromPhoneNumber, familyId, bodyText, err, res)
+      //     }
+      //   })
 
       // remind error/help
       } else if (bodyText.startsWith('remind')) {
