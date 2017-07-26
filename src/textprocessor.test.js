@@ -587,13 +587,7 @@ describe('textProcessor + languageProcessor', () => {
           data.fromPhoneNumber = '222'
           listExists()
           listItemsExist([item1, item2])
-          familyMemberMock.restore()
-          retrievePersonPhoneNumbersPromiseStub = sinon.stub(familyMembers, 'retrievePersonPhoneNumbersPromise').callsFake(result => {
-            console.log('___retrievePersonPhoneNumbersPromiseStub')
-            console.log(result)
-            result.person.should.equal('all')
-            return Q.resolve(result)
-          })
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
           var callCount = 0
           sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
             to.should.equal(['111', '333', '444'][callCount])
@@ -602,7 +596,6 @@ describe('textProcessor + languageProcessor', () => {
             return Q.resolve(data)
           })
           return shouldRespondWith(phrases.success).then(data => {
-            sinon.assert.calledOnce(retrievePersonPhoneNumbersPromiseStub)
             sinon.assert.calledThrice(sendSmsPromiseStub)
           })
         })
@@ -747,18 +740,8 @@ describe('textProcessor + languageProcessor', () => {
         })
         it('when "remind @all tomorrow go shopping', () => {
           data.originalText = 'remind @all tomorrow go shopping'
-
-          // lists
           listExists()
-
-          // familyMembers - manual stub
-          familyMemberMock.restore()
-          retrievePersonPhoneNumbersPromiseStub = sinon.stub(familyMembers, 'retrievePersonPhoneNumbersPromise').callsFake(result => {
-            console.log('___retrievePersonPhoneNumbersPromiseStub')
-            console.log(result)
-            result.person.should.equal('all')
-            return Q.resolve(result)
-          })
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
 
           // listItems - manual stub
           listItemsMock.restore()
