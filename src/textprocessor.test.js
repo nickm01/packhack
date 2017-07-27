@@ -757,7 +757,24 @@ describe('textProcessor + languageProcessor', () => {
           })
         })
 
-        it('when "remind @me tomorrow go shopping')
+        it('when "remind @me tomorrow go shopping', () => {
+          data.originalText = 'remind @me tomorrow go shopping'
+          data.fromUserName = 'nick'
+          listExists()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
+
+          // listItems - manual stub
+          listItemsMock.restore()
+          listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
+            console.log('___listItemsSaveNewReminderPromiseStub')
+            data.listItemName.should.equal('@nick: go shopping Monday, Jan 2nd')
+            return Q.resolve(data)
+          })
+
+          return shouldRespondWith(phrases.addReminderSuccess).then(data => {
+            sinon.assert.calledOnce(listItemsSaveNewReminderPromiseStub)
+          })
+        })
         it('when "remind @someone yesterday go shopping" and error due to past')
         it('when "remind @someone today go shopping" and should try to schedule it in the future')
         it('when "remind @someone today" and no title')

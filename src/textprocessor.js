@@ -28,7 +28,11 @@ const processTextPromise = data => {
 const conditionallyValidatePersonExistsAndRetrievePhoneNumbers = (data) => {
   console.log('__conditionallyValidatePersonExistsAndRetrievePhoneNumbers')
   console.log(data)
-  if (data.person && data.person !== modelConstants.allFamilyMembersName) {
+  if (data.person === modelConstants.meFamilyMamberName) {
+    data.person = data.fromUserName
+    data.phoneNumbers = [data.fromPhoneNumber]
+    return data
+  } else if (data.person && data.person !== modelConstants.allFamilyMembersName) {
     return familyMembers.retrievePersonPhoneNumbersPromise(data)
   } else {
     return data

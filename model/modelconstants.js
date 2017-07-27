@@ -6,8 +6,10 @@ const errorTypes = {
 }
 
 const allFamilyMembersName = 'all'
+const meFamilyMamberName = 'me'
 
 module.exports = {
   errorTypes,
-  allFamilyMembersName
+  allFamilyMembersName,
+  meFamilyMamberName
 }
