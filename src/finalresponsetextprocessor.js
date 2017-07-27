@@ -1,3 +1,5 @@
+const phrases = require('./phrases')
+
 const replaceDynamicText = (data, str) => {
   console.log('44444dynamictext')
   console.log(data)
@@ -15,6 +17,7 @@ const replaceDynamicText = (data, str) => {
   if (data.reminderUserDateText) {
     finalText = finalText.replace('%%date', data.reminderUserDateText)
   }
+  finalText = finalText.replace('%%commandSpecificSuggestion', phrases[data.command + 'Example'])
   console.log(finalText)
   return finalText
 }

@@ -41,9 +41,11 @@ describe('textProcessor + languageProcessor', () => {
     const shouldRespondWith = expected => {
       return textProcessor.processTextPromise(data).then(result => {
         const expectedDynamic =
-          expected.replace('%#list', '#' + data.list)
+          expected
+            .replace('%#list', '#' + data.list)
             .replace('%@person', '@' + data.person)
             .replace('%%date', data.reminderUserDateText)
+            .replace('%%commandSpecificSuggestion', phrases[data.command + 'Example'])
         result.responseText.should.equal(expectedDynamic)
       }, () => {
         should.fail('should not error')
@@ -135,7 +137,7 @@ describe('textProcessor + languageProcessor', () => {
 
       it('"get" when no cached list should result in an error', () => {
         data.originalText = 'get'
-        return shouldRespondWith(phrases.noList + '\n' + phrases.getListExample)
+        return shouldRespondWith(phrases.noList)
       })
     })
 
@@ -193,13 +195,13 @@ describe('textProcessor + languageProcessor', () => {
 
       it('when "create" with no cached list - no list error', () => {
         data.originalText = 'create'
-        return shouldRespondWith(phrases.noList + '\n' + phrases.createListExample)
+        return shouldRespondWith(phrases.noList)
       })
 
       it('when "create" with cached list - no list error', () => {
         data.originalText = 'create'
         data.cachedListName = 'some-cached-list'
-        return shouldRespondWith(phrases.noList + '\n' + phrases.createListExample)
+        return shouldRespondWith(phrases.noList)
       })
     })
 
@@ -228,13 +230,13 @@ describe('textProcessor + languageProcessor', () => {
 
       it('when "delete" and no cache', () => {
         data.originalText = 'delete'
-        return shouldRespondWith(phrases.noList + '\n' + phrases.deleteListExample)
+        return shouldRespondWith(phrases.noList)
       })
 
       it('when "delete" and with cache should ignore cache', () => {
         data.originalText = 'delete'
         data.cachedListName = 'mylist'
-        return shouldRespondWith(phrases.noList + '\n' + phrases.deleteListExample)
+        return shouldRespondWith(phrases.noList)
       })
     })
 
@@ -316,7 +318,7 @@ describe('textProcessor + languageProcessor', () => {
         it('when "add bananas" and no cachedListName then error', () => {
           data.originalText = 'add bananas'
           listItemsMock.expects('saveNewPromise').never()
-          return shouldRespondWith(phrases.noList + '\n' + phrases.addListItemExample)
+          return shouldRespondWith(phrases.noList)
         })
 
         it('when "add bananas to thisList" and list exists', () => {
@@ -396,7 +398,7 @@ describe('textProcessor + languageProcessor', () => {
         it('when "remove bananas" and no cachedListName then error', () => {
           data.originalText = 'remove bananas'
           listItemsMock.expects('deletePromise').never()
-          return shouldRespondWith(phrases.noList + '\n' + phrases.removeListItemExample)
+          return shouldRespondWith(phrases.noList)
         })
 
         it('when "#mylist remove bananas" and list exists and list item does not exist', () => {
@@ -496,7 +498,7 @@ describe('textProcessor + languageProcessor', () => {
 
         it('when "clear" and no cachedListName exists', () => {
           data.originalText = 'clear'
-          return shouldRespondWith(phrases.noList + '\n' + phrases.clearListExample)
+          return shouldRespondWith(phrases.noList)
         })
       })
     })
@@ -632,6 +634,12 @@ describe('textProcessor + languageProcessor', () => {
           return shouldRespondWith(phrases.success).then(data => {
             sinon.assert.calledOnce(sendSmsPromiseStub)
           })
+        })
+
+        it('when "send @someone" and no list', () => {
+          data.originalText = 'send @someone'
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
+          return shouldRespondWith(phrases.noList)
         })
       })
 
@@ -814,9 +822,33 @@ describe('textProcessor + languageProcessor', () => {
           })
         })
 
-        it('when "remind @someone tomorrow" and no title')
-        it('when "remind @someone go shopping" and no datetime')
-        it('when "remind @someone" and no title and no datetime')
+        it('when "remind @someone tomorrow" and no title', () => {
+          data.originalText = 'remind @someone tomorrow'
+          listItemsMock.expects('saveNewReminderPromise').never()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.noTitle)
+        })
+
+        it('when "remind @someone go shopping" and no datetime', () => {
+          data.originalText = 'remind @someone go shopping'
+          listItemsMock.expects('saveNewReminderPromise').never()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.noDateTime)
+        })
+
+        it('when "remind @someone" and no title and no datetime', () => {
+          data.originalText = 'remind @someone'
+          listItemsMock.expects('saveNewReminderPromise').never()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.noDateTime)
+        })
+
+        it('when "remind" and no person and no title and no datetime', () => {
+          data.originalText = 'remind'
+          listItemsMock.expects('saveNewReminderPromise').never()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
+          return shouldRespondWith(phrases.noPerson)
+        })
       })
     })
   })

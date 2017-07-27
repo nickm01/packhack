@@ -133,11 +133,7 @@ const standardMatchedErrorMessage = (data) => {
     // Add suggestions according to type of error
     console.log(333)
     console.log(data.responseText)
-    if (data.errorMessage === errors.errorTypes.noList) {
-      console.log(444)
-      data.responseText += '\n' + phrases[data.command + 'Example']
-      console.log(data)
-    } else if (data.errorMessage === errors.errorTypes.listNotFound) {
+    if (data.errorMessage === errors.errorTypes.listNotFound) {
       console.log(555)
       data.responseText += '\n' + phrases.suggestGetLists
       console.log(data)
