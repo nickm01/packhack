@@ -14,7 +14,10 @@ const errors = require('./../errors')
 const processResponseTextPromise = data => {
   console.log('___processResponseTextPromise - addReminder')
   supplementaryTextProcessor.retrieveDateAndTitleFromSupplementaryText(data)
-  // Need to switch out the intended list for reminder
+  if (data.reminderWhenGMT < new Date()) {
+    data.errorMessage = errors.errorTypes.dateTimePast
+    throw data
+  }
   data.reminderList = data.list
   data.list = config.remindersListKey
   data.listItemName =

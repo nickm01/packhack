@@ -13,7 +13,8 @@ const errorTypes = {
   smsError: 'smsError',
   generalError: 'generalError',
   noDateTime: 'noDateTime',
-  noTitle: 'noTitle'
+  noTitle: 'noTitle',
+  dateTimePast: 'dateTimePast'
 }
 
 module.exports = {

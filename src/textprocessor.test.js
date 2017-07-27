@@ -643,7 +643,7 @@ describe('textProcessor + languageProcessor', () => {
           clock
 
         beforeEach(() => {
-          const now = new Date('01/01/2017 GMT-0500')
+          const now = new Date('01/01/2017 09:00:00 GMT-0500')
           clock = sinon.useFakeTimers(now.getTime())
           data.fromPerson = 'nick'
           data.timezone = 'America/New_York'
@@ -775,9 +775,46 @@ describe('textProcessor + languageProcessor', () => {
             sinon.assert.calledOnce(listItemsSaveNewReminderPromiseStub)
           })
         })
-        it('when "remind @someone yesterday go shopping" and error due to past')
-        it('when "remind @someone today go shopping" and should try to schedule it in the future')
-        it('when "remind @someone today" and no title')
+
+        it('when "remind @someone yesterday go shopping" and error due to past', () => {
+          data.originalText = 'remind @someone yesterday go shopping'
+          listItemsMock.expects('saveNewReminderPromise').never()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.dateTimePast)
+        })
+
+        it('when "remind @someone today 8:59am go shopping" and error due to past', () => {
+          data.originalText = 'remind @someone today 8:59am go shopping'
+          listItemsMock.expects('saveNewReminderPromise').never()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+          return shouldRespondWith(phrases.dateTimePast)
+        })
+
+        it('when "remind @someone now go shopping" and should not error', () => {
+          data.originalText = 'remind @someone now go shopping'
+          listExists()
+
+          // Manually stub out listItems
+          listItemsMock.restore()
+          listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
+            console.log('___listItemsSaveNewReminderPromiseStub')
+            data.listItemName.should.equal('@someone: go shopping Sunday 9am, Jan 1st')
+            data.reminderTitle.should.equal('go shopping')
+            data.reminderWhenGMT.toString().should.equal('Sun Jan 01 2017 14:00:00 GMT+0000 (GMT)')
+            data.list.should.equal('reminders')
+            data.person.should.equal('someone')
+            should.not.exist(data.reminderList)
+            return Q.resolve(data)
+          })
+
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
+
+          return shouldRespondWith(phrases.addReminderSuccess).then(data => {
+            sinon.assert.calledOnce(listItemsSaveNewReminderPromiseStub)
+          })
+        })
+
+        it('when "remind @someone tomorrow" and no title')
         it('when "remind @someone go shopping" and no datetime')
         it('when "remind @someone" and no title and no datetime')
       })

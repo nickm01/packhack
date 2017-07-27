@@ -17,8 +17,8 @@ module.exports = {
   listAlreadyExists: '😕 Sorry, %#list already exists!',
   listNameInvalid: '😕 Sorry, list name is invalid.\nPlease don\t use spaces or reserved commands like \'create\'.',
   // addListItem or removeListItem specific
-  noListItemToAdd: '😕 Sorry please specify item(s) to add.',
-  noListItemToRemove: '😕 Sorry please specify item(s) to remove.',
+  noListItemToAdd: '😕 Sorry, please specify item(s) to add.',
+  noListItemToRemove: '😕 Sorry, please specify item(s) to remove.',
   listItemNotFound: '😕 Sorry, couldn\'t find ',
   suggestGetPartOne: 'Type \'get ',
   suggestGetPartTwo: '\' to see items in the list.',
@@ -28,9 +28,10 @@ module.exports = {
   justSent: '%@fromPerson just sent you %#list:',
   smsError: '😕 Sorry, send failure.\nPlease try again.',
   // addRemind specific
-  noDateTime: '😕 Sorry couldn\'t work out that time.\nTry a date, day of week, time, phrases such as tomorrow or next week, or any combo.',
-  noTitle: '😕 Sorry couldn\'t work out a reminder title.\nTry ending one to the end.\ne.g. \'remind @someone tomorrow go shopping\'',
+  noDateTime: '😕 Sorry, couldn\'t work out that time.\nTry a date, day of week, time, phrases such as tomorrow or next week, or any combo.',
+  noTitle: '😕 Sorry, couldn\'t work out a reminder title.\nTry ending one to the end.\ne.g. \'remind @someone tomorrow go shopping\'',
   addReminderSuccess: '👍 Set for %%date.',
+  dateTimePast: '😕 Sorry, can\'t add a reminder in the past',
   // command specific exmaples
   createListExample: 'e.g. \'create my-new-list\'',
   getListExample: 'e.g. \'get #my-list\', or simply \'my-list\'',
