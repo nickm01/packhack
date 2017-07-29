@@ -767,7 +767,7 @@ describe('textProcessor + languageProcessor', () => {
 
         it('when "remind @me tomorrow go shopping', () => {
           data.originalText = 'remind @me tomorrow go shopping'
-          data.fromUserName = 'nick'
+          data.fromPerson = 'nick'
           listExists()
           familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
 

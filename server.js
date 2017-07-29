@@ -97,7 +97,7 @@ router.route("/twilio")
         bodyText.startsWith('delete') ||
         bodyText.startsWith('clear') ||
         bodyText.startsWith('send ') ||
-        bodyText.startsWith('remind ') ||
+        bodyText.startsWith('remind') ||
         bodyText.includes('add') ||  // TODO: This contidition is weak
         bodyText.includes('remove') // TODO: This contidition is weak
       ) {
