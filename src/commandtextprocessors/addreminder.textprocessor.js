@@ -14,7 +14,7 @@ const errors = require('./../errors')
 const processResponseTextPromise = data => {
   console.log('___processResponseTextPromise - addReminder')
   supplementaryTextProcessor.retrieveDateAndTitleFromSupplementaryText(data)
-  if (data.reminderWhenGMT < new Date()) {
+  if (data.reminderWhenGMT < data.now) {
     data.errorMessage = errors.errorTypes.dateTimePast
     throw data
   }

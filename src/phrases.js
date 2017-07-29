@@ -5,7 +5,7 @@ module.exports = {
   success: '👍 Done.',
   generalMisundertanding: '😕 Sorry don\'t understand. Type \'packhack\' for help.',
   listNotFound: '😕 Sorry, couldn\'t find %#list.',
-  personNotFound: '😕 Sorry, couldn\'t find %@person in this family.',
+  personNotFound: '😕 Sorry, couldn\'t find %@person in the family.',
   suggestGetLists: 'Type \'get lists\' to see what\'s available.',
   noList: '😕 Sorry please specify a list.\n%%commandSpecificSuggestion',
   noPerson: '😕 Sorry please specify a person to send that to.\n%%commandSpecificSuggestion',
@@ -41,5 +41,5 @@ module.exports = {
   removeListItemExample: 'e.g. \'#my-list remove apples and oranges\'.\nOr simply, \'get my-list\', followed by \'remove apples and oranges\'.',
   clearListExample: 'e.g. \'clear my-list\'',
   sendListExample: 'e.g. \'send @bob my-list\'\nor \'send all #my-list\'',
-  addReminderExample: 'e.g. \'remind bob get milk tomorrow\'\nor \'remind @me walk dog tomorrow morning\''
+  addReminderExample: 'e.g. \'remind bob get milk tomorrow\'\nor \'remind @me walk dog thursday morning\''
 }

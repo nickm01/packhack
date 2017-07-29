@@ -656,6 +656,7 @@ describe('textProcessor + languageProcessor', () => {
           data.fromPerson = 'nick'
           data.timezone = 'America/New_York'
           data.phoneNumbers = ['111']
+          data.now = new Date()
         })
 
         afterEach(() => {
