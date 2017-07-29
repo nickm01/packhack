@@ -131,7 +131,7 @@ router.route("/twilio")
           cachedListName,
           fromPerson: fromUserName,
           fromPhoneNumber,
-          now: new Date(),
+          now: new Date((new Date()).getTime() - 1000 * 60), // 1 minute in the past
           timezone: timeZone // TODO: Capitalization issues
         }
         textProcessor.processTextPromise(data).then(result => {
