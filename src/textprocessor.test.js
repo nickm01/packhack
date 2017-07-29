@@ -693,7 +693,7 @@ describe('textProcessor + languageProcessor', () => {
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
             console.log('___listItemsSaveNewReminderPromiseStub')
-            data.listItemName.should.equal('@someone: #my-list go shopping Monday, Jan 2nd')
+            data.listItemName.should.equal('@someone: #my-list go shopping - Monday, Jan 2nd')
             data.reminderTitle.should.equal('go shopping')
             data.reminderWhenGMT.toString().should.equal('Mon Jan 02 2017 05:00:00 GMT+0000 (GMT)')
             data.list.should.equal('reminders')
@@ -735,7 +735,7 @@ describe('textProcessor + languageProcessor', () => {
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
             console.log('___listItemsSaveNewReminderPromiseStub')
-            data.listItemName.should.equal('@someone: go shopping Monday, Jan 2nd')
+            data.listItemName.should.equal('@someone: go shopping - Monday, Jan 2nd')
             return Q.resolve(data)
           })
 
@@ -756,7 +756,7 @@ describe('textProcessor + languageProcessor', () => {
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
             console.log('___listItemsSaveNewReminderPromiseStub')
-            data.listItemName.should.equal('@all: go shopping Monday, Jan 2nd')
+            data.listItemName.should.equal('@all: go shopping - Monday, Jan 2nd')
             return Q.resolve(data)
           })
 
@@ -776,7 +776,7 @@ describe('textProcessor + languageProcessor', () => {
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
             console.log('___listItemsSaveNewReminderPromiseStub')
-            data.listItemName.should.equal('@nick: go shopping Monday, Jan 2nd')
+            data.listItemName.should.equal('@nick: go shopping - Monday, Jan 2nd')
             return Q.resolve(data)
           })
 
@@ -807,7 +807,7 @@ describe('textProcessor + languageProcessor', () => {
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
             console.log('___listItemsSaveNewReminderPromiseStub')
-            data.listItemName.should.equal('@someone: go shopping Sunday 9am, Jan 1st')
+            data.listItemName.should.equal('@someone: go shopping - Sunday 9am, Jan 1st')
             data.reminderTitle.should.equal('go shopping')
             data.reminderWhenGMT.toString().should.equal('Sun Jan 01 2017 14:00:00 GMT+0000 (GMT)')
             data.list.should.equal('reminders')

@@ -24,7 +24,7 @@ const processResponseTextPromise = data => {
     '@' + data.person + ':' +
     (data.reminderList ? ' #' + data.reminderList : '') +
     ' ' + data.reminderTitle +
-    ' ' + data.reminderUserDateText
+    ' - ' + data.reminderUserDateText
   console.log(data)
   return lists.validateListExistsPromise(data)
     .catch(result => {
