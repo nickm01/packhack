@@ -582,6 +582,7 @@ describe('textProcessor + languageProcessor', () => {
           return shouldRespondWith(phrases.personNotFound)
         })
 
+        // TODO: FROM HERE XXX
         it('when "send @all #list" then multiple sms and success', () => {
           data.originalText = 'send @all #list'
           data.phoneNumbers = ['111', '222', '333', '444']
@@ -589,7 +590,7 @@ describe('textProcessor + languageProcessor', () => {
           data.fromPhoneNumber = '222'
           listExists()
           listItemsExist([item1, item2])
-          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
           var callCount = 0
           sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
             to.should.equal(['111', '333', '444'][callCount])
@@ -750,7 +751,7 @@ describe('textProcessor + languageProcessor', () => {
         it('when "remind @all tomorrow go shopping', () => {
           data.originalText = 'remind @all tomorrow go shopping'
           listExists()
-          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().returns(Q.resolve(data))
 
           // listItems - manual stub
           listItemsMock.restore()
@@ -849,6 +850,72 @@ describe('textProcessor + languageProcessor', () => {
           listItemsMock.expects('saveNewReminderPromise').never()
           familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
           return shouldRespondWith(phrases.noPerson)
+        })
+      })
+
+      describe('help', () => {
+        it('when "packhack" then show help text', () => {
+          data.originalText = 'packhack'
+          return shouldRespondWith(phrases.help)
+        })
+
+        it('when "hack" then show help text', () => {
+          data.originalText = 'hack'
+          return shouldRespondWith(phrases.help)
+        })
+      })
+
+      describe('pushIntro', () => {
+        it('when "**welcome @someone 2" then show welcome text sms', () => {
+          data.originalText = '**welcome @someone 2'
+          data.phoneNumbers = ['111']
+          data.familyId = 1
+          familyMemberMock.restore()
+          retrievePersonPhoneNumbersPromiseStub = sinon.stub(familyMembers, 'retrievePersonPhoneNumbersPromise').callsFake((result) => {
+            console.log('___retrievePersonPhoneNumbersPromiseStub')
+            result.familyId.should.equal(2)
+            result.person.should.equal('someone')
+            return Q.resolve(data)
+          })
+          sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+            console.log('___sendSmsPromiseStub')
+            to.should.equal('111')
+            message.should.equal(phrases.pushIntro)
+            return Q.resolve(data)
+          })
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledOnce(sendSmsPromiseStub)
+            sinon.assert.calledOnce(retrievePersonPhoneNumbersPromiseStub)
+          })
+        })
+
+        it('when "**welcome @all 2" then send welcome text to all', () => {
+          data.originalText = '**welcome @all 2'
+          data.phoneNumbers = ['111', '222']
+          data.familyId = 1
+          var callCount = 0
+          familyMemberMock.restore()
+          retrievePersonPhoneNumbersPromiseStub = sinon.stub(familyMembers, 'retrievePersonPhoneNumbersPromise').callsFake((result) => {
+            console.log('___retrievePersonPhoneNumbersPromiseStub')
+            result.familyId.should.equal(2)
+            result.person.should.equal('all')
+            return Q.resolve(data)
+          })
+          sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+            console.log('___sendSmsPromiseStub')
+            callCount++
+            if (callCount === 1) {
+              to.should.equal('111')
+            } else {
+              to.should.equal('222')
+            }
+            message.should.equal(phrases.pushIntro)
+            return Q.resolve(data)
+          })
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledTwice(sendSmsPromiseStub)
+            sinon.assert.calledOnce(retrievePersonPhoneNumbersPromiseStub)
+          })
         })
       })
     })

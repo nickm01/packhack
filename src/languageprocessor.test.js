@@ -177,7 +177,8 @@ describe('languageProcessor', function () {
 
   describe('pushIntro', function () {
     const command = commandTypes.pushIntro
-    it('✅ **welcome 1', function () { textShouldResult('**welcome 1', {command: command}) })
+    it('✅ **welcome @someone 2', function () { textShouldResult('**welcome @someone 2', {command: command, person: 'someone', supplementaryText: '2'}) })
+    it('❌ **welcome', function () { textShouldError('**welcome', {command: command, message: errors.errorTypes.noPerson}) })
   })
 
   describe('promsify languageProcessor', function () {

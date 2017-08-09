@@ -5,7 +5,7 @@ module.exports = {
   success: '👍 Done.',
   generalMisundertanding: '😕 Sorry don\'t understand. Type \'packhack\' for help.',
   listNotFound: '😕 Sorry, couldn\'t find %#list.',
-  personNotFound: '😕 Sorry, couldn\'t find %@person in the family.',
+  personNotFound: '😕 Sorry, couldn\'t find %@person in your pack.',
   suggestGetLists: 'Type \'get lists\' to see what\'s available.',
   noList: '😕 Sorry please specify a list.\n%%commandSpecificSuggestion',
   noPerson: '😕 Sorry please specify a person to send that to.\n%%commandSpecificSuggestion',
@@ -33,6 +33,10 @@ module.exports = {
   noTitle: '😕 Sorry, couldn\'t work out a reminder title.\nTry ending one to the end.\ne.g. \'remind @someone tomorrow go shopping\'',
   addReminderSuccess: '👍 Set for %%date.',
   dateTimePast: '😕 Sorry, can\'t add a reminder in the past',
+  // help
+  help: '🐺 Welcome to PackHack.\nCo-ordinate your pack.\n\nUse the following commands:\n• get -OR- get lists\n• create list\n• get #list or just \'list\'\n• #list add item -OR - just \'add item\' to recent list\n• #list remove item -OR- just \'remove item\' to recent list\n• clear #list\n• delete #list\n• remind - use the format \'remind @who when what',
+  // push intro
+  pushIntro: 'Congrats - you\'ve just been signed up for PackHack\nA better way to co-ordinate your pack.\nType \'hack\' for help',
   // command specific exmaples
   createListExample: 'e.g. \'create my-new-list\'',
   getListExample: 'e.g. \'get #my-list\', or simply \'my-list\'',
@@ -41,5 +45,7 @@ module.exports = {
   removeListItemExample: 'e.g. \'#my-list remove apples and oranges\'.\nOr simply, \'get my-list\', followed by \'remove apples and oranges\'.',
   clearListExample: 'e.g. \'clear my-list\'',
   sendListExample: 'e.g. \'send @bob my-list\'\nor \'send all #my-list\'',
-  addReminderExample: 'e.g. \'remind bob get milk tomorrow\'\nor \'remind @me walk dog thursday morning\''
+  addReminderExample: 'Use the format remind @who what when\ne.g. \'remind bob get milk tomorrow\'\nor \'remind @me walk dog thursday morning\'',
+  helpExmaple: 'e.g. \'packhack\' for help',
+  pushIntroExample: 'e.g. \'**welcome nick 2\'.\nWhere 2 is the Pack ID.'
 }

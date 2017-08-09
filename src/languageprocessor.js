@@ -16,8 +16,8 @@ const commandData = [
   {command: commandTypes.removeListItem, actuals: ['remove'], commandCanBeFirstOrSecondWord: true, postProcessing: 'postProcessRemove'},
   {command: commandTypes.sendList, actuals: ['send'], postProcessing: 'postProcessSend'},
   {command: commandTypes.addReminder, actuals: ['remind'], postProcessing: 'postProcessAddReminder'},
-  {command: commandTypes.help, actuals: ['help', 'flock', 'packhack', 'assist', '?', 'intro']}, // TODO: needs to be flushed out
-  {command: commandTypes.pushIntro, actuals: ['**welcome']} // TODO: needs to be flushed out
+  {command: commandTypes.help, actuals: ['help', 'packhack', 'assist', '?', 'intro', 'hack']},
+  {command: commandTypes.pushIntro, actuals: ['**welcome'], postProcessing: 'postProcessPushIntro'}
 ]
 
 // MAIN PROCESS
@@ -44,6 +44,8 @@ const processLanguage = (data) => {
 }
 
 const setDataAccordingToResult = (data, result) => {
+  console.log(1001)
+  console.log(result)
   data.command = result.commandObj ? result.commandObj.command : null
   data.list = result.list
   data.person = result.person
@@ -90,6 +92,8 @@ LanguageProcessorResult.prototype.getCommandFromWords = function () {
       )
     }).length > 0
   })[0]
+  console.log(1000)
+  console.log(this)
   return this
 }
 
@@ -196,12 +200,8 @@ LanguageProcessorResult.prototype.postProcessDelete = function () {
 }
 
 LanguageProcessorResult.prototype.postProcessSend = function () {
+  this.checkNoPerson()
   const len = this.words.length
-  if (len === 1 ||
-      (len === 2 && this.words[1].charAt(0) === '#')) {
-    throw new LanguageProcessorError(errors.errorTypes.noPerson, this)
-  }
-
   // if this is of the structure "send list to someone"
   if (len >= 3 && this.words[len - 2] === 'to') {
     this.setPersonFromWord(this.words[len - 1])
@@ -226,14 +226,15 @@ LanguageProcessorResult.prototype.postProcessSend = function () {
   return this
 }
 
+LanguageProcessorResult.prototype.postProcessPushIntro = function () {
+  this.checkNoPerson()
+  this.setPersonFromWord(this.words[1])
+  this.supplementaryText = this.words[2]
+  return this
+}
+
 LanguageProcessorResult.prototype.postProcessAddReminder = function () {
-  console.log('___postProcessAddReminder')
-  console.log(this)
-  const len = this.words.length
-  if (len === 1 ||
-      (len === 2 && this.words[1].charAt(0) === '#')) {
-    throw new LanguageProcessorError(errors.errorTypes.noPerson, this)
-  }
+  this.checkNoPerson()
 
   // Retrieve person
   this.setPersonFromWord(this.words[1])
@@ -274,6 +275,15 @@ LanguageProcessorResult.prototype.setListFromWord = function (str) {
 
 LanguageProcessorResult.prototype.setPersonFromWord = function (str) {
   this.person = str.removePrefix('@').toLowerCase()
+  return this
+}
+
+LanguageProcessorResult.prototype.checkNoPerson = function () {
+  const len = this.words.length
+  if (len === 1 ||
+      (len === 2 && this.words[1].charAt(0) === '#')) {
+    throw new LanguageProcessorError(errors.errorTypes.noPerson, this)
+  }
   return this
 }
 
