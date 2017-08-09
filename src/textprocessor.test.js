@@ -917,6 +917,11 @@ describe('textProcessor + languageProcessor', () => {
             sinon.assert.calledOnce(retrievePersonPhoneNumbersPromiseStub)
           })
         })
+
+        it('when "**welcome" then should respond with error', () => {
+          data.originalText = '**welcome'
+          return shouldRespondWith(phrases.noPerson)
+        })
       })
     })
   })

@@ -47,5 +47,5 @@ module.exports = {
   sendListExample: 'e.g. \'send @bob my-list\'\nor \'send all #my-list\'',
   addReminderExample: 'Use the format remind @who what when\ne.g. \'remind bob get milk tomorrow\'\nor \'remind @me walk dog thursday morning\'',
   helpExmaple: 'e.g. \'packhack\' for help',
-  pushIntroExample: 'e.g. \'**welcome nick 2\'.\nWhere 2 is the Pack ID.'
+  pushIntroExample: 'e.g. \'**welcome bob 2\'.\nWhere 2 is the Pack ID.'
 }
