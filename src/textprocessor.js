@@ -80,20 +80,7 @@ const conditionallyValidateListDoesNotExists = (data) => {
 const commandSpecificProcessorPromise = (data) => {
   console.log('___commandSpecificProcessorPromise')
   console.log(data)
-  // TODO: Remove 'if' once all commands are done
-  if (data.command && (
-    data.command === commandTypes.getList ||
-    data.command === commandTypes.getLists ||
-    data.command === commandTypes.createList ||
-    data.command === commandTypes.deleteList ||
-    data.command === commandTypes.addListItem ||
-    data.command === commandTypes.removeListItem ||
-    data.command === commandTypes.clearList ||
-    data.command === commandTypes.sendList ||
-    data.command === commandTypes.addReminder ||
-    data.command === commandTypes.help ||
-    data.command === commandTypes.pushIntro
-  )) {
+  if (data.command) {
     console.log('6c')
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
     return processor.processResponseTextPromise(data)
@@ -104,22 +91,9 @@ const commandSpecificProcessorPromise = (data) => {
 }
 
 const processError = (data) => {
-  console.log('10-error')
+  console.log('___processError')
   console.log(data)
-  // TODO: Remove 'if' once all commands are done
-  if (data.command && (
-    data.command === commandTypes.getList ||
-    data.command === commandTypes.getLists ||
-    data.command === commandTypes.createList ||
-    data.command === commandTypes.deleteList ||
-    data.command === commandTypes.addListItem ||
-    data.command === commandTypes.removeListItem ||
-    data.command === commandTypes.clearList ||
-    data.command === commandTypes.sendList ||
-    data.command === commandTypes.addReminder ||
-    data.command === commandTypes.help ||
-    data.command === commandTypes.pushIntro
-  )) {
+  if (data.command) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
 
     // if there is specific processing, use it.
@@ -151,7 +125,6 @@ const standardMatchedErrorMessage = (data) => {
       console.log(data)
     }
   } else {
-    // TODO: ???General error
     console.log('processError-fallthrough')
   }
 }

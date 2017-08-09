@@ -36,7 +36,7 @@ module.exports = {
   // help
   help: '🐺 Welcome to PackHack.\nCo-ordinate your pack.\n\nUse the following commands:\n• get -OR- get lists\n• create list\n• get #list or just \'list\'\n• #list add item -OR - just \'add item\' to recent list\n• #list remove item -OR- just \'remove item\' to recent list\n• clear #list\n• delete #list\n• remind - use the format \'remind @who when what',
   // push intro
-  pushIntro: 'Congrats - you\'ve just been signed up for PackHack\nA better way to co-ordinate your pack.\nType \'hack\' for help',
+  pushIntro: 'Congrats - you\'ve just been signed up for PackHack!\nA better way to co-ordinate your pack.\nType \'hack\' for help',
   // command specific exmaples
   createListExample: 'e.g. \'create my-new-list\'',
   getListExample: 'e.g. \'get #my-list\', or simply \'my-list\'',
@@ -47,5 +47,5 @@ module.exports = {
   sendListExample: 'e.g. \'send @bob my-list\'\nor \'send all #my-list\'',
   addReminderExample: 'Use the format remind @who what when\ne.g. \'remind bob get milk tomorrow\'\nor \'remind @me walk dog thursday morning\'',
   helpExmaple: 'e.g. \'packhack\' for help',
-  pushIntroExample: 'e.g. \'**welcome bob 2\'.\nWhere 2 is the Pack ID.'
+  pushIntroExample: 'e.g. \'**welcome bob 2\',\nwhere 2 is the Pack ID.'
 }
