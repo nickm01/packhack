@@ -2,6 +2,7 @@
 
 const errorTypes = {
   noText: 'noText',
+  notRegistered: 'notRegistered',
   unrecognizedCommand: 'unrecognizedCommand',
   noList: 'noList',
   listNameInvalid: 'listNameInvalid',

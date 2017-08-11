@@ -70,4 +70,62 @@ describe('familyMembers', () => {
       })
     })
   })
+
+  describe('when retrieving person from phone number', () => {
+    afterEach(() => {
+      familyMembersPromises.findFromPhoneNumberPromise.restore()
+    })
+
+    it('should find if there is one result', () => {
+      const data = {fromPhoneNumber: '+15555555555'}
+      const foundPersons = [{name: 'jack', familyId: '1', timeZone: 'America/Chicago'}]
+      sinon.stub(familyMembersPromises, 'findFromPhoneNumberPromise').callsFake(() => {
+        return Q.resolve(foundPersons)
+      })
+      return familyMembers.retrievePersonFromPhoneNumberPromise(data)
+        .then(result => {
+          result.fromPerson.should.equal('jack')
+          result.familyId.should.equal('1')
+          result.timezone.should.equal('America/Chicago')
+        })
+    })
+
+    it('should default to new york if no timezone', () => {
+      const data = {fromPhoneNumber: '+15555555555'}
+      const foundPersons = [{name: 'jack', familyId: '1'}]
+      sinon.stub(familyMembersPromises, 'findFromPhoneNumberPromise').callsFake(() => {
+        return Q.resolve(foundPersons)
+      })
+      return familyMembers.retrievePersonFromPhoneNumberPromise(data)
+        .then(result => {
+          result.timezone.should.equal('America/New_York')
+        })
+    })
+
+    it('should error if no result', () => {
+      const data = {fromPhoneNumber: '+15555555555'}
+      sinon.stub(familyMembersPromises, 'findFromPhoneNumberPromise').callsFake(() => {
+        return Q.resolve([])
+      })
+      return familyMembers.retrievePersonFromPhoneNumberPromise(data)
+      .then(result => {
+        should.fail('expecting error')
+      }, result => {
+        result.errorMessage.should.equal(modelConstants.errorTypes.personNotFound)
+      })
+    })
+
+    it('should error if database errors', () => {
+      const data = {fromPhoneNumber: '+15555555555'}
+      sinon.stub(familyMembersPromises, 'findFromPhoneNumberPromise').callsFake(() => {
+        return Q.reject([])
+      })
+      return familyMembers.retrievePersonFromPhoneNumberPromise(data)
+      .then(result => {
+        should.fail('expecting error')
+      }, result => {
+        result.errorMessage.should.equal(modelConstants.errorTypes.generalError)
+      })
+    })
+  })
 })

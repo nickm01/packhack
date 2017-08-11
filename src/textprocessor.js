@@ -12,7 +12,8 @@ const finalResponseTextProcessor = require('./finalresponsetextprocessor')
 const processTextPromise = data => {
   console.log('___commandSpecificProcessorPromise')
   console.log(data)
-  return languageProcessor.processLanguagePromise(data)
+  return checkValidPhoneNumber(data)
+  .then(languageProcessor.processLanguagePromise)
   .then(conditionallyValidatePersonExistsAndRetrievePhoneNumbers)
   .then(conditionallyValidateListExists)
   .then(conditionallyValidateListDoesNotExists)
@@ -23,6 +24,19 @@ const processTextPromise = data => {
     data.responseText = finalResponseTextProcessor.replaceDynamicText(data, data.responseText)
     return data
   })
+}
+
+const checkValidPhoneNumber = (data) => {
+  return familyMembers.retrievePersonFromPhoneNumberPromise(data)
+    .catch(result => {
+      console.log('___checkValidPhoneNumber_catch')
+      console.log(result)
+      if (result.errorMessage === errors.errorTypes.personNotFound) {
+        console.log('___checkValidPhoneNumber_personNotFound')
+        result.errorMessage = errors.errorTypes.notRegistered
+      }
+      throw result
+    })
 }
 
 const conditionallyValidatePersonExistsAndRetrievePhoneNumbers = (data) => {
@@ -106,6 +120,7 @@ const processError = (data) => {
     }
     return data
   } else {
+    standardMatchedErrorMessage(data)
     throw data
   }
 }
@@ -130,7 +145,9 @@ const standardMatchedErrorMessage = (data) => {
 }
 
 const fallBackError = (data) => {
-  data.responseText = phrases.generalMisundertanding
+  if (!data.responseText) {
+    data.responseText = phrases.generalMisundertanding
+  }
   return data
 }
 

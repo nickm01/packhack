@@ -10,6 +10,7 @@ module.exports = {
   noList: '😕 Sorry please specify a list.\n%%commandSpecificSuggestion',
   noPerson: '😕 Sorry please specify a person to send that to.\n%%commandSpecificSuggestion',
   generalError: '😬 Sorry something unexpected happened.\nPlease try again.',
+  notRegistered: 'Sorry, don\'t see you as a member of a pack.\nPlease register.',
   // getList specifc
   noItems: 'Currently no items in %#list.',
   // getLists specific

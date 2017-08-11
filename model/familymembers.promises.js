@@ -7,6 +7,12 @@ const findFromNameFamilyPromise = (name, familyId) => {
     .exec()
 }
 
+const findFromPhoneNumberPromise = (phoneNumber) => {
+  return mongoOp.FamilyMembers.find({phoneNumber: phoneNumber})
+    .exec()
+}
+
 module.exports = {
-  findFromNameFamilyPromise
+  findFromNameFamilyPromise,
+  findFromPhoneNumberPromise
 }

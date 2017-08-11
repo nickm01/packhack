@@ -14,8 +14,39 @@ const errors = require('./errors')
 const phrases = require('./phrases')
 
 describe('textProcessor + languageProcessor', () => {
+  var data, familyMemberMock
+
+  beforeEach(() => {
+    data = {}
+    familyMemberMock = sinon.mock(familyMembers)
+    familyMemberMock.expects('retrievePersonFromPhoneNumberPromise').once().callsFake(result => {
+      console.log('___retrievePersonFromPhoneNumberPromiseMock')
+      return Q.resolve(result)
+    })
+  })
+
+  afterEach(() => {
+    data = undefined
+    familyMemberMock.restore()
+    familyMemberMock.verify() // Use verify to confirm the sinon expects
+  })
+
+  const shouldRespondWith = expected => {
+    return textProcessor.processTextPromise(data).then(result => {
+      const expectedDynamic =
+        expected
+          .replace('%#list', '#' + data.list)
+          .replace('%@person', '@' + data.person)
+          .replace('%%date', data.reminderUserDateText)
+          .replace('%%commandSpecificSuggestion', phrases[data.command + 'Example'])
+      result.responseText.should.equal(expectedDynamic)
+    }, () => {
+      should.fail('should not error')
+    })
+  }
+
   describe('list specific tests', () => {
-    var listsMock, data
+    var listsMock
 
     const item1 = {listItemName: 'item1'}
     const item2 = {listItemName: 'item2'}
@@ -38,29 +69,13 @@ describe('textProcessor + languageProcessor', () => {
       })
     }
 
-    const shouldRespondWith = expected => {
-      return textProcessor.processTextPromise(data).then(result => {
-        const expectedDynamic =
-          expected
-            .replace('%#list', '#' + data.list)
-            .replace('%@person', '@' + data.person)
-            .replace('%%date', data.reminderUserDateText)
-            .replace('%%commandSpecificSuggestion', phrases[data.command + 'Example'])
-        result.responseText.should.equal(expectedDynamic)
-      }, () => {
-        should.fail('should not error')
-      })
-    }
-
     beforeEach(() => {
       listsMock = sinon.mock(lists)
-      data = {}
     })
 
     afterEach(() => {
       listsMock.restore()
       listsMock.verify()
-      data = undefined
       if (listItems.findPromise.restore) {
         listItems.findPromise.restore()
       }
@@ -144,7 +159,7 @@ describe('textProcessor + languageProcessor', () => {
     describe('"nonsense and nonsense"', () => {
       it('should respond with don\'t understand', () => {
         var listsMock = sinon.mock(lists)
-        var data = {
+        data = {
           originalText: 'nonsense and nonsense',
           randomDataToCheckPassthrough: '123'
         }
@@ -504,24 +519,17 @@ describe('textProcessor + languageProcessor', () => {
     })
 
     describe('family member specific tests', () => {
-      var familyMemberMock, sendSmsPromiseStub, listItemsMock, retrievePersonPhoneNumbersPromiseStub
+      var sendSmsPromiseStub, listItemsMock
 
       beforeEach(() => {
-        familyMemberMock = sinon.mock(familyMembers)
         listItemsMock = sinon.mock(listItems)
       })
 
       afterEach(() => {
-        familyMemberMock.restore()
-        familyMemberMock.verify() // Use verify to confirm the sinon expects
         listItemsMock.restore()
         listItemsMock.verify() // Use verify to confirm the sinon expects
-        // TODO: Can do better?
         if (sendSmsPromiseStub) {
           sendSmsPromiseStub.restore()
-        }
-        if (retrievePersonPhoneNumbersPromiseStub) {
-          retrievePersonPhoneNumbersPromiseStub.restore()
         }
       })
 
@@ -853,26 +861,13 @@ describe('textProcessor + languageProcessor', () => {
         })
       })
 
-      describe('help', () => {
-        it('when "packhack" then show help text', () => {
-          data.originalText = 'packhack'
-          return shouldRespondWith(phrases.help)
-        })
-
-        it('when "hack" then show help text', () => {
-          data.originalText = 'hack'
-          return shouldRespondWith(phrases.help)
-        })
-      })
-
       describe('pushIntro', () => {
         it('when "**welcome @someone 2" then show welcome text sms', () => {
           data.originalText = '**welcome @someone 2'
           data.phoneNumbers = ['111']
           data.familyId = 1
-          familyMemberMock.restore()
-          retrievePersonPhoneNumbersPromiseStub = sinon.stub(familyMembers, 'retrievePersonPhoneNumbersPromise').callsFake((result) => {
-            console.log('___retrievePersonPhoneNumbersPromiseStub')
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().callsFake((result) => {
+            console.log('___retrievePersonPhoneNumbersPromiseMock')
             result.familyId.should.equal(2)
             result.person.should.equal('someone')
             return Q.resolve(data)
@@ -885,7 +880,6 @@ describe('textProcessor + languageProcessor', () => {
           })
           return shouldRespondWith(phrases.success).then(data => {
             sinon.assert.calledOnce(sendSmsPromiseStub)
-            sinon.assert.calledOnce(retrievePersonPhoneNumbersPromiseStub)
           })
         })
 
@@ -894,9 +888,8 @@ describe('textProcessor + languageProcessor', () => {
           data.phoneNumbers = ['111', '222']
           data.familyId = 1
           var callCount = 0
-          familyMemberMock.restore()
-          retrievePersonPhoneNumbersPromiseStub = sinon.stub(familyMembers, 'retrievePersonPhoneNumbersPromise').callsFake((result) => {
-            console.log('___retrievePersonPhoneNumbersPromiseStub')
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().callsFake((result) => {
+            console.log('___retrievePersonPhoneNumbersPromiseMock')
             result.familyId.should.equal(2)
             result.person.should.equal('all')
             return Q.resolve(data)
@@ -914,7 +907,6 @@ describe('textProcessor + languageProcessor', () => {
           })
           return shouldRespondWith(phrases.success).then(data => {
             sinon.assert.calledTwice(sendSmsPromiseStub)
-            sinon.assert.calledOnce(retrievePersonPhoneNumbersPromiseStub)
           })
         })
 
@@ -923,6 +915,44 @@ describe('textProcessor + languageProcessor', () => {
           return shouldRespondWith(phrases.noPerson)
         })
       })
+    })
+  })
+
+  describe('help', () => {
+    it('when "packhack" then show help text', () => {
+      data.originalText = 'packhack'
+      return shouldRespondWith(phrases.help)
+    })
+
+    it('when "hack" then show help text', () => {
+      data.originalText = 'hack'
+      return shouldRespondWith(phrases.help)
+    })
+  })
+
+  describe('initial from phone number validation', () => {
+    it('phone number not found', () => {
+      data.originalText = 'blablabla'
+      familyMemberMock.restore()
+      familyMemberMock = sinon.mock(familyMembers)
+      familyMemberMock.expects('retrievePersonFromPhoneNumberPromise').once().callsFake((result) => {
+        console.log('___retrievePersonFromPhoneNumberPromiseMock_updated')
+        result.errorMessage = modelConstants.errorTypes.personNotFound
+        return Q.reject(data)
+      })
+      return shouldRespondWith(phrases.notRegistered)
+    })
+
+    it('phone number bad call', () => {
+      data.originalText = 'blablabla'
+      familyMemberMock.restore()
+      familyMemberMock = sinon.mock(familyMembers)
+      familyMemberMock.expects('retrievePersonFromPhoneNumberPromise').once().callsFake((result) => {
+        console.log('___retrievePersonFromPhoneNumberPromiseMock_updated')
+        result.errorMessage = modelConstants.errorTypes.generalError
+        return Q.reject(result)
+      })
+      return shouldRespondWith(phrases.generalError)
     })
   })
 })

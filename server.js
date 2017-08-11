@@ -24,44 +24,26 @@ router.get('/', (req, res) => {
 router.route('/twilio')
   .get((req, res) => {
     console.log('----Twilio From: ' + req.query['From'] + ' Message ' + req.query['Body'])
-    var bodyText = req.query['Body'].toLowerCase()
-    var fromPhoneNumber = req.query['From']
-    var familyId = 0
-    var timeZone = ''
+    const bodyText = req.query['Body'].toLowerCase()
+    const fromPhoneNumber = req.query['From']
 
     // Get Cached ListName
     var cachedListName
-    if (req.cookies !== undefined && req.cookies.listName !== undefined) {
+    if (req.cookies && req.cookies.listName) {
       cachedListName = req.cookies.listName
     }
 
-    // Check FamilyId
-    mongoOp.FamilyMembers.findOne({ 'phoneNumber': fromPhoneNumber }, function (err, familyMember) {
-      if (err != null || familyMember == null) {
-        sendSMSResponse(fromPhoneNumber, 0, bodyText, "Sorry, don't see you as a member of a family.", res)
-      } else {
-        familyId = familyMember.familyId
-        logging.log(fromPhoneNumber, familyId, bodyText, 'request', '')
-
-        timeZone = familyMember.timeZone
-        if (familyMember.timeZone == null) timeZone = 'America/New_York'
-
-        // MAIN LOGIC
-        const data = {
-          originalText: bodyText,
-          familyId,
-          cachedListName,
-          fromPerson: familyMember.name,
-          fromPhoneNumber,
-          now: new Date((new Date()).getTime() - 1000 * 60), // 1 minute in the past
-          timezone: timeZone // TODO: Capitalization issues
-        }
-        textProcessor.processTextPromise(data).then(result => {
-          console.log(result)
-          cacheListName(data.list, res) // TODO: Make sure this isn't the case for delete
-          sendSMSResponse(fromPhoneNumber, data.familyId, data.originalText, data.responseText, res)
-        })
-      }
+    // MAIN LOGIC
+    const data = {
+      originalText: bodyText,
+      cachedListName,
+      fromPhoneNumber,
+      now: new Date((new Date()).getTime() - 1000 * 60) // 1 minute in the past
+    }
+    textProcessor.processTextPromise(data).then(result => {
+      console.log(result)
+      cacheListName(data.list, res) // TODO: Make sure this isn't the case for delete
+      sendSMSResponse(fromPhoneNumber, data.familyId, data.originalText, data.responseText, res)
     })
   })
 
