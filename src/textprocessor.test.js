@@ -371,6 +371,13 @@ describe('textProcessor + languageProcessor', () => {
           listItemsMock.expects('saveNewPromise').exactly(4).returns(Q.resolve(data))
           return shouldRespondWith(phrases.success)
         })
+
+        it('when "add ripe bananas  sausages  coconuts  beer to thisList" and list exists', () => {
+          data.originalText = 'add ripe bananas  sausages  coconuts  beer to thisList'
+          listExists()
+          listItemsMock.expects('saveNewPromise').exactly(4).returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
       })
 
       describe('removeListItem', () => {

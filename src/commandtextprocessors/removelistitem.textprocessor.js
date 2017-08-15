@@ -7,7 +7,7 @@ const errors = require('./../errors')
 const processResponseTextPromise = (data) => {
   console.log('666-delete')
   console.log(data)
-  const listItemStrings = stringProcessor.splitByCommasAndsDoubleSpaces(data.supplementaryText)
+  const listItemStrings = stringProcessor.splitByCommasPeriodsAndDoubleSpaces(data.supplementaryText)
   console.log(listItemStrings)
   if (listItemStrings.length === 0) {
     data.responseText = phrases.noListItemToRemove + '\n' + phrases.removeListItemExample
