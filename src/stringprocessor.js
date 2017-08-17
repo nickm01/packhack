@@ -47,6 +47,7 @@ function splitByCommasPeriodsAndDoubleSpaces (str) {
       .replace(/ and /g, ',')
       .replace(/\.\s/g, ',')
       .replace(/\s\s/g, ',')
+      .replace(/\[\r\n]/g, ',')
       .split(',')
       .map(text => {
         return text.trim()
