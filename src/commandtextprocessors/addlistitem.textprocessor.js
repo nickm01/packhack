@@ -6,7 +6,7 @@ const Q = require('q')
 const processResponseTextPromise = (data) => {
   console.log('666')
   console.log(data)
-  const listItemStrings = stringProcessor.splitByCommasPeriodsAndDoubleSpaces(data.supplementaryText)
+  const listItemStrings = stringProcessor.splitByDelimiters(data.supplementaryText)
   console.log(listItemStrings)
   if (listItemStrings.length === 0) {
     data.responseText = phrases.noListItemToAdd + '\n' + phrases.addListItemExample

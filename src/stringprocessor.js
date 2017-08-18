@@ -41,7 +41,7 @@ function stringToWords (str) {
 
 // split into array based on comma, and or double space separators
 // trims and removes empty items (based on truthiness)
-function splitByCommasPeriodsAndDoubleSpaces (str) {
+function splitByDelimiters (str) {
   if (str) {
     return str
       .replace(/ and /g, ',')
@@ -65,5 +65,5 @@ module.exports = {
   textBetween,
   removeTextBetween,
   stringToWords,
-  splitByCommasPeriodsAndDoubleSpaces
+  splitByDelimiters
 }

@@ -378,6 +378,14 @@ describe('textProcessor + languageProcessor', () => {
           listItemsMock.expects('saveNewPromise').exactly(4).returns(Q.resolve(data))
           return shouldRespondWith(phrases.success)
         })
+
+        it('when "add sausages\ncoconuts\nbeer" and list exists', () => {
+          data.originalText = 'add sausages\ncoconuts\nbeer'
+          data.cachedListName = 'theList'
+          listExists()
+          listItemsMock.expects('saveNewPromise').exactly(3).returns(Q.resolve(data))
+          return shouldRespondWith(phrases.success)
+        })
       })
 
       describe('removeListItem', () => {
