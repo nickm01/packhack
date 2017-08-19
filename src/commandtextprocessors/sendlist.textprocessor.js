@@ -28,8 +28,7 @@ const sendSms = data => {
   console.log('___sendSms')
   // remove the persons own phone number only if multiples (using @all)
   const otherPhoneNumbers = data.phoneNumbers.filter(phoneNumber => {
-    return true
-    //TODO: return phoneNumber !== data.fromPhoneNumber || data.phoneNumbers.length === 1
+    return phoneNumber !== data.fromPhoneNumber || data.phoneNumbers.length === 1
   })
   const sendMultipleSmsPromises = otherPhoneNumbers.map(phoneNumber => {
     return smsProcessor.sendSmsPromise(data, phoneNumber, data.sendText)
