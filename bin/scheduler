@@ -5,9 +5,8 @@
 const config = require('../config')
 const mongoOp = require('../model/mongo')
 const modelConstants = require('../model/modelconstants')
-const sendSms = require('../sendsms')
-const logging = require('../logging')
-const listItemFunctions = require('../listitems')
+const smsProcessor = require('../src/smsprocessor')
+const listItemFunctions = require('./listitems')
 const Q = require('q')
 
 mongoOp.intialize()
@@ -24,12 +23,11 @@ function processScheduler () {
       console.log('*** Reminders Complete')
       process.exit()
     }, error => {
-      logging.logError('scheduler', 0, 'Scheduler Error', error)
-      console.log('*** REMINDERS ERROR *** error')
+      console.log('*** REMINDERS ERROR *** error', error)
       process.exit()
     })
   }, error => {
-    logging.logError('scheduler', '', '', error)
+    console.log('*** REMINDERS ERROR *** error', error)
   })
 }
 
@@ -135,12 +133,10 @@ function reminderTextForReminderListItemAndListItemsText (reimderListItem, listI
 function smsPromise (listItemFamilyMemberReminderText) {
   const familyMember = listItemFamilyMemberReminderText.familyMember
   const reminderText = '⏰ ' + listItemFamilyMemberReminderText.reminderText
-  const deferred = Q.defer()
   count++
   console.log('Count: ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name + ':' + reminderText)
-  logging.log(familyMember.phoneNumber, familyMember.familyId, reminderText, 'Reminder', '')
-  sendSms.sendSms(familyMember.phoneNumber, reminderText, function () {
-    deferred.resolve(listItemFamilyMemberReminderText)
-  })
-  return deferred.promise
+  return smsProcessor.sendSmsPromise({}, familyMember.phoneNumber, reminderText)
+    .then(() => {
+      return listItemFamilyMemberReminderText
+    })
 }
