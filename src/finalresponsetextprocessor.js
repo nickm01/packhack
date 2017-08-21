@@ -1,7 +1,7 @@
 const phrases = require('./phrases')
 
 const replaceDynamicText = (data, str) => {
-  console.log('44444dynamictext')
+  console.log('___replaceDynamicText')
   console.log(data)
   var finalText = str
   if (data.list) {

@@ -3,6 +3,7 @@
 module.exports = {
   getLists: 'getLists',
   getList: 'getList',
+  editList: 'editList',
   createList: 'createList',
   clearList: 'clearList',
   deleteList: 'deleteList',

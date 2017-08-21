@@ -15,6 +15,8 @@ module.exports = {
   noItems: 'Currently no items in %#list.',
   // getLists specific
   noListsExist: '🤔 No lists exist.  Perhaps create one?',
+  // editLists specific
+  editListRemoveSuggestion: 'Use \'remove\' followed by numbers or dashed range\ne.g. \'remove 1, 3-4\'',
   // createList specific
   listAlreadyExists: '😕 Sorry, %#list already exists!',
   listNameInvalid: '😕 Sorry, list name is invalid.\nPlease don\t use spaces or reserved commands like \'create\'.',
@@ -41,6 +43,7 @@ module.exports = {
   // command specific exmaples
   createListExample: 'e.g. \'create my-new-list\'',
   getListExample: 'e.g. \'get #my-list\', or simply \'my-list\'',
+  editListExample: 'e.g. \'edit #my-list\', or \'edit my-list\'',
   deleteListExample: 'e.g. \'delete shopping\'',
   addListItemExample: 'e.g. \'#my-list add bread, milk, coffee\'.\nOr simply, \'get my-list\', followed by \'add bread, milk, coffee\'.',
   removeListItemExample: 'e.g. \'#my-list remove apples and oranges\'.\nOr simply, \'get my-list\', followed by \'remove apples and oranges\'.',

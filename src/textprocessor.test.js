@@ -99,13 +99,6 @@ describe('textProcessor + languageProcessor', () => {
         return shouldRespondWith('• item1\n• item2')
       })
 
-      it('"#list" and list exists and 2 items', () => {
-        data.originalText = 'get #list'
-        listExists()
-        listItemsExist([item1, item2])
-        return shouldRespondWith('• item1\n• item2')
-      })
-
       it('"get #list" and list exists and 0 items', () => {
         data.originalText = 'get #list'
         listExists()
@@ -152,6 +145,41 @@ describe('textProcessor + languageProcessor', () => {
 
       it('"get" when no cached list should result in an error', () => {
         data.originalText = 'get'
+        return shouldRespondWith(phrases.noList)
+      })
+    })
+
+    describe('editlist', () => {
+      it('"edit list" and list exists and 2 items', () => {
+        data.originalText = 'edit list'
+        listExists()
+        listItemsExist([item1, item2])
+        return shouldRespondWith('1. item1\n2. item2\n' + phrases.editListRemoveSuggestion)
+      })
+
+      it('"edit #list" and list exists and 0 items', () => {
+        data.originalText = 'edit #list'
+        listExists()
+        listItemsExist([])
+        return shouldRespondWith(phrases.noItems)
+      })
+
+      it('"edit #list" and list does not exist', () => {
+        data.originalText = 'edit #list'
+        listNotExists()
+        return shouldRespondWith(phrases.listNotFound + '\n' + phrases.suggestGetLists)
+      })
+
+      it('"change" when previously cached list', () => {
+        data.originalText = 'change'
+        data.cachedListName = 'list'
+        listExists()
+        listItemsExist([{listItemName: 'coconuts'}])
+        return shouldRespondWith('1. coconuts\n' + phrases.editListRemoveSuggestion)
+      })
+
+      it('"edit" when no cached list should result in an error', () => {
+        data.originalText = 'edit'
         return shouldRespondWith(phrases.noList)
       })
     })

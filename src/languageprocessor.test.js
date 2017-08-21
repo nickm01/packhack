@@ -92,6 +92,15 @@ describe('languageProcessor', function () {
     it('❌ get one two', function () { textShouldError('get one two', {command: command, message: errors.errorTypes.listNameInvalid}) })
   })
 
+  describe('editList', function () {
+    const command = commandTypes.editList
+    it('✅ edit #list', function () { textShouldResult('edit #list', {command: command, list: 'list'}) })
+    it('✅ change list', function () { textShouldResult('change list', {command: command, list: 'list'}) })
+    it('✅ edit + cached listname', function () { textShouldResult('edit', {command: command, list: 'cachedlistname'}, 'cachedListName') })
+    it('❌ edit', function () { textShouldError('edit', {command: command, list: null, message: errors.errorTypes.noList}) })
+    it('❌ edit one two', function () { textShouldError('edit one two', {command: command, message: errors.errorTypes.listNameInvalid}) })
+  })
+
   describe('addListItem', function () {
     const command = commandTypes.addListItem
     it('✅ add item with cachedListName', function () { textShouldResult('add item', {command: command, list: 'cachedlistname', supplementaryText: 'item'}, 'cachedListName') })
