@@ -1,37 +1,6 @@
 // Global string processing functions
-function getFirstWord (str) {
-  if (str.indexOf(' ') === -1) {
-    return str
-  } else {
-    return str.substr(0, str.indexOf(' '))
-  }
-}
 
-function removeFirstWord (str) {
-  if (str.indexOf(' ') === -1) {
-    return ''
-  } else {
-    return str.substr(str.indexOf(' ') + 1)
-  }
-}
-
-function textBetween (str, firstCharacter, secondCharacter) {
-  var start = str.indexOf(firstCharacter) + 1
-  if (start === 0) { return '' }
-  var end = str.indexOf(secondCharacter, start)
-  if (end === -1) { end = str.length }
-  return str.substring(start, end)
-}
-
-function removeTextBetween (str, firstCharacter, secondCharacter) {
-  var start = str.indexOf(firstCharacter)
-  if (start === -1) { return str }
-  var end = str.indexOf(secondCharacter, start)
-  if (end === -1) { end = str.length }
-  return (str.substring(0, start) + str.substring(end + 1)).trim()
-}
-
-function stringToWords (str) {
+const stringToWords = str => {
   if (str) {
     return str.split(' ')
   } else {
@@ -41,7 +10,7 @@ function stringToWords (str) {
 
 // split into array based on comma, and or double space separators
 // trims and removes empty items (based on truthiness)
-function splitByDelimiters (str) {
+const splitByDelimiters = str => {
   if (str) {
     return str
       .replace(/ and /g, ',')
@@ -60,10 +29,6 @@ function splitByDelimiters (str) {
 }
 
 module.exports = {
-  getFirstWord,
-  removeFirstWord,
-  textBetween,
-  removeTextBetween,
   stringToWords,
   splitByDelimiters
 }
