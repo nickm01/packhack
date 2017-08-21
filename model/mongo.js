@@ -1,12 +1,12 @@
-var mongoose = require('mongoose')
+const config = require('../config')
+const mongoose = require('mongoose')
 mongoose.Promise = require('q').Promise
 
 mongoose.models = {}
 mongoose.modelSchemas = {}
 
 const intialize = () => {
-  // TODO: Shouldn't be saved here
-  mongoose.connect('mongodb://heroku_x61dp8bp:12f6g0oe2r8hn13jnad3m5or49@ds161495.mlab.com:61495/heroku_x61dp8bp', {
+  mongoose.connect(config.mongodbUri, {
     useMongoClient: true
   })
   const db = mongoose.connection
