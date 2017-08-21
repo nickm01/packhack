@@ -26,6 +26,9 @@ module.exports = {
   listItemNotFound: '😕 Sorry, couldn\'t find ',
   suggestGetPartOne: 'Type \'get ',
   suggestGetPartTwo: '\' to see items in the list.',
+  listItemIndexNotFound: '😕 Sorry, couldn\'t find number ',
+  suggestEditPartOne: 'Type \'edit ',
+  suggestEditPartTwo: '\' to see numbered items in the list.',
   // clearList specific
   listAlreadyClear: '🤔 Hmmm...\nLooks like %#list is already clear.',
   // sendList specific
@@ -46,7 +49,7 @@ module.exports = {
   editListExample: 'e.g. \'edit #my-list\', or \'edit my-list\'',
   deleteListExample: 'e.g. \'delete shopping\'',
   addListItemExample: 'e.g. \'#my-list add bread, milk, coffee\'.\nOr simply, \'get my-list\', followed by \'add bread, milk, coffee\'.',
-  removeListItemExample: 'e.g. \'#my-list remove apples and oranges\'.\nOr simply, \'get my-list\', followed by \'remove apples and oranges\'.',
+  removeListItemExample: 'e.g. \'#my-list remove apples and oranges\'.\nOr simply, \'get my-list\', followed by \'remove apples and oranges\'.\nAlternatively, can use edit my-list, followed by remove 1,2 to remove numbered items.',
   clearListExample: 'e.g. \'clear my-list\'',
   sendListExample: 'e.g. \'send @bob my-list\'\nor \'send all #my-list\'',
   addReminderExample: 'Use the format remind @who what when\ne.g. \'remind bob get milk tomorrow\'\nor \'remind @me walk dog thursday morning\'',

@@ -121,4 +121,25 @@ describe('stringProcessor', function () {
       result[3].should.equal('four')
     })
   })
+
+  describe('allNumeric', () => {
+    it("'1','2','3' > true", () => {
+      stringProcessor.allNumeric(['1', '2', '3']).should.equal(true)
+    })
+    it("'100','2','3' > true", () => {
+      stringProcessor.allNumeric(['100', '2', '3']).should.equal(true)
+    })
+    it('1, 2, 3 > true', () => {
+      stringProcessor.allNumeric([1, 2, 3]).should.equal(true)
+    })
+    it("'1','2','A' > false", () => {
+      stringProcessor.allNumeric(['1', '2', 'A']).should.equal(false)
+    })
+    it("'!@$#_{:}','2','3' > false", () => {
+      stringProcessor.allNumeric(['!@$#_{:}', '2', 'A']).should.equal(false)
+    })
+    it("'1','🤔❤️🍾','3' > false", () => {
+      stringProcessor.allNumeric(['1', '🤔❤️🍾', '3']).should.equal(false)
+    })
+  })
 })

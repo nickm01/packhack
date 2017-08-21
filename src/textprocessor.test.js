@@ -474,8 +474,7 @@ describe('textProcessor + languageProcessor', () => {
         it('when "#mylist remove bananas and coconuts" and coconuts do not exist', () => {
           data.originalText = '#mylist remove bananas and coconuts'
           listExists()
-          listItemsMock.restore()
-          sinon.stub(listItems, 'deletePromise').callsFake((result, listItemName) => {
+          listItemsMock.expects('deletePromise').twice().callsFake((result, listItemName) => {
             if (listItemName === 'bananas') {
               return Q.resolve(data)
             } else {
@@ -493,8 +492,7 @@ describe('textProcessor + languageProcessor', () => {
         it('when "#mylist remove bananas and coconuts" and bananas do not exist', () => {
           data.originalText = '#mylist remove bananas and coconuts'
           listExists()
-          listItemsMock.restore()
-          sinon.stub(listItems, 'deletePromise').callsFake((result, listItemName) => {
+          listItemsMock.expects('deletePromise').twice().callsFake((result, listItemName) => {
             if (listItemName === 'coconuts') {
               return Q.resolve(data)
             } else {
@@ -513,6 +511,44 @@ describe('textProcessor + languageProcessor', () => {
           data.originalText = 'remove'
           listItemsMock.expects('deletePromise').never()
           return shouldRespondWith(phrases.noListItemToRemove + '\n' + phrases.removeListItemExample)
+        })
+
+        it('when "#mylist remove 1, 2" and list exists and remove succeeds', () => {
+          data.originalText = '#myList remove 1, 2'
+          data.listItems = [item1, item2]
+          listExists()
+          listItemsMock.expects('findPromise').once().returns(Q.resolve(data))
+          let countItem = 0
+          listItemsMock.expects('deletePromise').twice().callsFake((data, listItemName) => {
+            listItemName.should.equal(data.listItems[countItem].listItemName)
+            countItem++
+            return Q.resolve(data)
+          })
+          return shouldRespondWith(phrases.success)
+        })
+
+        it('when "#mylist remove 1, 10" and list exists but 10 does not exist', () => {
+          data.originalText = '#myList remove 1, 10'
+          data.listItems = [item1, item2]
+          listExists()
+          listItemsMock.expects('findPromise').once().returns(Q.resolve(data))
+          let countItem = 0
+          listItemsMock.expects('deletePromise').twice().callsFake((result, listItemName) => {
+            countItem++
+            if (countItem === 1) {
+              listItemName.should.equal(item1.listItemName)
+              return Q.resolve(data)
+            } else {
+              listItemName.should.equal('10')
+              data.errorMessage = modelConstants.errorTypes.listItemNotFound
+              return Q.reject(data)
+            }
+          })
+          return shouldRespondWith(phrases.listItemIndexNotFound +
+            '10.\n' +
+            phrases.suggestEditPartOne +
+            'mylist' +
+            phrases.suggestEditPartTwo)
         })
       })
 

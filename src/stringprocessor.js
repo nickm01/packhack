@@ -28,7 +28,14 @@ const splitByDelimiters = str => {
   }
 }
 
+const allNumeric = array => {
+  return array.filter(obj => {
+    return Number(obj)
+  }).length === array.length
+}
+
 module.exports = {
   stringToWords,
-  splitByDelimiters
+  splitByDelimiters,
+  allNumeric
 }
