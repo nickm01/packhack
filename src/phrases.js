@@ -16,7 +16,7 @@ module.exports = {
   // getLists specific
   noListsExist: '🤔 No lists exist.  Perhaps create one?',
   // editLists specific
-  editListRemoveSuggestion: 'Use \'remove\' followed by numbers or dashed range\ne.g. \'remove 1, 3-4\'',
+  editListRemoveSuggestion: 'Use \'remove\' followed by item numbers separated by commas, periods or double-spaces.\ne.g. \'remove 1,2,3\'',
   // createList specific
   listAlreadyExists: '😕 Sorry, %#list already exists!',
   listNameInvalid: '😕 Sorry, list name is invalid.\nPlease don\t use spaces or reserved commands like \'create\'.',
