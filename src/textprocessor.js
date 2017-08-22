@@ -12,7 +12,6 @@ const logger = require('winston')
 
 const processTextPromise = data => {
   console.log('>>>>       WINSTON        <<<<')
-  logger.level = 'info'
   logger.log('silly', 'silly >>>> ******************** <<<<')
   logger.log('debug', 'debug >>>> ******************** <<<<')
   logger.log('info', 'info >>>> ******************** <<<<')
