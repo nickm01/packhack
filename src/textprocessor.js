@@ -8,8 +8,16 @@ const errors = require('./errors')
 const commandTypes = require('./commandtypes')
 const phrases = require('./phrases')
 const finalResponseTextProcessor = require('./finalresponsetextprocessor')
+const logger = require('winston')
 
 const processTextPromise = data => {
+  console.log('>>>>       WINSTON        <<<<')
+  logger.level = 'info'
+  logger.log('silly', 'silly >>>> ******************** <<<<')
+  logger.log('debug', 'debug >>>> ******************** <<<<')
+  logger.log('info', 'info >>>> ******************** <<<<')
+  logger.log('warn', 'warn >>>> ******************** <<<<')
+  logger.log('error', 'error >>>> ******************** <<<<')
   console.log('___commandSpecificProcessorPromise')
   console.log(data)
   return checkValidPhoneNumber(data)
