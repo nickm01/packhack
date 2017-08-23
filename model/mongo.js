@@ -13,7 +13,7 @@ const intialize = () => {
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'connection error:'))
   db.once('open', function () {
-    logger.log('debug', 'DB Connected')
+    logger.log('info', 'DB Connected')
   })
 }
 
