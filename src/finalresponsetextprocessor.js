@@ -1,8 +1,8 @@
 const phrases = require('./phrases')
+const logger = require('winston')
 
 const replaceDynamicText = (data, str) => {
-  console.log('___replaceDynamicText')
-  console.log(data)
+  logger.log('debug', '___finalresponsetextprocessor_replaceDynamicText', data)
   var finalText = str
   if (data.list) {
     // regex replace will replace every occurence
@@ -18,7 +18,7 @@ const replaceDynamicText = (data, str) => {
     finalText = finalText.replace('%%date', data.reminderUserDateText)
   }
   finalText = finalText.replace('%%commandSpecificSuggestion', phrases[data.command + 'Example'])
-  console.log(finalText)
+  logger.log('debug', 'finalText', finalText)
   return finalText
 }
 

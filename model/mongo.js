@@ -1,6 +1,7 @@
 const config = require('../config')
 const mongoose = require('mongoose')
 mongoose.Promise = require('q').Promise
+const logger = require('winston')
 
 mongoose.models = {}
 mongoose.modelSchemas = {}
@@ -12,7 +13,7 @@ const intialize = () => {
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'connection error:'))
   db.once('open', function () {
-    console.log('db connected')
+    logger.log('debug', 'DB Connected')
   })
 }
 

@@ -1,19 +1,17 @@
 var config = require('../config')
 var client = require('twilio')(config.accountSid, config.authToken)
 const errors = require('./errors')
+const logger = require('winston')
 
 module.exports.sendSmsPromise = function (data, to, message) {
-  console.log('smsprocessor1')
-  console.log(message)
+  logger.log('debug', '__smsprocessor_sendSmsPromise1', message)
   const params = {body: message, to: to, from: config.sendingNumber}
   return client.messages.create(params)
     .then(result => {
-      console.log('smsprocessor2')
-      console.log(params)
+      logger.log('debug', '__smsprocessor_sendSmsPromise2', result)
       return data
     }, err => {
-      console.log('smsprocessor3')
-      console.log(err)
+      logger.log('debug', '__smsprocessor_sendSmsPromise_err', err)
       data.systemError = err
       data.errorMessage = errors.errorTypes.smsError
       throw data

@@ -5,6 +5,7 @@ const listItems = require('../../model/listitems')
 const supplementaryTextProcessor = require('./addreminder.supplementarytextprocessor')
 const config = require('./../../config')
 const errors = require('./../errors')
+const logger = require('winston')
 
 // this should....
 // 1. sherlock the supplementaryText
@@ -12,7 +13,6 @@ const errors = require('./../errors')
 // 3. if not, create it
 // 4. create list item in reminders list (using -1 for all)
 const processResponseTextPromise = data => {
-  console.log('___processResponseTextPromise - addReminder')
   supplementaryTextProcessor.retrieveDateAndTitleFromSupplementaryText(data)
   if (data.reminderWhenGMT < data.now) {
     data.errorMessage = errors.errorTypes.dateTimePast
@@ -25,13 +25,12 @@ const processResponseTextPromise = data => {
     (data.reminderList ? ' #' + data.reminderList : '') +
     ' ' + data.reminderTitle +
     ' - ' + data.reminderUserDateText
-  console.log(data)
+  logger.log('debug', data)
   return lists.validateListExistsPromise(data)
     .catch(result => {
-      console.log('___addReminder.processResponseTextPromise')
+      logger.log('debug', 'catch')
       if (result.errorMessage === errors.errorTypes.listNotFound) {
         result.errorMessage = null
-        console.log('X: ' + result.list)
         return lists.saveNewPromise(result)
       } else {
         result.errorMessage = errors.errorTypes.generalError

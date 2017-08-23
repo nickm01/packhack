@@ -1,7 +1,9 @@
 const listItemsPromises = require('./listitems.promises')
 const modelConstants = require('./modelconstants')
+const logger = require('winston')
 
 const findPromise = (data) => {
+  logger.log('debug', '___listitems_findPromise', data)
   return listItemsPromises.findPromise(data.list, data.familyId)
     .then(listItems => {
       data.listItems = listItems
@@ -14,6 +16,7 @@ const findPromise = (data) => {
 }
 
 const saveNewPromise = (data) => {
+  logger.log('debug', '___listitems_saveNewPromise', data)
   return listItemsPromises.saveNewPromise(data.list, data.familyId, data.listItemName)
     .then(list => {
       return data
@@ -25,6 +28,7 @@ const saveNewPromise = (data) => {
 }
 
 const saveNewReminderPromise = (data) => {
+  logger.log('debug', '___listitems_saveNewReminderPromise', data)
   const list = {
     listKey: data.list,
     listItemName: data.listItemName,
@@ -47,6 +51,7 @@ const saveNewReminderPromise = (data) => {
 }
 
 const deletePromise = (data, listItemName) => {
+  logger.log('debug', '___listitems_deletePromise', data)
   return listItemsPromises.deletePromise(data.list, data.familyId, listItemName)
     .then(result => {
       if (result.result && result.result.n === 0) {

@@ -3,11 +3,11 @@ const phrases = require('./../phrases')
 const stringProcessor = require('./../stringprocessor')
 const Q = require('q')
 const errors = require('./../errors')
+const logger = require('winston')
 
 const processResponseTextPromise = data => {
-  console.log('__removelistitem_processResponseTextPromise')
   data.listItemStrings = stringProcessor.splitByDelimiters(data.supplementaryText)
-  console.log(data.listItemStrings)
+  logger.log('debug', data.listItemStrings)
   if (data.listItemStrings.length === 0) {
     data.responseText = phrases.noListItemToRemove + '\n' + phrases.removeListItemExample
     return Q.reject(data)
@@ -22,7 +22,7 @@ const processResponseTextPromise = data => {
 
 const replaceIndexWithItemNameIfAllNumeric = (data) => {
   if (stringProcessor.allNumeric(data.listItemStrings)) {
-    console.log('allNumeric')
+    logger.log('debug', 'allNumeric')
     data.allNumeric = true
     return listItems.findPromise(data)
       .then(data => {
@@ -44,8 +44,7 @@ const replaceIndexWithItemNameIfAllNumeric = (data) => {
 
 const processAllDeletesPromise = data => {
   const deletePromises = data.listItemStrings.map(listItemString => {
-    console.log('___processAllDeletesPromise_deletePromises_map')
-    console.log(listItemString)
+    logger.log('debug', 'deletePromises_map', listItemString)
     data.listItemName = listItemString
     return listItems.deletePromise(data, listItemString)
       .catch(data => {
@@ -60,7 +59,6 @@ const processAllDeletesPromise = data => {
 
 const processError = data => {
   if (data.errorMessage === errors.errorTypes.listItemNotFound) {
-    console.log('___removelistitem_processError_listItemNotFound')
     if (data.allNumeric) {
       data.responseText =
         phrases.listItemIndexNotFound +
@@ -76,7 +74,7 @@ const processError = data => {
         data.list +
         phrases.suggestGetPartTwo
     }
-    console.log(data)
+    logger.log('debug', 'listItemNotFound', data)
   }
   return data
 }

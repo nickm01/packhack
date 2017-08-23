@@ -8,6 +8,7 @@ const modelConstants = require('../model/modelconstants')
 const smsProcessor = require('../src/smsprocessor')
 const listItemFunctions = require('./listitems')
 const Q = require('q')
+const logger = require('winston')
 
 mongoOp.intialize()
 
@@ -20,14 +21,14 @@ function processScheduler () {
   .then(listItems => {
     allListItemsPromise(listItems)
     .then(result => {
-      console.log('*** Reminders Complete')
+      logger.log('info', '*** Reminders Complete')
       process.exit()
     }, error => {
-      console.log('*** REMINDERS ERROR *** error', error)
+      logger.log('info', '*** REMINDERS ERROR *** error', error)
       process.exit()
     })
   }, error => {
-    console.log('*** REMINDERS ERROR *** error', error)
+    logger.log('info', '*** REMINDERS ERROR *** error', error)
   })
 }
 
@@ -36,7 +37,7 @@ function allListItemsPromise (listItems) {
   listItems.forEach(function (listItem) {
     const reminderDate = new Date(listItem.reminderWhen)
     const now = new Date()
-    console.log('Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName)
+    logger.log('debug', 'Scheduler2:' + reminderDate + ' userId:' + listItem.reminderUserId + ' listItemName:' + listItem.listItemName)
 
     if (reminderDate < now) {
       listItemPromises.push(
@@ -56,7 +57,7 @@ function deleteListItemByNamePromise (listItem) {
       if (removeResult.result.n !== 1) {
         throw new Error('Error in completing the reminder 😦.')
       } else {
-        console.log('---- Removed ' + listItem.listItemName + ' ' + removeResult.result.n)
+        logger.log('debug', '---- Removed ' + listItem.listItemName + ' ' + removeResult.result.n)
         return listItem
       }
     })
@@ -134,7 +135,7 @@ function smsPromise (listItemFamilyMemberReminderText) {
   const familyMember = listItemFamilyMemberReminderText.familyMember
   const reminderText = '⏰ ' + listItemFamilyMemberReminderText.reminderText
   count++
-  console.log('Count: ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name + ':' + reminderText)
+  logger.log('info', 'Count: ' + count + ' pn:' + familyMember.phoneNumber + ' ' + familyMember.name + ':' + reminderText)
   return smsProcessor.sendSmsPromise({}, familyMember.phoneNumber, reminderText)
     .then(() => {
       return listItemFamilyMemberReminderText

@@ -4,6 +4,7 @@ const stringProcessor = require('./stringprocessor')
 const Q = require('q')
 const errors = require('./errors')
 const commandTypes = require('./commandtypes')
+const logger = require('winston')
 
 // Note more complex constructs should be at the end
 const commandData = [
@@ -24,8 +25,7 @@ const commandData = [
 // MAIN PROCESS
 const processLanguage = (data) => {
   try {
-    console.log('4')
-    console.log(data)
+    logger.log('debug', '___languageprocessor_processlanguage1', data)
     const result = new LanguageProcessorResult({text: data.originalText, cachedListName: data.cachedListName})
       .convertToWords()
       .checkZeroWords()
@@ -34,8 +34,7 @@ const processLanguage = (data) => {
       .errorIfNoCommand()
       .postProcess()
     setDataAccordingToResult(data, result)
-    console.log('5')
-    console.log(data)
+    logger.log('debug', '___languageprocessor_processlanguage2', data)
     return data
   } catch (error) {
     data.errorMessage = error.error
@@ -45,8 +44,7 @@ const processLanguage = (data) => {
 }
 
 const setDataAccordingToResult = (data, result) => {
-  console.log(1001)
-  console.log(result)
+  logger.log('debug', '___languageprocessor_setDataAccordingToResult', result)
   data.command = result.commandObj ? result.commandObj.command : null
   data.list = result.list
   data.person = result.person
@@ -93,8 +91,7 @@ LanguageProcessorResult.prototype.getCommandFromWords = function () {
       )
     }).length > 0
   })[0]
-  console.log(1000)
-  console.log(this)
+  logger.log('debug', '___languageprocessor_getCommandFromWords', this)
   return this
 }
 

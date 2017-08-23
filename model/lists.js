@@ -1,7 +1,9 @@
 const listsPromises = require('./lists.promises')
 const modelConstants = require('./modelconstants')
+const logger = require('winston')
 
 const validateListExistsPromise = (data) => {
+  logger.log('debug', '___lists_validateListExistsPromise', data)
   return listsPromises.findOnePromise(data.list, data.familyId)
     .then(list => {
       if (!list) {
@@ -20,6 +22,7 @@ const validateListExistsPromise = (data) => {
 }
 
 const findAllPromise = (data) => {
+  logger.log('debug', '___lists_findAllPromise', data)
   return listsPromises.findAllPromise(data.familyId)
     .then(lists => {
       data.lists = lists
@@ -28,6 +31,7 @@ const findAllPromise = (data) => {
 }
 
 const saveNewPromise = (data) => {
+  logger.log('debug', '___lists_saveNewPromise', data)
   const list = data.list.toLowerCase()
   const listDescription = data.list
   return listsPromises.saveNewPromise(list, data.familyId, listDescription)
@@ -43,8 +47,7 @@ const saveNewPromise = (data) => {
 }
 
 const deletePromise = (data) => {
-  console.log('d19')
-  console.log(data)
+  logger.log('debug', '___lists_deletePromise', data)
   return listsPromises.deletePromise(data.list, data.familyId)
     .then(result => {
       return data

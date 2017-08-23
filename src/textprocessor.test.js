@@ -12,6 +12,7 @@ const Q = require('q')
 const modelConstants = require('../model/modelconstants')
 const errors = require('./errors')
 const phrases = require('./phrases')
+const logger = require('winston')
 
 describe('textProcessor + languageProcessor', () => {
   var data, familyMemberMock
@@ -20,7 +21,7 @@ describe('textProcessor + languageProcessor', () => {
     data = {}
     familyMemberMock = sinon.mock(familyMembers)
     familyMemberMock.expects('retrievePersonFromPhoneNumberPromise').once().callsFake(result => {
-      console.log('___retrievePersonFromPhoneNumberPromiseMock')
+      logger.log('debug', '___retrievePersonFromPhoneNumberPromiseMock')
       return Q.resolve(result)
     })
   })
@@ -301,7 +302,7 @@ describe('textProcessor + languageProcessor', () => {
       it('when "get lists" but no lists', () => {
         data.originalText = 'get lists'
         data.lists = []
-        console.log('xxx:' + data.lists.length)
+        logger.log('debug', 'xxx:' + data.lists.length)
         listsMock.expects('findAllPromise').once().returns(Q.resolve(data))
         return shouldRespondWith(phrases.noListsExist + '/n' + phrases.createListExample)
       })
@@ -768,7 +769,7 @@ describe('textProcessor + languageProcessor', () => {
           data.listExists = true
           validateListExistsPromiseStub = sinon.stub(lists, 'validateListExistsPromise').callsFake((data) => {
             // Checks event list which is only set before the second call
-            console.log('___validateListExistsPromiseStub')
+            logger.log('debug', '___validateListExistsPromiseStub')
             if (!data.reminderList) {
               data.list.should.equal('my-list')
             } else {
@@ -780,7 +781,7 @@ describe('textProcessor + languageProcessor', () => {
           // Manually stub out listItems
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
-            console.log('___listItemsSaveNewReminderPromiseStub')
+            logger.log('debug', '___listItemsSaveNewReminderPromiseStub')
             data.listItemName.should.equal('@someone: #my-list go shopping - Monday, Jan 2nd')
             data.reminderTitle.should.equal('go shopping')
             data.reminderWhenGMT.toString().should.equal('Mon Jan 02 2017 05:00:00 GMT+0000 (GMT)')
@@ -808,13 +809,13 @@ describe('textProcessor + languageProcessor', () => {
           data.listExists = false
           data.errorMessage = modelConstants.errorTypes.listNotFound
           validateListExistsPromiseStub = sinon.stub(lists, 'validateListExistsPromise').callsFake((data) => {
-            console.log('___validateListExistsPromiseStub')
+            logger.log('debug', '___validateListExistsPromiseStub')
             return Q.reject(data)
           })
 
           // should create new list called reminders
           listSaveNewPromiseStub = sinon.stub(lists, 'saveNewPromise').callsFake((data) => {
-            console.log('___listSaveNewPromiseStub')
+            logger.log('debug', '___listSaveNewPromiseStub')
             data.list.should.equal('reminders')
             return Q.resolve(data)
           })
@@ -822,7 +823,7 @@ describe('textProcessor + languageProcessor', () => {
           // Manually stub out listItems
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
-            console.log('___listItemsSaveNewReminderPromiseStub')
+            logger.log('debug', '___listItemsSaveNewReminderPromiseStub')
             data.listItemName.should.equal('@someone: go shopping - Monday, Jan 2nd')
             return Q.resolve(data)
           })
@@ -843,7 +844,7 @@ describe('textProcessor + languageProcessor', () => {
           // listItems - manual stub
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
-            console.log('___listItemsSaveNewReminderPromiseStub')
+            logger.log('debug', '___listItemsSaveNewReminderPromiseStub')
             data.listItemName.should.equal('@all: go shopping - Monday, Jan 2nd')
             return Q.resolve(data)
           })
@@ -863,7 +864,7 @@ describe('textProcessor + languageProcessor', () => {
           // listItems - manual stub
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
-            console.log('___listItemsSaveNewReminderPromiseStub')
+            logger.log('debug', '___listItemsSaveNewReminderPromiseStub')
             data.listItemName.should.equal('@nick: go shopping - Monday, Jan 2nd')
             return Q.resolve(data)
           })
@@ -894,7 +895,7 @@ describe('textProcessor + languageProcessor', () => {
           // Manually stub out listItems
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
-            console.log('___listItemsSaveNewReminderPromiseStub')
+            logger.log('debug', '___listItemsSaveNewReminderPromiseStub')
             data.listItemName.should.equal('@someone: go shopping - Sunday 9am, Jan 1st')
             data.reminderTitle.should.equal('go shopping')
             data.reminderWhenGMT.toString().should.equal('Sun Jan 01 2017 14:00:00 GMT+0000 (GMT)')
@@ -946,13 +947,13 @@ describe('textProcessor + languageProcessor', () => {
           data.phoneNumbers = ['111']
           data.familyId = 1
           familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().callsFake((result) => {
-            console.log('___retrievePersonPhoneNumbersPromiseMock')
+            logger.log('debug', '___retrievePersonPhoneNumbersPromiseMock')
             result.familyId.should.equal(2)
             result.person.should.equal('someone')
             return Q.resolve(data)
           })
           sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
-            console.log('___sendSmsPromiseStub')
+            logger.log('debug', '___sendSmsPromiseStub')
             to.should.equal('111')
             message.should.equal(phrases.pushIntro)
             return Q.resolve(data)
@@ -968,13 +969,13 @@ describe('textProcessor + languageProcessor', () => {
           data.familyId = 1
           var callCount = 0
           familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().callsFake((result) => {
-            console.log('___retrievePersonPhoneNumbersPromiseMock')
+            logger.log('debug', '___retrievePersonPhoneNumbersPromiseMock')
             result.familyId.should.equal(2)
             result.person.should.equal('all')
             return Q.resolve(data)
           })
           sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
-            console.log('___sendSmsPromiseStub')
+            logger.log('debug', '___sendSmsPromiseStub')
             callCount++
             if (callCount === 1) {
               to.should.equal('111')
@@ -1015,7 +1016,7 @@ describe('textProcessor + languageProcessor', () => {
       familyMemberMock.restore()
       familyMemberMock = sinon.mock(familyMembers)
       familyMemberMock.expects('retrievePersonFromPhoneNumberPromise').once().callsFake((result) => {
-        console.log('___retrievePersonFromPhoneNumberPromiseMock_updated')
+        logger.log('debug', '___retrievePersonFromPhoneNumberPromiseMock_updated')
         result.errorMessage = modelConstants.errorTypes.personNotFound
         return Q.reject(data)
       })
@@ -1027,7 +1028,7 @@ describe('textProcessor + languageProcessor', () => {
       familyMemberMock.restore()
       familyMemberMock = sinon.mock(familyMembers)
       familyMemberMock.expects('retrievePersonFromPhoneNumberPromise').once().callsFake((result) => {
-        console.log('___retrievePersonFromPhoneNumberPromiseMock_updated')
+        logger.log('debug', '___retrievePersonFromPhoneNumberPromiseMock_updated')
         result.errorMessage = modelConstants.errorTypes.generalError
         return Q.reject(result)
       })

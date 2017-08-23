@@ -1,10 +1,10 @@
 const lists = require('../../model/lists')
 const phrases = require('./../phrases')
+const logger = require('winston')
 
 const processResponseTextPromise = (data) => {
   return lists.findAllPromise(data).then(data => {
-    console.log(888)
-    console.log(data)
+    logger.log('debug', 'then', data)
     if (data.lists.length === 0) {
       data.responseText = phrases.noListsExist + '/n' + phrases.createListExample
     } else {

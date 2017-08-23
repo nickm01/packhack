@@ -11,14 +11,7 @@ const finalResponseTextProcessor = require('./finalresponsetextprocessor')
 const logger = require('winston')
 
 const processTextPromise = data => {
-  console.log('>>>>       WINSTON        <<<<')
-  logger.log('silly', 'silly >>>> ******************** <<<<')
-  logger.log('debug', 'debug >>>> ******************** <<<<')
-  logger.log('info', 'info >>>> ******************** <<<<')
-  logger.log('warn', 'warn >>>> ******************** <<<<')
-  logger.log('error', 'error >>>> ******************** <<<<')
-  console.log('___commandSpecificProcessorPromise')
-  console.log(data)
+  logger.log('debug', '___textprocessor_processTextPromise', data)
   return checkValidPhoneNumber(data)
   .then(languageProcessor.processLanguagePromise)
   .then(conditionallyValidatePersonExistsAndRetrievePhoneNumbers)
@@ -36,10 +29,9 @@ const processTextPromise = data => {
 const checkValidPhoneNumber = (data) => {
   return familyMembers.retrievePersonFromPhoneNumberPromise(data)
     .catch(result => {
-      console.log('___checkValidPhoneNumber_catch')
-      console.log(result)
+      logger.log('debug', 'checkValidPhoneNumber_catch', result)
       if (result.errorMessage === errors.errorTypes.personNotFound) {
-        console.log('___checkValidPhoneNumber_personNotFound')
+        logger.log('debug', 'checkValidPhoneNumber_personNotFound')
         result.errorMessage = errors.errorTypes.notRegistered
       }
       throw result
@@ -47,29 +39,26 @@ const checkValidPhoneNumber = (data) => {
 }
 
 const conditionallyValidatePersonExistsAndRetrievePhoneNumbers = (data) => {
-  console.log('__conditionallyValidatePersonExistsAndRetrievePhoneNumbers')
-  console.log(data)
+  logger.log('debug', '__textprocessor.conditionallyValidatePersonExistsAndRetrievePhoneNumbers', data)
   if (data.person === modelConstants.meFamilyMamberName) {
-    console.log('me')
+    logger.log('debug', 'me')
     data.person = data.fromPerson
     data.phoneNumbers = [data.fromPhoneNumber]
     return data
   } else if (data.person) {
-    console.log('not me')
+    logger.log('debug', 'not me')
     if (data.command === commandTypes.pushIntro) {
       data.familyId = Number(data.supplementaryText)
     }
     return familyMembers.retrievePersonPhoneNumbersPromise(data)
   } else {
-    console.log('else')
+    logger.log('debug', 'else')
     return data
   }
 }
 
 const conditionallyValidateListExists = (data) => {
-  console.log('___conditionallyValidateListExists')
-  console.log(data)
-  console.log(data.list)
+  logger.log('debug', '___textprocessor_conditionallyValidateListExists', data)
   if (data.list && data.command !== commandTypes.createList) {
     return lists.validateListExistsPromise(data)
   } else {
@@ -78,6 +67,7 @@ const conditionallyValidateListExists = (data) => {
 }
 
 const conditionallyValidateListDoesNotExists = (data) => {
+  logger.log('debug', '___textprocessor_conditionallyValidateListDoesNotExists', data)
   if (data.command === commandTypes.createList) {
     return lists.validateListExistsPromise(data).then(result => {
       // Found an existing list, then it's an error
@@ -99,21 +89,20 @@ const conditionallyValidateListDoesNotExists = (data) => {
 }
 
 const commandSpecificProcessorPromise = (data) => {
-  console.log('___commandSpecificProcessorPromise')
-  console.log(data)
+  logger.log('debug', '___textprocessor_commandSpecificProcessorPromise', data)
   if (data.command) {
-    console.log('6c')
+    logger.log('debug', 'data.command')
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
+    logger.log('debug', '_processor: ' + processor)
     return processor.processResponseTextPromise(data)
   } else {
-    console.log('6d')
+    logger.log('debug', '!data.command')
     return data
   }
 }
 
 const processError = (data) => {
-  console.log('___processError')
-  console.log(data)
+  logger.log('debug', '___textprocessor_processError', data)
   if (data.command) {
     const processor = require('./commandtextprocessors/' + data.command.toLowerCase() + '.textprocessor.js')
 
@@ -133,21 +122,19 @@ const processError = (data) => {
 }
 
 const standardMatchedErrorMessage = (data) => {
+  logger.log('debug', '___textprocessor_standardMatchedErrorMessage')
   const matchedPhrase = errors.errorTypes[data.errorMessage]
-  console.log(222)
-  console.log(matchedPhrase)
+  logger.log('debug', 'matched1', matchedPhrase)
   if (matchedPhrase) {
     data.responseText = phrases[matchedPhrase]
     // Add suggestions according to type of error
-    console.log(333)
-    console.log(data.responseText)
+    logger.log('debug', 'matched2', data.responseText)
     if (data.errorMessage === errors.errorTypes.listNotFound) {
-      console.log(555)
       data.responseText += '\n' + phrases.suggestGetLists
-      console.log(data)
+      logger.log('debug', 'matched3', data.responseText)
     }
   } else {
-    console.log('processError-fallthrough')
+    logger.log('debug', 'error fallthrough')
   }
 }
 

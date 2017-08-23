@@ -2,12 +2,11 @@ const listItems = require('../../model/listitems')
 const phrases = require('./../phrases')
 const stringProcessor = require('./../stringprocessor')
 const Q = require('q')
+const logger = require('winston')
 
 const processResponseTextPromise = (data) => {
-  console.log('666')
-  console.log(data)
   const listItemStrings = stringProcessor.splitByDelimiters(data.supplementaryText)
-  console.log(listItemStrings)
+  logger.log('debug', listItemStrings)
   if (listItemStrings.length === 0) {
     data.responseText = phrases.noListItemToAdd + '\n' + phrases.addListItemExample
     return Q.reject(data)

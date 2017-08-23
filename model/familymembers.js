@@ -1,13 +1,13 @@
 const familyMembersPromises = require('./familymembers.promises')
 const modelConstants = require('./modelconstants')
+const logger = require('winston')
 
 const retrievePersonPhoneNumbersPromise = (data) => {
-  console.log('___retrievePersonPhoneNumbersPromise')
-  console.log(data)
+  logger.log('debug', '___familymembers_retrievePersonPhoneNumbersPromise', data)
   return familyMembersPromises.findFromNameFamilyPromise(data.person, data.familyId)
     .then(familyMembers => {
       if (familyMembers.length === 0) {
-        console.log('no result')
+        logger.log('debug', 'no result')
         data.errorMessage = modelConstants.errorTypes.personNotFound
         throw data
       }
@@ -23,11 +23,11 @@ const retrievePersonPhoneNumbersPromise = (data) => {
 }
 
 const retrievePersonFromPhoneNumberPromise = (data) => {
-  console.log('___retrievePersonFromPhoneNumberPromise')
+  logger.log('debug', '___familymembers_retrievePersonFromPhoneNumberPromise', data)
   return familyMembersPromises.findFromPhoneNumberPromise(data.fromPhoneNumber)
     .then(familyMembers => {
       if (familyMembers.length === 0) {
-        console.log('phone number not found')
+        logger.log('debug', 'phone number not found')
         data.errorMessage = modelConstants.errorTypes.personNotFound
         throw data
       }

@@ -5,6 +5,7 @@ const mongoOp = require('./model/mongo')
 const router = express.Router()
 const cookieParser = require('cookie-parser')
 const twilioRoute = require('./src/twilio.route')
+const logger = require('winston')
 
 mongoOp.intialize()
 
@@ -27,5 +28,5 @@ router.route('/twilio')
 app.use('/', router)
 
 app.listen(app.get('port'), () => {
-  console.log('Node app is running on port', app.get('port'))
+  logger.log('info', '*** Node app is running on port', app.get('port'))
 })

@@ -1,12 +1,12 @@
 const phrases = require('./../phrases')
 const smsProcessor = require('./../smsprocessor')
 const Q = require('q')
+const logger = require('winston')
 
 const processResponseTextPromise = (data) => {
   data.sendText = phrases.pushIntro
   return sendSms(data)
     .then(result => {
-      console.log('___sendSms_then')
       data.responseText = phrases.success
       return data
     })
@@ -14,10 +14,9 @@ const processResponseTextPromise = (data) => {
 
 // TODO: refactor this... duplicate code
 const sendSms = data => {
-  console.log('___sendSms')
-  console.log(data)
+  logger.log('debug', '___pushintro.textprocessor_sendSms', data)
   const sendMultipleSmsPromises = data.phoneNumbers.map(phoneNumber => {
-    console.log('---loop')
+    logger.log('debug', 'loop')
     return smsProcessor.sendSmsPromise(data, phoneNumber, data.sendText)
   })
   return Q.all(sendMultipleSmsPromises)

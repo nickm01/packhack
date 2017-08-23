@@ -6,7 +6,7 @@ function deleteListItemByName (familyId, listKey, listItemName, callback) {
       callback('Error removing ' + listItemName + ' 😦')
       return
     }
-    console.log('----removed ' + listItemName + ' ' + removeResult.result.n)
+    logger.log('debug', '----removed ' + listItemName + ' ' + removeResult.result.n)
     if (removeResult.result.n === 0) {
       callback(listItemName + " doesn't exist in #" + listKey + ' 😦.')
     } else {

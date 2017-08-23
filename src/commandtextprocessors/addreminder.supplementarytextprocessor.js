@@ -1,13 +1,12 @@
 const moment = require('moment-timezone')
 const sherlock = require('../../other_modules/sherlock/sherlock')
 const errors = require('./../errors')
+const logger = require('winston')
 
 const retrieveDateAndTitleFromSupplementaryText = data => {
-  console.log('___retrieveDateAndTitleFromSupplementaryText')
   const rightNow = new Date()
   const nowLocalDate = convertDateToLiteralTimezoneEquivalent(rightNow, data.timezone, true)
-  console.log('Server Now:')
-  console.log(nowLocalDate)
+  logger.log('debug', 'Server Now:', nowLocalDate)
 
   // Process Local Date as GMT to ensure "tomorrow" is tomorrow locally
   sherlock._setNow(nowLocalDate)
@@ -18,14 +17,12 @@ const retrieveDateAndTitleFromSupplementaryText = data => {
     throw data
   } else {
     var startDateLocal = sherlocked.startDate
-    console.log('sherlocked.startDate:')
-    console.log(startDateLocal)
+    logger.log('debug', 'sherlocked.startDate:', startDateLocal)
     var startDateGMT = convertDateToLiteralTimezoneEquivalent(startDateLocal, data.timezone, false)
-    console.log('startDateGMT:')
-    console.log(startDateGMT)
+    logger.log('debug', 'startDateGMT:', startDateGMT)
     var userDateText = timezonedDateText(startDateLocal)
-    console.log('userDateText: ' + userDateText)
-    console.log('sherlocked.eventTitle: ' + sherlocked.eventTitle)
+    logger.log('debug', 'userDateText: ' + userDateText)
+    logger.log('debug', 'sherlocked.eventTitle: ' + sherlocked.eventTitle)
     const title = sherlocked.eventTitle
     if (!title) {
       data.errorMessage = errors.errorTypes.noTitle
@@ -45,7 +42,7 @@ const convertDateToLiteralTimezoneEquivalent = (date, timezoneText, reverse) => 
   if (reverse === true) {
     timezoneOffsetString = reverseTimezoneOffset(timezoneOffsetString)
   }
-  console.log('timezoneOffsetString: ' + timezoneOffsetString)
+  logger.log('debug', 'timezoneOffsetString: ' + timezoneOffsetString)
   var now = moment(date)
   now.utcOffset(timezoneOffsetString, true)
   return now.toDate()
