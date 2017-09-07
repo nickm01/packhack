@@ -34,13 +34,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nickm01/flockplatform.git"
+    "url": "git+https://github.com/nickm01/packhack.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/nickm01/flockplatform/issues"
+    "url": "https://github.com/nickm01/packhack/issues"
   },
-  "homepage": "https://github.com/nickm01/flockplatform#readme"
+  "homepage": "https://github.com/nickm01/packhack#readme"
 }
