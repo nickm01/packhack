@@ -2,7 +2,7 @@
 // Above line makes it work with Mocha
 
 // NOTE:Run these tests assuming running on a GMT server
-// For mocha, use switch env TZ='etc/GMT'
+// For mocha, use switch env TZ='etc/GMT'.
 
 const addremindersupplementarytextprocessor = require('./addreminder.supplementarytextprocessor')
 const should = require('chai').should()
