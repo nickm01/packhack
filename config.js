@@ -4,7 +4,7 @@ logger.remove(logger.transports.Console)
 logger.add(logger.transports.Console, {
   colorize: true,
   prettyPrint: true,
-  depth: 2
+  depth: 3
 })
 logger.level = process.env.LOG_LEVEL || 'debug'
 
