@@ -51,6 +51,7 @@ const cacheListName = (data, response) => {
   } else {
     listName = data.listName
   }
+  logger.log('info', '___twilio.route_cacheListName cache:', listName)
   response.cookie('listName', listName, {maxAge: 1000 * 60 * 60 * 72})
 }
 
