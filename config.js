@@ -3,8 +3,9 @@ const logger = require('winston')
 logger.remove(logger.transports.Console)
 logger.add(logger.transports.Console, {
   colorize: true,
-  prettyPrint: true,
-  depth: process.env.LOG_DEPTH || 3
+  json: true
+  // prettyPrint: true,
+  // depth: process.env.LOG_DEPTH || 3
 })
 logger.level = process.env.LOG_LEVEL || 'debug'
 
