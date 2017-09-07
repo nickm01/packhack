@@ -1,6 +1,7 @@
 // Default dummy values exist in order to allow unit tests to run
 const logger = require('winston')
 logger.level = process.env.LOG_LEVEL || 'debug'
+logger.colorize = true
 
 module.exports = {
   accountSid: process.env.TWILIO_ACCOUNT_SID || 'TWILIO_ACCOUNT_SID',
