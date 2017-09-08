@@ -38,15 +38,13 @@ const sendSMSResponse = (responseText, response) => {
 const cacheListName = (data, response) => {
   // If there's been an error - only do NOT cache if the list name is now different
   // or if there is a delete list command
+  let listName
   if ((data.errorMessage && data.list !== data.cacheListName) ||
       data.command === commandTypes.deleteList
   ) {
-    return
-  }
-
+    listName = null
   // If reminder, cache the old list key
-  let listName
-  if (data.list === config.remindersListKey) {
+  } else if (data.list === config.remindersListKey) {
     listName = data.cacheListName
   } else {
     listName = data.list
