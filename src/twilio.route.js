@@ -1,7 +1,6 @@
 const twilio = require('twilio')
 const textProcessor = require('./textprocessor')
 const logger = require('winston')
-const config = require('../config')
 const commandTypes = require('./commandtypes')
 
 const route = (request, response) => {
@@ -42,11 +41,10 @@ const cacheListName = (data, response) => {
   ) {
     logger.log('info', '___twilio.route_cacheListName expire cache')
     response.cookie('listName', '', {expires: new Date(0)})
-    return
+  } else {
+    logger.log('info', '___twilio.route_cacheListName cache:', data.list)
+    response.cookie('listName', data.list, {maxAge: 1000 * 60 * 60 * 72})
   }
-
-  logger.log('info', '___twilio.route_cacheListName cache:', data.list)
-  response.cookie('listName', data.list, {maxAge: 1000 * 60 * 60 * 72})
 }
 
 module.exports = {
