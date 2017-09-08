@@ -36,21 +36,20 @@ const sendSMSResponse = (responseText, response) => {
 }
 
 const cacheListName = (data, response) => {
-  // If there's been an error - only do NOT cache if the list name is now different
-  // or if there is a delete list command
-  let listName
+  // If there's been an error and list name is now different or if delete list command then expire the cookie
   if ((data.errorMessage && data.list !== data.cacheListName) ||
       data.command === commandTypes.deleteList
   ) {
-    listName = null
-  // If reminder, cache the old list key
-  } else if (data.list === config.remindersListKey) {
-    listName = data.cacheListName
-  } else {
-    listName = data.list
+    logger.log('info', '___twilio.route_cacheListName expire cache')
+    response.cookie('listName', '', {expires: new Date(0)})
+    return
   }
-  logger.log('info', '___twilio.route_cacheListName cache:', listName)
-  response.cookie('listName', listName, {maxAge: 1000 * 60 * 60 * 72})
+
+  // If reminder, cache the old list key
+  if (data.list !== config.remindersListKey) {
+    logger.log('info', '___twilio.route_cacheListName cache:', data.list)
+    response.cookie('listName', data.list, {maxAge: 1000 * 60 * 60 * 72})
+  }
 }
 
 module.exports = {
