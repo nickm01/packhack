@@ -45,11 +45,8 @@ const cacheListName = (data, response) => {
     return
   }
 
-  // If reminder, cache the old list key
-  if (data.list !== config.remindersListKey) {
-    logger.log('info', '___twilio.route_cacheListName cache:', data.list)
-    response.cookie('listName', data.list, {maxAge: 1000 * 60 * 60 * 72})
-  }
+  logger.log('info', '___twilio.route_cacheListName cache:', data.list)
+  response.cookie('listName', data.list, {maxAge: 1000 * 60 * 60 * 72})
 }
 
 module.exports = {
