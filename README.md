@@ -3,7 +3,9 @@
 The SMS bot for family co-ordination.  Avoid the nags with this family list and reminder text bot that every member can participate in.
 No need to download apps and of course works when the young ones have limited and cheaper phones.
 
-# try it with your family noq
+Basically as an always busy, dual working household that filled a need.
+
+# try it with your family now
 Email me (nichoalsgmcconnell@gmail.com) to add your family to the base installation.  Let me know names, phone numbers, default timezone.
 Free for now.
 
