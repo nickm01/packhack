@@ -49,6 +49,7 @@ Note: [person] could be the name of the person or "all" or "me"
 - Send also allows message to be sent, not just list (like reminders)
 - Better auto-detection of list with the remind command so don't have to use hash
 - Done/undo capability
-- Set timezone
-- View family
+- Set/view timezone
+- View family members
 - Auto-categorization of groceries for shopping lists (smartly split out into fruit&veg, meats, frozen, diary, bakery etc)
+- Improved on-boarding (a little manual right now)
