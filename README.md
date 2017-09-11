@@ -10,15 +10,13 @@ Free for now.
 # how to use
 Firstly, you should get a text intro when you join.  Add the phone number to your contacts as **packhack**
 - **packhack** for help
-- **get lists** to see current lists
+- **get lists** to see current lists or simple **lists**
 - **create [list]** to create a new list
 - **delete [list]** to delete a new list
-- **get [list]** to see items in a particular list
-
+- **get [list]** to see items in a particular list or simply type **[list]**
 - **add [item(s)]** to add item(s) to the list last used (separate items by double spaces, commas or periods)
 - **remove [item(s)]** to remove item(s) to the list last used
   - Use **edit [list]** if you want to use list item numbers for removing by number rather than the list item text.  You can then say **remove 1,2,3**
-
 - **send [person] [list]** to send a person a list immediately
 - **remind [person] [when] [what]** to set up reminders.
   - [when] can be 10am, noon, tomorrow afternoon, next week, thursday, wednesday morning, 10/1/2018
