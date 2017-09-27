@@ -26,7 +26,7 @@ router.route('/twilio')
     twilioRoute.route(request, response)
   })
 
-router.route('/api')
+router.route('/api/*')
   .get((request, response) => {
     externalRoute.route(request, response)
   })
