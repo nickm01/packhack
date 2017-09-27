@@ -5,6 +5,7 @@ const mongoOp = require('./model/mongo')
 const router = express.Router()
 const cookieParser = require('cookie-parser')
 const twilioRoute = require('./src/twilio.route')
+const externalRoute = require('./external/external.route')
 const logger = require('winston')
 
 mongoOp.intialize()
@@ -23,6 +24,11 @@ router.get('/', (req, res) => {
 router.route('/twilio')
   .get((request, response) => {
     twilioRoute.route(request, response)
+  })
+
+router.route('/api')
+  .get((request, response) => {
+    externalRoute.route(request, response)
   })
 
 app.use('/', router)
