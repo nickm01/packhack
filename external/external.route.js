@@ -10,7 +10,7 @@ const route = (request, response) => {
   listItems.findPromise(data)
     .then(result => {
       const listItemNames = result.listItems.map(listItem => {
-        return listItem.listItemName
+        return {listItem: listItem.listItemName}
       })
       response.json(listItemNames)
     })
