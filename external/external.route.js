@@ -15,7 +15,7 @@ const getLists = (request, response) => {
 const getListItems = (request, response) => {
   console.log('123')
   console.log(request.list)
-  listItems.findPromise({list: request.list, familyId: 2})
+  listItems.findPromise({list: request.params.list, familyId: 2})
     .then(result => {
       const listItemNames = result.listItems.map(listItem => {
         return {name: listItem.listItemName}
