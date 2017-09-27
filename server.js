@@ -26,6 +26,7 @@ router.route('/twilio')
     twilioRoute.route(request, response)
   })
 
+// External API Routes
 router.route('/api/lists').get((request, response) => { externalRoute.getLists(request, response) })
 router.route('/api/lists/:list').get((request, response) => { externalRoute.getListItems(request, response) })
 
