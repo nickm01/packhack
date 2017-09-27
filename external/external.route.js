@@ -5,7 +5,7 @@ const route = (request, response) => {
   logger.log('info', request)
   const data = {
     list: 'shopping',
-    familyId: 1
+    familyId: 2
   }
   listItems.findPromise(data)
     .then(result => {
