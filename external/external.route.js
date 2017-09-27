@@ -1,22 +1,28 @@
-const logger = require('winston')
+// const logger = require('winston')
+const lists = require('../model/lists')
 const listItems = require('../model/listitems')
 
-const route = (request, response) => {
-  logger.log('info', request)
-  const data = {
-    list: 'shopping',
-    familyId: 2
-  }
-  listItems.findPromise(data)
+const getLists = (request, response) => {
+  lists.findAllPromise({familyId: 2})
+    .then(result => {
+      const listNames = result.lists.map(list => {
+        return {name: list.listKey}
+      })
+      response.json(listNames)
+    })
+}
+
+const getListItems = (request, response) => {
+  listItems.findPromise({list: request.list, familyId: 2})
     .then(result => {
       const listItemNames = result.listItems.map(listItem => {
         return {name: listItem.listItemName}
       })
-      console.log(request)
       response.json(listItemNames)
     })
 }
 
 module.exports = {
-  route
+  getLists,
+  getListItems
 }
