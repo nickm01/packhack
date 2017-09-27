@@ -12,7 +12,8 @@ const route = (request, response) => {
       const listItemNames = result.listItems.map(listItem => {
         return {name: listItem.listItemName}
       })
-      response.json(request)
+      console.log(request)
+      response.json(listItemNames)
     })
 }
 
