@@ -13,8 +13,6 @@ const getLists = (request, response) => {
 }
 
 const getListItems = (request, response) => {
-  console.log('123')
-  console.log(request.list)
   listItems.findPromise({list: request.params.list, familyId: 2})
     .then(result => {
       const listItemNames = result.listItems.map(listItem => {
@@ -24,7 +22,17 @@ const getListItems = (request, response) => {
     })
 }
 
+const addListItem = (request, response) => {
+  let listItemName = request.params.listItem
+  console.log(request)
+  // listItems.saveNewPromise({list: request.params.list, familyId: 2, listItemName: listItemName})
+  //   .then(result => {
+  //     response.json({listItemName: listItemName})
+  //   })
+}
+
 module.exports = {
   getLists,
-  getListItems
+  getListItems,
+  addListItem
 }
