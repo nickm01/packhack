@@ -23,12 +23,12 @@ const getListItems = (request, response) => {
 }
 
 const addListItem = (request, response) => {
-  let listItemName = request.params.listItem
+  let listItemName = request.body.name
   console.log(request)
-  // listItems.saveNewPromise({list: request.params.list, familyId: 2, listItemName: listItemName})
-  //   .then(result => {
-  //     response.json({listItemName: listItemName})
-  //   })
+  listItems.saveNewPromise({list: request.params.list, familyId: 2, listItemName: listItemName})
+    .then(result => {
+      response.json({name: listItemName})
+    })
 }
 
 module.exports = {
