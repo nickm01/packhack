@@ -24,6 +24,8 @@ const getListItems = (request, response) => {
 
 const addListItem = (request, response) => {
   let listItemName = request.body.name
+  console.log('**** POST')
+  console.log(request)
   listItems.saveNewPromise({list: request.params.list, familyId: 2, listItemName: listItemName})
     .then(result => {
       response.json({name: listItemName})
