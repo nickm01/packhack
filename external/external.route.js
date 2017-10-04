@@ -24,9 +24,20 @@ const getListItems = (request, response) => {
 
 const addListItem = (request, response) => {
   let listItemName = request.body.name
-  console.log('**** POST')
-  console.log(request)
+  // TODO: deal with duplicates
   listItems.saveNewPromise({list: request.params.list, familyId: 2, listItemName: listItemName})
+    .then(result => {
+      // TODO: respond with 201
+      response.json({name: listItemName})
+    })
+}
+
+const deleteListItem = (request, response) => {
+  let listItemName = request.params.item
+  console.log('**** DELETE')
+  console.log(request)
+  // TODO: Error handling and 404 if nothing to delete
+  listItems.deletePromise({list: request.params.list, familyId: 2}, listItemName)
     .then(result => {
       response.json({name: listItemName})
     })
@@ -35,5 +46,6 @@ const addListItem = (request, response) => {
 module.exports = {
   getLists,
   getListItems,
-  addListItem
+  addListItem,
+  deleteListItem
 }

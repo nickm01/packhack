@@ -30,6 +30,7 @@ router.route('/twilio')
 router.route('/api/lists').get((request, response) => { externalRoute.getLists(request, response) })
 router.route('/api/lists/:list').get((request, response) => { externalRoute.getListItems(request, response) })
 router.route('/api/lists/:list').post((request, response) => { externalRoute.addListItem(request, response) })
+router.route('/api/lists/:list/items/:item').delete((request, response) => { externalRoute.deleteListItem(request, response) })
 
 app.use('/', router)
 
