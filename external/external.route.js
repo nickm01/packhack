@@ -1,6 +1,7 @@
 // const logger = require('winston')
 const lists = require('../model/lists')
 const listItems = require('../model/listitems')
+const modelConstants = require('../modelconstants')
 
 const getLists = (request, response) => {
   lists.findAllPromise({familyId: 2})
@@ -40,6 +41,12 @@ const deleteListItem = (request, response) => {
   listItems.deletePromise({list: request.params.list, familyId: 2}, listItemName)
     .then(result => {
       response.json({name: listItemName})
+    }, result => {
+      if (result.errorMessage === modelConstants.errorTypes.listItemNotFound) {
+        response.status(404).send('Not found')
+      } else {
+        response.status(500).send('Error')
+      }
     })
 }
 
