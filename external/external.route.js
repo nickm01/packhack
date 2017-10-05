@@ -1,7 +1,7 @@
 // const logger = require('winston')
 const lists = require('../model/lists')
 const listItems = require('../model/listitems')
-const modelConstants = require('../modelconstants')
+const modelConstants = require('../model/modelconstants')
 
 const getLists = (request, response) => {
   lists.findAllPromise({familyId: 2})
@@ -35,9 +35,6 @@ const addListItem = (request, response) => {
 
 const deleteListItem = (request, response) => {
   let listItemName = request.params.item
-  console.log('**** DELETE')
-  console.log(request)
-  // TODO: Error handling and 404 if nothing to delete
   listItems.deletePromise({list: request.params.list, familyId: 2}, listItemName)
     .then(result => {
       response.json({name: listItemName})
