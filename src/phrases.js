@@ -19,7 +19,7 @@ module.exports = {
   editListRemoveSuggestion: 'Use \'remove\' followed by item numbers separated by commas, periods or double-spaces.\ne.g. \'remove 1,2,3\'',
   // createList specific
   listAlreadyExists: '😕 Sorry, %#list already exists!',
-  listNameInvalid: '😕 Sorry, list name is invalid.\nPlease don\t use spaces or reserved commands like \'create\'.',
+  listNameInvalid: '😕 Sorry, list name is invalid.\nPlease don\'t use spaces or reserved commands like \'create\'.',
   // addListItem or removeListItem specific
   noListItemToAdd: '😕 Sorry, please specify item(s) to add.',
   noListItemToRemove: '😕 Sorry, please specify item(s) to remove.',

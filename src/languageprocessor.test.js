@@ -68,6 +68,7 @@ describe('languageProcessor', function () {
     const command = commandTypes.createList
     it('✅ create #list', function () { textShouldResult('create #list', {command: command, list: 'list'}) })
     it('✅ create list', function () { textShouldResult('create list', {command: command, list: 'list'}) })
+    it('✅ create list ', function () { textShouldResult('create list ', {command: command, list: 'list'}) })
     it('✅ CREATE Something', function () { textShouldResult('CREATE SomeThing', {command: command, list: 'something'}) })
     it('✅ create with special characters', function () { textShouldResult('create 👍❤️😜!@#$%^&*()', {command: command, list: '👍❤️😜!@#$%^&*()'}) })
     it('❌ create #get', function () { textShouldError('create #get', {command: command, list: null, message: errors.errorTypes.listNameInvalid}) })
@@ -104,6 +105,7 @@ describe('languageProcessor', function () {
   describe('addListItem', function () {
     const command = commandTypes.addListItem
     it('✅ add item with cachedListName', function () { textShouldResult('add item', {command: command, list: 'cachedlistname', supplementaryText: 'item'}, 'cachedListName') })
+    it('✅ add item with cachedListName and spaces', function () { textShouldResult('add item ', {command: command, list: 'cachedlistname', supplementaryText: 'item'}, 'cachedListName') })
     it('❌ add item with no cachedListName', function () { textShouldError('add item', {command: command, list: null, message: errors.errorTypes.noList}) })
     it('✅ #list add item', function () { textShouldResult('#list add item', {command: command, list: 'list', supplementaryText: 'item'}) })
     it('✅ #list add multiple items', function () { textShouldResult('#list add item1, item2, item3', {command: command, list: 'list', supplementaryText: 'item1, item2, item3'}) })

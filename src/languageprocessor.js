@@ -26,7 +26,7 @@ const commandData = [
 const processLanguage = (data) => {
   try {
     logger.log('debug', '___languageprocessor_processlanguage1', data)
-    const result = new LanguageProcessorResult({text: data.originalText, cachedListName: data.cachedListName})
+    const result = new LanguageProcessorResult({text: data.originalText.trim(), cachedListName: data.cachedListName})
       .convertToWords()
       .checkZeroWords()
       .getCommandFromWords()
