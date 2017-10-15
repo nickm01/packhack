@@ -176,7 +176,7 @@ describe('languageProcessor', function () {
   describe('addReminder', function () {
     const command = commandTypes.addReminder
     it('✅ remind @me tomorrow hello', function () { textShouldResult('remind @me tomorrow hello', {command: command}) })
-    it('✅ remind @me to shop tomorrow', function () { textShouldResult('remind @me to shop tomorrow', {command: command, person: 'me', supplementaryText: 'shop tomorrow'}) })
+    it('✅ remind @me to shop tomorrow', function () { textShouldResult('remind @me to shop tomorrow', {command: command, person: 'me', supplementaryText: 'to shop tomorrow'}) })
     it('✅ remind @someone #list tomorrow', function () { textShouldResult('remind @someone #list tomorrow', {command: command, list: 'list', person: 'someone', supplementaryText: 'tomorrow'}) })
     it('✅ remind @someone tomorrow #list', function () { textShouldResult('remind @someone tomorrow #list', {command: command, list: 'list', person: 'someone', supplementaryText: 'tomorrow'}) })
     it('✅ remind @someone tomorrow do something', function () { textShouldResult('remind @someone tomorrow do something', {command: command, person: 'someone', supplementaryText: 'tomorrow do something'}) })

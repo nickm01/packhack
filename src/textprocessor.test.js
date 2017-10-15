@@ -893,8 +893,8 @@ describe('textProcessor + languageProcessor', () => {
           })
         })
 
-        it('when "remind @me tomorrow to shop', () => {
-          data.originalText = 'remind @me tomorrow to shop'
+        it('when "remind @me tomorrow noon to shop', () => {
+          data.originalText = 'remind @me tomorrow noon to shop'
           data.fromPerson = 'nick'
           listExists()
           familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
@@ -903,7 +903,7 @@ describe('textProcessor + languageProcessor', () => {
           listItemsMock.restore()
           listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
             logger.log('debug', '___listItemsSaveNewReminderPromiseStub')
-            data.listItemName.should.equal('@nick: shop - Monday, Jan 2nd')
+            data.listItemName.should.equal('@nick: shop - Monday 12pm, Jan 2nd')
             return Q.resolve(data)
           })
 
