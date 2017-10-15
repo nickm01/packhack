@@ -28,9 +28,10 @@ const retrieveDateAndTitleFromSupplementaryText = data => {
       data.errorMessage = errors.errorTypes.noTitle
       throw data
     }
-    if (title.substring(0, 3) === 'to ') {
+    if (title.length > 3 && title.substring(0, 3) === 'to ') {
       title = title.substring(3)
     }
+    console.log(' ***** ' + title)
     data.reminderWhenGMT = startDateGMT
     data.reminderUserDateText = userDateText
     data.reminderTitle = title.trim()
