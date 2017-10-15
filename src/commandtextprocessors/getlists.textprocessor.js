@@ -6,7 +6,7 @@ const processResponseTextPromise = (data) => {
   return lists.findAllPromise(data).then(data => {
     logger.log('debug', 'then', data)
     if (data.lists.length === 0) {
-      data.responseText = phrases.noListsExist + '/n' + phrases.createListExample
+      data.responseText = phrases.noListsExist + '\n' + phrases.createListExample
     } else {
       const listKeys = data.lists.map(list => { return list.listKey })
       data.responseText = '#' + listKeys.join('\n#')

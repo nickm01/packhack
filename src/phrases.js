@@ -44,14 +44,14 @@ module.exports = {
   // push intro
   pushIntro: 'Congrats - you\'ve just been signed up for PackHack!\nA better way to co-ordinate your pack.\nType \'hack\' for help',
   // command specific exmaples
-  createListExample: 'e.g. \'create my-new-list\'',
-  getListExample: 'e.g. \'get #my-list\', or simply \'my-list\'',
-  editListExample: 'e.g. \'edit #my-list\', or \'edit my-list\'',
+  createListExample: 'e.g. \'create shopping\'',
+  getListExample: 'e.g. \'get #shopping\', or simply \'shopping\'',
+  editListExample: 'e.g. \'edit #shopping\', or \'edit shopping\'',
   deleteListExample: 'e.g. \'delete shopping\'',
-  addListItemExample: 'e.g. \'#my-list add bread, milk, coffee\'.\nOr simply, \'get my-list\', followed by \'add bread, milk, coffee\'.',
-  removeListItemExample: 'e.g. \'#my-list remove apples and oranges\'.\nOr simply, \'get my-list\', followed by \'remove apples and oranges\'.\nAlternatively, can use edit my-list, followed by remove 1,2 to remove numbered items.',
-  clearListExample: 'e.g. \'clear my-list\'',
-  sendListExample: 'e.g. \'send @bob my-list\'\nor \'send all #my-list\'',
+  addListItemExample: 'e.g. \'#shopping add bread, milk, coffee\'.\nOr simply, \'get shopping\', followed by \'add bread, milk, coffee\'.',
+  removeListItemExample: 'e.g. \'#shopping remove apples and oranges\'.\nOr simply, \'get shopping\', followed by \'remove apples and oranges\'.\nAlternatively, can use edit shopping, followed by remove 1,2 to remove numbered items.',
+  clearListExample: 'e.g. \'clear shopping\'',
+  sendListExample: 'e.g. \'send @bob shopping\'\nor \'send all #shopping\'',
   addReminderExample: 'Use the format remind @who what when\ne.g. \'remind bob get milk tomorrow\'\nor \'remind @me walk dog thursday morning\'',
   helpExmaple: 'e.g. \'packhack\' for help',
   pushIntroExample: 'e.g. \'**welcome bob 2\',\nwhere 2 is the Pack ID.'

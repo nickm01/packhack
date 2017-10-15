@@ -304,7 +304,7 @@ describe('textProcessor + languageProcessor', () => {
         data.lists = []
         logger.log('debug', 'xxx:' + data.lists.length)
         listsMock.expects('findAllPromise').once().returns(Q.resolve(data))
-        return shouldRespondWith(phrases.noListsExist + '/n' + phrases.createListExample)
+        return shouldRespondWith(phrases.noListsExist + '\n' + phrases.createListExample)
       })
 
       it('when "get lists" and general error', () => {
