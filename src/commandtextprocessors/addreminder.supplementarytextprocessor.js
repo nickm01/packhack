@@ -23,10 +23,13 @@ const retrieveDateAndTitleFromSupplementaryText = data => {
     var userDateText = timezonedDateText(startDateLocal)
     logger.log('debug', 'userDateText: ' + userDateText)
     logger.log('debug', 'sherlocked.eventTitle: ' + sherlocked.eventTitle)
-    const title = sherlocked.eventTitle
+    let title = sherlocked.eventTitle
     if (!title) {
       data.errorMessage = errors.errorTypes.noTitle
       throw data
+    }
+    if (title.substring(0, 3) === 'to ') {
+      title = title.substring(3)
     }
     data.reminderWhenGMT = startDateGMT
     data.reminderUserDateText = userDateText

@@ -237,11 +237,6 @@ LanguageProcessorResult.prototype.postProcessAddReminder = function () {
   // Retrieve person
   this.setPersonFromWord(this.words[1])
 
-  // Special processing for "to" for the phrase "remind me to shop tomorrow"
-  if (this.words.length >= 5 && this.words[2] === 'to') {
-    this.words.splice(2, 1)
-  }
-
   // Retrieve list
   const lists = this.words.slice(2).filter(word => {
     return word.charAt(0) === '#'

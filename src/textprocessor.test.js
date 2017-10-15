@@ -893,6 +893,25 @@ describe('textProcessor + languageProcessor', () => {
           })
         })
 
+        it('when "remind @me tomorrow to shop', () => {
+          data.originalText = 'remind @me tomorrow to shop'
+          data.fromPerson = 'nick'
+          listExists()
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').never()
+
+          // listItems - manual stub
+          listItemsMock.restore()
+          listItemsSaveNewReminderPromiseStub = sinon.stub(listItems, 'saveNewReminderPromise').callsFake((data) => {
+            logger.log('debug', '___listItemsSaveNewReminderPromiseStub')
+            data.listItemName.should.equal('@nick: shop - Monday, Jan 2nd')
+            return Q.resolve(data)
+          })
+
+          return shouldRespondWith(phrases.addReminderSuccess).then(data => {
+            sinon.assert.calledOnce(listItemsSaveNewReminderPromiseStub)
+          })
+        })
+
         it('when "remind @someone yesterday go shopping" and error due to past', () => {
           data.originalText = 'remind @someone yesterday go shopping'
           listItemsMock.expects('saveNewReminderPromise').never()
