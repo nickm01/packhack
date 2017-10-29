@@ -24,12 +24,12 @@ const route = (request, response) => {
   }
   logs.saveNewPromise(data)
     .then(textProcessor.processTextPromise)
+    .then(logs.saveNewPromise)
     .then(result => {
       logger.log('info', '*** after processTextpromise', result)
       cacheListName(result, response) // TODO: Make sure this isn't the case for delete
       sendSMSResponse(result.responseText, response)
     })
-    .then(logs.saveNewPromise)
 }
 
 const sendSMSResponse = (responseText, response) => {
