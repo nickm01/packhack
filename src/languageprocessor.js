@@ -8,8 +8,8 @@ const logger = require('winston')
 
 // Note more complex constructs should be at the end
 const commandData = [
-  {command: commandTypes.getLists, actuals: ['lists', 'get lists', 'show lists', 'display lists']},
-  {command: commandTypes.getList, actuals: ['get', 'show', 'display'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
+  {command: commandTypes.getLists, actuals: ['lists', 'get lists', 'show lists', 'display lists', 'view lists']},
+  {command: commandTypes.getList, actuals: ['get', 'show', 'display', 'view'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
   {command: commandTypes.editList, actuals: ['edit', 'change'], postProcessing: 'postProcessBasicListCommandIncludingCache'},
   {command: commandTypes.createList, actuals: ['create'], postProcessing: 'postProcessCreate'},
   {command: commandTypes.clearList, actuals: ['clear', 'empty', 'flush'], postProcessing: 'postProcessBasicListCommandIncludingCache'},

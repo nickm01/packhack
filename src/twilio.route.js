@@ -2,6 +2,7 @@ const twilio = require('twilio')
 const textProcessor = require('./textprocessor')
 const logger = require('winston')
 const commandTypes = require('./commandtypes')
+const logs = require('../model/logs')
 
 const route = (request, response) => {
   const bodyText = request.query['Body'].toLowerCase()
@@ -21,11 +22,13 @@ const route = (request, response) => {
     fromPhoneNumber,
     now: new Date((new Date()).getTime() - 1000 * 60) // 1 minute in the past
   }
-  textProcessor.processTextPromise(data).then(result => {
-    logger.log('info', '*** after processTextpromise', result)
-    cacheListName(result, response) // TODO: Make sure this isn't the case for delete
-    sendSMSResponse(result.responseText, response)
-  })
+  logs.saveNewPromise(data)
+    .then(textProcessor.processTextPromise)
+    .then(result => {
+      logger.log('info', '*** after processTextpromise', result)
+      cacheListName(result, response) // TODO: Make sure this isn't the case for delete
+      sendSMSResponse(result.responseText, response)
+    })
 }
 
 const sendSMSResponse = (responseText, response) => {
