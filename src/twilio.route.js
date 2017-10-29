@@ -29,7 +29,7 @@ const route = (request, response) => {
       cacheListName(result, response) // TODO: Make sure this isn't the case for delete
       sendSMSResponse(result.responseText, response)
     })
-    .then(textProcessor.processTextPromise)
+    .then(logs.saveNewPromise)
 }
 
 const sendSMSResponse = (responseText, response) => {
