@@ -71,7 +71,7 @@ describe('add reminder supplementary text processor', () => {
     it('✅ tomorrow noon to go shopping', () => { shouldMatch('tomorrow noon to go shopping', {dateGMT: 'Mon Jan 02 2017 17:00:00', dateText: 'Monday 12pm, Jan 2nd', title: 'go shopping'}) })
     it('✅ go shopping tomorrow night', () => { shouldMatch('go shopping tomorrow night', {dateGMT: 'Tue Jan 03 2017 02:00:00', dateText: 'Monday 9pm, Jan 2nd', title: 'go shopping'}) })
     it('✅ go shopping yesterday', () => { shouldMatch('go shopping yesterday', {dateGMT: 'Sat Dec 31 2016 05:00:00', dateText: 'Saturday, Dec 31st, 2016', title: 'go shopping'}) })
-    it('✅ Jan 1 2018 morning write new years intentions', () => { shouldMatch('Jan 1 2018 morning write new years intentions', {dateGMT: 'Mon Jan 01 2018 13:00:00', dateText: 'Monday 8am, Jan 1st, 2018', title: 'write new years intentions'}) })
+    it('✅ Jan 1 2018 morning write new years intentions', () => { shouldMatch('Jan 1 2018 morning write new years intentions', {dateGMT: 'Mon Jan 01 2018 12:00:00', dateText: 'Monday 7am, Jan 1st, 2018', title: 'write new years intentions'}) })
     it('✅ next month pay bills', () => { shouldMatch('next month pay bills', {dateGMT: 'Wed Feb 01 2017 05:00:00', dateText: 'Wednesday, Feb 1st', title: 'pay bills'}) })
   })
 
