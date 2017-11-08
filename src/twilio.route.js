@@ -3,6 +3,8 @@ const textProcessor = require('./textprocessor')
 const logger = require('winston')
 const commandTypes = require('./commandtypes')
 const logs = require('../model/logs')
+const smsProcessor = require('./smsprocessor')
+const config = require('../config')
 
 const route = (request, response) => {
   const bodyText = request.query['Body'].toLowerCase()
@@ -30,6 +32,7 @@ const route = (request, response) => {
       cacheListName(result, response) // TODO: Make sure this isn't the case for delete
       sendSMSResponse(result.responseText, response)
     })
+    .then(smsLogging)
 }
 
 const sendSMSResponse = (responseText, response) => {
@@ -48,6 +51,14 @@ const cacheListName = (data, response) => {
   } else {
     logger.log('info', '___twilio.route_cacheListName cache:', data.list)
     response.cookie('listName', data.list, {maxAge: 1000 * 60 * 60 * 72})
+  }
+}
+
+const smsLogging = (data) => {
+  if (config.smsLoggingPhoneNumber) {
+    const sendText = 'LOG:' + data.familyId + ',' + data.fromPerson + ': ' + data.originalText + ' > ' + data.responseText
+    logger.log('info', '___twilio.smsLogging ' + sendText)
+    return smsProcessor.sendSmsPromise(data, config.smsLoggingPhoneNumber, sendText)
   }
 }
 

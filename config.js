@@ -13,5 +13,6 @@ module.exports = {
   authToken: process.env.TWILIO_AUTH_TOKEN || 'TWILIO_AUTH_TOKEN',
   sendingNumber: process.env.TWILIO_NUMBER || 'TWILIO_NUMBER',
   mongodbUri: process.env.MONGODB_URI || 'MONGODB_URI',
+  smsLoggingPhoneNumber: process.env.SMS_LOGGING_PHONE_NUMBER,
   remindersListKey: 'reminders'
 }

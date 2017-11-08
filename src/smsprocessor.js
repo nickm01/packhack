@@ -1,5 +1,5 @@
-var config = require('../config')
-var client = require('twilio')(config.accountSid, config.authToken)
+const config = require('../config')
+const client = require('twilio')(config.accountSid, config.authToken)
 const errors = require('./errors')
 const logger = require('winston')
 
