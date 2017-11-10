@@ -35,6 +35,22 @@ const addListItem = (request, response) => {
 
 const deleteListItem = (request, response) => {
   let listItemName = request.params.item
+  console.log('***** deleteListItem')
+  listItems.deletePromise({list: request.params.list, familyId: 2}, listItemName)
+    .then(result => {
+      response.json({name: listItemName})
+    }, result => {
+      if (result.errorMessage === modelConstants.errorTypes.listItemNotFound) {
+        response.status(404).send('Not found')
+      } else {
+        response.status(500).send('Error')
+      }
+    })
+}
+
+// TODO: May not be needed
+const clearList = (request, response) => {
+  let listItemName = request.params.item
   listItems.deletePromise({list: request.params.list, familyId: 2}, listItemName)
     .then(result => {
       response.json({name: listItemName})
@@ -51,5 +67,6 @@ module.exports = {
   getLists,
   getListItems,
   addListItem,
-  deleteListItem
+  deleteListItem,
+  clearList
 }
