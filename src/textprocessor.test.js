@@ -1037,7 +1037,7 @@ describe('textProcessor + languageProcessor', () => {
       describe('adminSend', () => {
         it('when "**push @someone 2 welcome you!" then show welcome text sms', () => {
           data.originalText = '**push @someone 2 welcome you!'
-          data.bodyTextCased = '**push @someone 2 welcome you!'
+          data.originalTextCased = '**push @someone 2 welcome you!'
           data.phoneNumbers = ['111']
           data.familyId = 1
           familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().callsFake((result) => {
@@ -1059,7 +1059,7 @@ describe('textProcessor + languageProcessor', () => {
 
         it('when "**push @someone 2 Welcome**YOU!" then show welcome text sms', () => {
           data.originalText = '**push @someone 2 welcome@@you!'
-          data.bodyTextCased = '**push @someone 2 Welcome@@YOU!'
+          data.originalTextCased = '**push @someone 2 Welcome@@YOU!'
           data.phoneNumbers = ['111']
           data.familyId = 1
           familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().callsFake((result) => {
@@ -1081,7 +1081,7 @@ describe('textProcessor + languageProcessor', () => {
 
         it('when "**push @all 2 hello" then send welcome text to all', () => {
           data.originalText = '**push @all 2 hello'
-          data.bodyTextCased = '**push @all 2 hello'
+          data.originalTextCased = '**push @all 2 hello'
           data.phoneNumbers = ['111', '222']
           data.familyId = 1
           var callCount = 0
