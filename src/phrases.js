@@ -40,7 +40,7 @@ module.exports = {
   addReminderSuccess: '👍 Set for %%date.',
   dateTimePast: '😕 Sorry, can\'t add a reminder in the past',
   // help
-  help: '🐺 PackHack.\nOrganize your pack, together.\nFor help, check out packhack.us/howto for more details.',
+  help: '🐺 PackHack.\nOrganize your pack, together.\nCheck out packhack.us/howto for more details.\n\nTry commands like\n• create shopping\n• add bananas, eggs\n• get shopping -OR- simply \'shopping\'\n• remove eggs\n• clear shopping\n• remind me tomorrow morning go shopping\n• remind all saturday 10am pick up bread\n• send bob shopping',
   // push intro
   pushIntro: 'Congrats - you\'ve just been signed up for PackHack!\nA better way to co-ordinate your pack.\nType \'hack\' for help',
   // command specific exmaples
@@ -48,10 +48,10 @@ module.exports = {
   getListExample: 'e.g. \'get shopping\', or simply \'shopping\'',
   editListExample: 'e.g. \'edit shopping\'',
   deleteListExample: 'e.g. \'delete shopping\'',
-  addListItemExample: 'e.g. \'#shopping add bread, milk, coffee\'.\nOr simply, \'get shopping\', followed by \'add bread, milk, coffee\'.',
-  removeListItemExample: 'e.g. \'#shopping remove apples and oranges\'.\nOr simply, \'get shopping\', followed by \'remove apples and oranges\'.\nAlternatively, can use edit shopping, followed by remove 1,2 to remove numbered items.',
+  addListItemExample: 'e.g. \'shopping add bread, milk, coffee\'.\nOr simply, \'get shopping\', followed by \'add bread, milk, coffee\'.',
+  removeListItemExample: 'e.g. \'shopping remove apples and oranges\'.\nOr simply, \'get shopping\', followed by \'remove apples and oranges\'.\nAlternatively, can use edit shopping, followed by remove 1,2 to remove numbered items.',
   clearListExample: 'e.g. \'clear shopping\'',
-  sendListExample: 'e.g. \'send @bob shopping\'\nor \'send all #shopping\'',
+  sendListExample: 'e.g. \'send bob shopping\'\nor \'send all shopping\'',
   addReminderExample: 'Use the format remind who what when\ne.g. \'remind bob get milk tomorrow\'\nor \'remind me walk dog thursday morning\'',
   helpExmaple: 'e.g. \'packhack\' for help',
   pushIntroExample: 'e.g. \'**welcome bob 2\',\nwhere 2 is the Pack ID.',
