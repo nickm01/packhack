@@ -55,11 +55,12 @@ const cacheListName = (data, response) => {
 }
 
 const smsLogging = (data) => {
-  logger.log('info', '___twilio.smsLoggingNo: ' + config.smsLoggingPhoneNumber)
+  logger.log('info', '___twilio.route_smsLoggingNo: ' + config.smsLoggingPhoneNumber)
   if (config.smsLoggingPhoneNumber) {
-    logger.log('info', '___twilio.smsLoggingNo2')
+    logger.log('info', '___twilio.route_smsLoggingNo2')
     const sendText = 'LOG:' + data.familyId + ',' + data.fromPerson + ': ' + data.originalText + ' > ' + data.responseText
-    logger.log('info', '___twilio.smsLogging ' + sendText)
+    logger.log('info', '___twilio.route_smsLogging: ' + sendText)
+    console.log(sendText)
     return smsProcessor.sendSmsPromise(data, config.smsLoggingPhoneNumber, sendText)
   }
 }
