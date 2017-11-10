@@ -32,6 +32,7 @@ router.route('/api/lists/:list').get((request, response) => { externalRoute.getL
 // TODO: Need to add /items on the end of these 2
 router.route('/api/lists/:list').post((request, response) => { externalRoute.addListItem(request, response) })
 router.route('/api/lists/:list/items/:item').delete((request, response) => { externalRoute.deleteListItem(request, response) })
+router.route('/api/lists/:list/items').delete((request, response) => { externalRoute.deleteListItem(request, response) })
 
 app.use('/', router)
 
