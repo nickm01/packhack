@@ -59,6 +59,7 @@ const smsLogging = (data) => {
   if (config.smsLoggingPhoneNumber) {
     logger.log('info', '___twilio.route_smsLoggingNo2')
     console.log('hello1')
+    console.log(data)
     const sendText = 'LOG:' + data.familyId + ',' + data.fromPerson + ': ' + data.originalText + ' > ' + data.responseText
     console.log('hello2')
     logger.log('info', '___twilio.route_smsLogging: ' + sendText)
