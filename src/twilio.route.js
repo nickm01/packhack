@@ -31,6 +31,7 @@ const route = (request, response) => {
       logger.log('info', '*** after processTextpromise', result)
       cacheListName(result, response) // TODO: Make sure this isn't the case for delete
       sendSMSResponse(result.responseText, response)
+      return result
     })
     .then(smsLogging)
 }
@@ -59,7 +60,6 @@ const smsLogging = (data) => {
   if (config.smsLoggingPhoneNumber) {
     logger.log('info', '___twilio.route_smsLoggingNo2')
     console.log('hello1')
-    console.log(data)
     const sendText = 'LOG:' + data.familyId + ',' + data.fromPerson + ': ' + data.originalText + ' > ' + data.responseText
     console.log('hello2')
     logger.log('info', '___twilio.route_smsLogging: ' + sendText)
