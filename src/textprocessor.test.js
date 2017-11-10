@@ -1034,7 +1034,7 @@ describe('textProcessor + languageProcessor', () => {
         })
       })
 
-      describe.only('adminSend', () => {
+      describe('adminSend', () => {
         it('when "**push @someone 2 welcome you!" then show welcome text sms', () => {
           data.originalText = '**push @someone 2 welcome you!'
           data.phoneNumbers = ['111']
