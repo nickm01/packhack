@@ -55,6 +55,7 @@ const cacheListName = (data, response) => {
 }
 
 const smsLogging = (data) => {
+  logger.log('info', '___twilio.smsLoggingNo: ' + config.smsLoggingPhoneNumber)
   if (config.smsLoggingPhoneNumber) {
     const sendText = 'LOG:' + data.familyId + ',' + data.fromPerson + ': ' + data.originalText + ' > ' + data.responseText
     logger.log('info', '___twilio.smsLogging ' + sendText)
