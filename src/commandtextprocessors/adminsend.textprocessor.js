@@ -5,7 +5,10 @@ const Q = require('q')
 const logger = require('winston')
 
 const processResponseTextPromise = (data) => {
-  data.sendText = stringProcessor.stringToWords(data.supplementaryText).splice(1).join(' ')
+  let uncasedMessage = stringProcessor.stringToWords(data.bodyTextCased).splice(3).join(' ')
+  let replaceNewLines = uncasedMessage.replace(/@@/g, '\n')
+  console.log(replaceNewLines)
+  data.sendText = replaceNewLines
   return sendSms(data)
     .then(result => {
       data.responseText = phrases.success

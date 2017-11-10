@@ -7,7 +7,8 @@ const smsProcessor = require('./smsprocessor')
 const config = require('../config')
 
 const route = (request, response) => {
-  const bodyText = request.query['Body'].toLowerCase()
+  const bodyTextCased = request.query['Body'].toLowerCase()
+  const bodyText = bodyTextCased.toLowerCase()
   const fromPhoneNumber = request.query['From']
   logger.log('info', '*** Twilio From:' + fromPhoneNumber + ' Message:' + bodyText)
 
@@ -20,6 +21,7 @@ const route = (request, response) => {
   // MAIN LOGIC
   const data = {
     originalText: bodyText,
+    bodyTextCased,
     cachedListName,
     fromPhoneNumber,
     now: new Date((new Date()).getTime() - 1000 * 60) // 1 minute in the past
