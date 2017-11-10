@@ -40,7 +40,7 @@ module.exports = {
   addReminderSuccess: '👍 Set for %%date.',
   dateTimePast: '😕 Sorry, can\'t add a reminder in the past',
   // help
-  help: '🐺 PackHack.\nOrganize your pack, together.\nCheck out packhack.us/howto for more details.\nTry commands like:\n• create shopping (or any other list name)\n• add bananas, eggs (to recent list)\n• get shopping -OR- simply \'shopping\'\n• remove eggs\n• clear shopping\n• remind me tomorrow morning to go shopping\n• remind all saturday 10am pick up bread\n• send bob shopping',
+  help: '🐺 PackHack.\nOrganize your pack, together.\nCheck out packhack.us/howto for more details.\nTry commands like:\n• create shopping (or any other list name)\n• add bananas, eggs (to recent list)\n• get shopping -OR- simply \'shopping\'\n• get lists\n• remove eggs (from recent list)\n• clear shopping\n• remind me tomorrow morning to go shopping\n• remind all saturday 10am pick up bread\n• send bob shopping',
   // push intro
   pushIntro: 'Congrats - you\'ve just been signed up for PackHack!\nA better way to co-ordinate your pack.\nType \'hack\' for help',
   // command specific exmaples
