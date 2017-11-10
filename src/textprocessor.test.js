@@ -1033,6 +1033,61 @@ describe('textProcessor + languageProcessor', () => {
           return shouldRespondWith(phrases.noPerson)
         })
       })
+
+      describe.only('adminSend', () => {
+        it('when "**push @someone 2 welcome you!" then show welcome text sms', () => {
+          data.originalText = '**push @someone 2 welcome you!'
+          data.phoneNumbers = ['111']
+          data.familyId = 1
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().callsFake((result) => {
+            logger.log('debug', '___retrievePersonPhoneNumbersPromiseMock')
+            result.familyId.should.equal(2)
+            result.person.should.equal('someone')
+            return Q.resolve(data)
+          })
+          sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+            logger.log('debug', '___sendSmsPromiseStub')
+            to.should.equal('111')
+            message.should.equal('welcome you!')
+            return Q.resolve(data)
+          })
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledOnce(sendSmsPromiseStub)
+          })
+        })
+
+        it('when "**push @all 2 hello" then send welcome text to all', () => {
+          data.originalText = '**push @all 2 hello'
+          data.phoneNumbers = ['111', '222']
+          data.familyId = 1
+          var callCount = 0
+          familyMemberMock.expects('retrievePersonPhoneNumbersPromise').once().callsFake((result) => {
+            logger.log('debug', '___retrievePersonPhoneNumbersPromiseMock')
+            result.familyId.should.equal(2)
+            result.person.should.equal('all')
+            return Q.resolve(data)
+          })
+          sendSmsPromiseStub = sinon.stub(smsProcessor, 'sendSmsPromise').callsFake((data, to, message) => {
+            logger.log('debug', '___sendSmsPromiseStub')
+            callCount++
+            if (callCount === 1) {
+              to.should.equal('111')
+            } else {
+              to.should.equal('222')
+            }
+            message.should.equal('hello')
+            return Q.resolve(data)
+          })
+          return shouldRespondWith(phrases.success).then(data => {
+            sinon.assert.calledTwice(sendSmsPromiseStub)
+          })
+        })
+
+        it('when "**push" then should respond with error', () => {
+          data.originalText = '**push'
+          return shouldRespondWith(phrases.generalError)
+        })
+      })
     })
   })
 

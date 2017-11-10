@@ -9,6 +9,7 @@ const commandTypes = require('./commandtypes')
 const phrases = require('./phrases')
 const finalResponseTextProcessor = require('./finalresponsetextprocessor')
 const logger = require('winston')
+const stringProcessor = require('./stringprocessor')
 
 const processTextPromise = data => {
   logger.log('debug', '___textprocessor_processTextPromise', data)
@@ -47,8 +48,9 @@ const conditionallyValidatePersonExistsAndRetrievePhoneNumbers = (data) => {
     return data
   } else if (data.person) {
     logger.log('debug', 'not me')
-    if (data.command === commandTypes.pushIntro) {
-      data.familyId = Number(data.supplementaryText)
+    if (data.command === commandTypes.pushIntro ||
+        data.command === commandTypes.adminSend) {
+      data.familyId = Number(stringProcessor.stringToWords(data.supplementaryText)[0])
     }
     return familyMembers.retrievePersonPhoneNumbersPromise(data)
   } else {
