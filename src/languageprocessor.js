@@ -19,7 +19,8 @@ const commandData = [
   {command: commandTypes.sendList, actuals: ['send'], postProcessing: 'postProcessSend'},
   {command: commandTypes.addReminder, actuals: ['remind'], postProcessing: 'postProcessAddReminder'},
   {command: commandTypes.help, actuals: ['help', 'packhack', 'assist', '?', 'intro', 'hack']},
-  {command: commandTypes.pushIntro, actuals: ['**welcome'], postProcessing: 'postProcessPushIntro'}
+  {command: commandTypes.pushIntro, actuals: ['**welcome'], postProcessing: 'postProcessPushIntro'},
+  {command: commandTypes.adminSend, actuals: ['**push'], postProcessing: 'postProcessAdminSend'}
 ]
 
 // MAIN PROCESS
@@ -228,6 +229,15 @@ LanguageProcessorResult.prototype.postProcessPushIntro = function () {
   this.checkNoPerson()
   this.setPersonFromWord(this.words[1])
   this.supplementaryText = this.words[2]
+  return this
+}
+
+LanguageProcessorResult.prototype.postProcessAdminSend = function () {
+  if (this.words.length < 4) {
+    throw new LanguageProcessorError(errors.errorTypes.generalError, this)
+  }
+  this.setPersonFromWord(this.words[1])
+  this.supplementaryText = this.words.splice(2).join(' ')
   return this
 }
 

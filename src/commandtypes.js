@@ -12,5 +12,6 @@ module.exports = {
   sendList: 'sendList',
   addReminder: 'addReminder',
   help: 'help',
-  pushIntro: 'pushIntro'
+  pushIntro: 'pushIntro',
+  adminSend: 'adminSend'
 }

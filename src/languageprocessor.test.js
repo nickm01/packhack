@@ -193,6 +193,12 @@ describe('languageProcessor', function () {
     it('❌ **welcome', function () { textShouldError('**welcome', {command: command, message: errors.errorTypes.noPerson}) })
   })
 
+  describe('adminSend', function () {
+    const command = commandTypes.adminSend
+    it('✅ **push someone 2 welcome', function () { textShouldResult('**push someone 2 welcome', {command: command, person: 'someone', supplementaryText: '2 welcome'}) })
+    it('❌ **push', function () { textShouldError('**push', {command: command, message: errors.errorTypes.generalError}) })
+  })
+
   describe('promsify languageProcessor', function () {
     it('resolve', function () {
       return Q.resolve(languageProcessor.processLanguagePromise({originalText: 'get list'}))
