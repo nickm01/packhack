@@ -134,7 +134,7 @@ describe('lists', () => {
     it('should succeed for normal situation', () => {
       const data = {list: 'mylist', familyId: 123}
       sinon.stub(listsPromises, 'deletePromise').callsFake(() => {
-        return Q.resolve(null)
+        return Q.resolve(data)
       })
       return lists.deletePromise(data)
         .then(result => {
@@ -154,6 +154,19 @@ describe('lists', () => {
           should.fail('expecting error')
         }, result => {
           result.errorMessage.should.equal(modelConstants.errorTypes.generalError)
+        })
+    })
+
+    it('should fail for zero results', () => {
+      const data = {list: 'mylist', familyId: 123, result: {n: 0}}
+      sinon.stub(listsPromises, 'deletePromise').callsFake(() => {
+        return Q.resolve(data)
+      })
+      return lists.deletePromise(data)
+        .then(result => {
+          should.fail('expecting error')
+        }, result => {
+          result.errorMessage.should.equal(modelConstants.errorTypes.listNotFound )
         })
     })
   })
