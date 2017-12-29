@@ -66,6 +66,7 @@ const deleteListItem = (request, response) => {
 module.exports = {
   getLists,
   getListItems,
+  deleteList,
   addListItem,
   deleteListItem
 }
