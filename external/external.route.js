@@ -23,6 +23,20 @@ const getListItems = (request, response) => {
     })
 }
 
+const deleteList = (request, response) => {
+  let list = request.params.list
+  lists.deletePromise({list, familyId: 2})
+    .then(result => {
+      response.json({name: list})
+  }, result => {
+    if (result.errorMessage === modelConstants.errorTypes.listNotFound) {
+      response.status(404).send('Not found')
+    } else {
+      response.status(500).send('Error')
+    }
+  })
+}
+
 const addListItem = (request, response) => {
   let listItemName = request.body.name
   // TODO: deal with duplicates

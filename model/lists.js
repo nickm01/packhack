@@ -50,7 +50,12 @@ const deletePromise = (data) => {
   logger.log('debug', '___lists_deletePromise', data)
   return listsPromises.deletePromise(data.list, data.familyId)
     .then(result => {
-      return data
+      if (result.result && result.result.n === 0) {
+        data.errorMessage = modelConstants.errorTypes.listNotFound
+        throw data
+      } else {
+        return data
+      }
     }, (error) => {
       data.errorMessage = modelConstants.errorTypes.generalError
       data.systemError = error
