@@ -13,13 +13,13 @@ const getLists = (request, response) => {
     })
 }
 
-const getListItems = (request, response) => {
-  listItems.findPromise({list: request.params.list, familyId: 2})
+const addList = (request, response) => {
+  let listName = request.body.name
+  // TODO: deal with duplicates
+  lists.saveNewPromise({list: request.params.list, familyId: 2})
     .then(result => {
-      const listItemNames = result.listItems.map(listItem => {
-        return {name: listItem.listItemName}
-      })
-      response.json(listItemNames)
+      // TODO: respond with 201
+      response.json({name: listItemName})
     })
 }
 
@@ -35,6 +35,16 @@ const deleteList = (request, response) => {
       response.status(500).send('Error')
     }
   })
+}
+
+const getListItems = (request, response) => {
+  listItems.findPromise({list: request.params.list, familyId: 2})
+    .then(result => {
+      const listItemNames = result.listItems.map(listItem => {
+        return {name: listItem.listItemName}
+      })
+      response.json(listItemNames)
+    })
 }
 
 const addListItem = (request, response) => {
@@ -65,8 +75,9 @@ const deleteListItem = (request, response) => {
 
 module.exports = {
   getLists,
-  getListItems,
+  addList,
   deleteList,
+  getListItems,
   addListItem,
   deleteListItem
 }
