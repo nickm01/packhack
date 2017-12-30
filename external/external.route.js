@@ -14,9 +14,9 @@ const getLists = (request, response) => {
 }
 
 const addList = (request, response) => {
-  let listName = request.body.name
+  let list = request.body.name
   // TODO: deal with duplicates
-  lists.saveNewPromise({list: request.params.list, familyId: 2})
+  lists.saveNewPromise({list, familyId: 2})
     .then(result => {
       // TODO: respond with 201
       response.json({name: listItemName})
