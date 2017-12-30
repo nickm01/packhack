@@ -19,7 +19,7 @@ const addList = (request, response) => {
   lists.saveNewPromise({list, familyId: 2})
     .then(result => {
       // TODO: respond with 201
-      response.json({name: listItemName})
+      response.json({name: list})
     })
 }
 
