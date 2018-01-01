@@ -3,6 +3,7 @@ const errorTypes = {
   duplicateList: 'duplicateList',
   generalError: 'generalError',
   listItemNotFound: 'listItemNotFound',
+  duplicateListItem: 'duplicateListItem',
   personNotFound: 'personNotFound'
 }
 

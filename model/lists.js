@@ -40,12 +40,9 @@ const saveNewPromise = (data) => {
       data.listDescription = list.listDescription
       return data
     }, (error) => {
-      console.log(error)
       if (error.message ===  modelConstants.errorTypes.duplicateList) {
-        console.log("xxx duplicate")
         data.errorMessage = error.message
       } else {
-        console.log("xxx general")
         data.errorMessage = modelConstants.errorTypes.generalError
       }
       data.systemError = error

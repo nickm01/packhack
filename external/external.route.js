@@ -3,6 +3,12 @@ const lists = require('../model/lists')
 const listItems = require('../model/listitems')
 const modelConstants = require('../model/modelconstants')
 
+const errorMessages = {
+  notFound: 'Not found',
+  alreadyExists: 'Already exists',
+  generalError: 'Error'
+}
+
 const getLists = (request, response) => {
   lists.findAllPromise({familyId: 2})
     .then(result => {
@@ -10,24 +16,22 @@ const getLists = (request, response) => {
         return {name: list.listKey}
       })
       response.json(listNames)
-    })
+    }, result => {
+      response.status(404).send(errorMessages.generalError)
+    }
+  )
 }
 
 const addList = (request, response) => {
   let list = request.body.name
   lists.saveNewPromise({list, familyId: 2})
     .then(result => {
-      console.log('>>>success')
       response.json({name: list})
     }, result => {
-      console.log('>>>error!!!')
-      console.log(result)
       if (result.errorMessage === modelConstants.errorTypes.duplicateList) {
-        console.log('>>>409')
-        response.status(409).send('List alredy exists')
+        response.status(409).send(errorMessages.alreadyExists)
       } else {
-        console.log('>>>500')
-        response.status(500).send('Error')
+        response.status(404).send(errorMessages.generalError)
       }
     }
   )
@@ -40,9 +44,9 @@ const deleteList = (request, response) => {
       response.json({name: list})
     }, result => {
       if (result.errorMessage === modelConstants.errorTypes.listNotFound) {
-        response.status(404).send('Not found')
+        response.status(404).send(errorMessages.notFound)
       } else {
-        response.status(500).send('Error')
+        response.status(404).send(errorMessages.generalError)
       }
     }
   )
@@ -55,7 +59,10 @@ const getListItems = (request, response) => {
         return {name: listItem.listItemName}
       })
       response.json(listItemNames)
-    })
+    }, result => {
+      response.status(404).send(errorMessages.generalError)
+    }
+  )
 }
 
 const addListItem = (request, response) => {
@@ -63,23 +70,27 @@ const addListItem = (request, response) => {
   // TODO: deal with duplicates
   listItems.saveNewPromise({list: request.params.list, familyId: 2, listItemName: listItemName})
     .then(result => {
-      // TODO: respond with 201
       response.json({name: listItemName})
-    })
+    }, result => {
+      if (result.errorMessage === modelConstants.errorTypes.duplicateListItem) {
+        response.status(409).send(errorMessages.alreadyExists)
+      } else {
+        response.status(404).send(errorMessages.generalError)
+      }
+    }
 }
 
 // Can handle delete and clear (delete all)
 const deleteListItem = (request, response) => {
   let listItemName = request.params.item
-  console.log('***** deleteListItem')
   listItems.deletePromise({list: request.params.list, familyId: 2}, listItemName)
     .then(result => {
       response.json({name: listItemName})
     }, result => {
       if (result.errorMessage === modelConstants.errorTypes.listItemNotFound) {
-        response.status(404).send('Not found')
+        response.status(404).send(errorMessages.notFound)
       } else {
-        response.status(500).send('Error')
+        response.status(404).send(errorMessages.generalError)
       }
     })
 }

@@ -36,14 +36,22 @@ const Lists = mongoose.model('Lists', listsSchema, 'Lists')
 
 // ListItems
 const listItemsSchema = mongoose.Schema({
-  'listKey': String,
-  'listItemName': String,
-  'familyId': Number,
+  'listKey': { 'type': String, 'required': true },
+  'listItemName': { 'type': String, 'required': true },
+  'familyId':  { 'type': Number, 'required': true },
   'reminderWhen': String,
   'reminderUserId': String,
   'reminderTitle': String,
   'reminderListKey': String
 }, { versionKey: false })
+listItemsSchema.index({ 'listKey': 1, 'listItemName': 1, 'familyId': 1}, { 'unique': true });
+listItemsSchema.post('save', function(error, doc, next) {
+  if (error.name === 'MongoError' && error.code === 11000) {
+    next(new Error(modelConstants.errorTypes.duplicateListItem));
+  } else {
+    next(error);
+  }
+})
 const ListItems = mongoose.model('ListItems', listItemsSchema, 'ListItems')
 
 // FamilyMembers
