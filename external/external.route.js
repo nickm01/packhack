@@ -78,6 +78,7 @@ const addListItem = (request, response) => {
         response.status(404).send(errorMessages.generalError)
       }
     }
+  )
 }
 
 // Can handle delete and clear (delete all)
