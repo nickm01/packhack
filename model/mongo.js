@@ -19,10 +19,11 @@ const intialize = () => {
 
 // Lists
 const listsSchema = mongoose.Schema({
-  'listKey': String,
+  'listKey': { 'type': String, 'required': true },
   'listDescription': String,
-  'familyId': Number
+  'familyId': { 'type': String, 'required': true },
 }, { versionKey: false })
+listsSchema.index({ 'listKey': 1, 'familyId': 1}, { 'unique': true });
 const Lists = mongoose.model('Lists', listsSchema, 'Lists')
 
 // ListItems

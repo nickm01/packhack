@@ -42,6 +42,7 @@ const saveNewPromise = (data) => {
     }, (error) => {
       data.errorMessage = modelConstants.errorTypes.generalError
       data.systemError = error
+      console.log(error)
       throw data
     })
 }
