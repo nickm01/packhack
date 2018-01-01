@@ -21,7 +21,7 @@ const intialize = () => {
 const listsSchema = mongoose.Schema({
   'listKey': { 'type': String, 'required': true },
   'listDescription': String,
-  'familyId': { 'type': String, 'required': true },
+  'familyId': { 'type': Number, 'required': true },
 }, { versionKey: false })
 listsSchema.index({ 'listKey': 1, 'familyId': 1}, { 'unique': true });
 const Lists = mongoose.model('Lists', listsSchema, 'Lists')
