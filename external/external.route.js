@@ -15,12 +15,17 @@ const getLists = (request, response) => {
 
 const addList = (request, response) => {
   let list = request.body.name
-  // TODO: deal with duplicates
   lists.saveNewPromise({list, familyId: 2})
     .then(result => {
-      // TODO: respond with 201
       response.json({name: list})
-    })
+    }, result => {
+      if (result.errorMessage === modelConstants.errorTypes.duplicateList) {
+        response.status(409).send('List alredy exists')
+      } else {
+        response.status(500).send('Error')
+      }
+    }
+  )
 }
 
 const deleteList = (request, response) => {
@@ -28,13 +33,14 @@ const deleteList = (request, response) => {
   lists.deletePromise({list, familyId: 2})
     .then(result => {
       response.json({name: list})
-  }, result => {
-    if (result.errorMessage === modelConstants.errorTypes.listNotFound) {
-      response.status(404).send('Not found')
-    } else {
-      response.status(500).send('Error')
+    }, result => {
+      if (result.errorMessage === modelConstants.errorTypes.listNotFound) {
+        response.status(404).send('Not found')
+      } else {
+        response.status(500).send('Error')
+      }
     }
-  })
+  )
 }
 
 const getListItems = (request, response) => {
