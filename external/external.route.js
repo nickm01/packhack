@@ -23,8 +23,10 @@ const addList = (request, response) => {
       console.log('>>>error!!!')
       console.log(result)
       if (result.errorMessage === modelConstants.errorTypes.duplicateList) {
+        console.log('>>>409')
         response.status(409).send('List alredy exists')
       } else {
+        console.log('>>>500')
         response.status(500).send('Error')
       }
     }
