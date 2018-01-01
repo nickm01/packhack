@@ -19,14 +19,18 @@ const saveNewPromise = (data) => {
   logger.log('debug', '___listitems_saveNewPromise', data)
   return listItemsPromises.saveNewPromise(data.list, data.familyId, data.listItemName)
     .then(list => {
+      print(">>> success")
       return data
     }, (error) => {
-      if (error.message ===  modelConstants.errorTypes.duplicateList) {
+      print(">>> error")
+      if (error.message ===  modelConstants.errorTypes.duplicateListItem) {
+        print(">>> error dup")
         data.errorMessage = error.message
       } else {
+        print(">>> error general")
         data.errorMessage = modelConstants.errorTypes.generalError
-        data.systemError = error
       }
+      data.systemError = error
       throw data
     })
 }
