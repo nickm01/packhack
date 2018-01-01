@@ -17,8 +17,11 @@ const addList = (request, response) => {
   let list = request.body.name
   lists.saveNewPromise({list, familyId: 2})
     .then(result => {
+      console.log('>>>success')
       response.json({name: list})
     }, result => {
+      console.log('>>>error!!!')
+      console.log(result)
       if (result.errorMessage === modelConstants.errorTypes.duplicateList) {
         response.status(409).send('List alredy exists')
       } else {
