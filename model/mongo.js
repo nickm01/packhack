@@ -2,6 +2,7 @@ const config = require('../config')
 const mongoose = require('mongoose')
 mongoose.Promise = require('q').Promise
 const logger = require('winston')
+const modelConstants = require('./modelconstants')
 
 mongoose.models = {}
 mongoose.modelSchemas = {}
@@ -24,6 +25,13 @@ const listsSchema = mongoose.Schema({
   'familyId': { 'type': Number, 'required': true },
 }, { versionKey: false })
 listsSchema.index({ 'listKey': 1, 'familyId': 1}, { 'unique': true });
+listsSchema.post('save', function(error, doc, next) {
+  if (error.name === 'MongoError' && error.code === 11000) {
+    next(new Error(modelConstants.errorTypes.duplicateList));
+  } else {
+    next(error);
+  }
+})
 const Lists = mongoose.model('Lists', listsSchema, 'Lists')
 
 // ListItems

@@ -21,8 +21,13 @@ const saveNewPromise = (data) => {
     .then(list => {
       return data
     }, (error) => {
-      data.errorMessage = modelConstants.errorTypes.generalError
-      data.systemError = error
+      console.log(error)
+      if (error ===  modelConstants.errorTypes.duplicateList) {
+        data.errorMessage = error
+      } else {
+        data.errorMessage = modelConstants.errorTypes.generalError
+        data.systemError = error
+      }
       throw data
     })
 }
