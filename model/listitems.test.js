@@ -78,6 +78,9 @@ describe('list items', () => {
         .then(result => {
           should.fail('expecting error')
         }, result => {
+          console.log('1')
+          console.log(result)
+          console.log('2')
           result.errorMessage.should.equal(modelConstants.errorTypes.generalError)
         })
     })
