@@ -15,6 +15,7 @@ const intialize = () => {
   db.on('error', console.error.bind(console, 'connection error:'))
   db.once('open', function () {
     logger.log('info', 'DB Connected')
+    console.log(db.applications.getIndexes())
   })
 }
 
@@ -24,12 +25,12 @@ const listsSchema = mongoose.Schema({
   'listDescription': String,
   'familyId': { 'type': Number, 'required': true },
 }, { versionKey: false })
-listsSchema.index({ 'listKey': 1, 'familyId': 1}, { 'unique': true });
+listsSchema.index({ 'listKey': 1, 'familyId': 1}, { 'unique': true })
 listsSchema.post('save', function(error, doc, next) {
   if (error.name === 'MongoError' && error.code === 11000) {
-    next(new Error(modelConstants.errorTypes.duplicateList));
+    next(new Error(modelConstants.errorTypes.duplicateList))
   } else {
-    next(error);
+    next(error)
   }
 })
 const Lists = mongoose.model('Lists', listsSchema, 'Lists')
@@ -44,12 +45,12 @@ const listItemsSchema = mongoose.Schema({
   'reminderTitle': String,
   'reminderListKey': String
 }, { versionKey: false })
-listItemsSchema.index({ 'listKey': 1, 'listItemName': 1, 'familyId': 1}, { 'unique': true });
+listItemsSchema.index({ 'listKey': 1, 'listItemName': 1, 'familyId': 1}, { 'unique': true })
 listItemsSchema.post('save', function(error, doc, next) {
   if (error.name === 'MongoError' && error.code === 11000) {
-    next(new Error(modelConstants.errorTypes.duplicateListItem));
+    next(new Error(modelConstants.errorTypes.duplicateListItem))
   } else {
-    next(error);
+    next(error)
   }
 })
 const ListItems = mongoose.model('ListItems', listItemsSchema, 'ListItems')
