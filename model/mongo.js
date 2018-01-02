@@ -15,6 +15,13 @@ const intialize = () => {
   db.on('error', console.error.bind(console, 'connection error:'))
   db.once('open', function () {
     logger.log('info', 'DB Connected')
+    console.log(db)
+    console.log(db.ListItems)
+    console.log(db.ListItems.aggregate(
+    {"$group" : { "_id": "$listItemName", "count": { "$sum": 1 } } },
+    {"$match": {"_id" :{ "$ne" : null } , "count" : {"$gt": 1} } },
+    {"$project": {"listItemName" : "$_id", "_id" : 0} }
+    ))
   })
 }
 
