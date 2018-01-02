@@ -15,7 +15,11 @@ const intialize = () => {
   db.on('error', console.error.bind(console, 'connection error:'))
   db.once('open', function () {
     logger.log('info', 'DB Connected')
-    console.log(db.applications.getIndexes())
+    db.getCollectionNames().forEach(function(collection) {
+      indexes = db[collection].getIndexes();
+      console.log("Indexes for " + collection + ":");
+      console.log(indexes)
+    })
   })
 }
 
