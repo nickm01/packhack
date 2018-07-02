@@ -21,6 +21,8 @@ router.get('/', (req, res) => {
   res.json({'error': false, 'message': 'available'})
 })
 
+router.get('/apple-app-site-association', (req, res) => res.send('{"webcredentials": {"apps": [ "99Q94FU45M.com.ridecell.ridecell-linkapp" ]}}'))
+
 router.route('/twilio')
   .get((request, response) => {
     twilioRoute.route(request, response)
@@ -36,8 +38,6 @@ router.route('/api/lists/:list').delete((request, response) => { externalRoute.d
 router.route('/api/lists/:list').post((request, response) => { externalRoute.addListItem(request, response) })
 router.route('/api/lists/:list/items/:item').delete((request, response) => { externalRoute.deleteListItem(request, response) })
 router.route('/api/lists/:list/items').delete((request, response) => { externalRoute.deleteListItem(request, response) })
-
-app.use('/', router)
 
 app.listen(app.get('port'), () => {
   logger.log('info', '*** Node app is running on port', app.get('port'))
