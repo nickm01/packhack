@@ -21,12 +21,15 @@ router.get('/', (req, res) => {
   res.json({'error': false, 'message': 'available'})
 })
 
-router.get('/apple-app-site-association', (req, res) => res.send('{"webcredentials": {"apps": [ "99Q94FU45M.com.ridecell.ridecell-linkapp" ]}}'))
-
 router.route('/twilio')
   .get((request, response) => {
     twilioRoute.route(request, response)
   })
+
+router.route('/apple-app-site-association')
+  .get((request, response) => {
+    response.send('{"webcredentials": {"apps": [ "99Q94FU45M.com.ridecell.ridecell-linkapp" ]}}')
+})
 
 // External API Routes
 // API Design based on https://hackernoon.com/restful-api-design-with-node-js-26ccf66eab09
