@@ -26,10 +26,10 @@ router.route('/twilio')
     twilioRoute.route(request, response)
   })
 
-// router.route('/apple-app-site-association')
-//   .get((request, response) => {
-//     response.send('{"webcredentials": {"apps": [ "99Q94FU45M.com.ridecell.ridecell-linkapp" ]}}')
-//   })
+router.route('/apple-app-site-association')
+  .get((request, response) => {
+    response.send('{"webcredentials": {"apps": [ "99Q94FU45M.com.ridecell.ridecell-linkapp" ]}}')
+  })
 
 // External API Routes
 // API Design based on https://hackernoon.com/restful-api-design-with-node-js-26ccf66eab09
@@ -41,6 +41,8 @@ router.route('/api/lists/:list').delete((request, response) => { externalRoute.d
 router.route('/api/lists/:list').post((request, response) => { externalRoute.addListItem(request, response) })
 router.route('/api/lists/:list/items/:item').delete((request, response) => { externalRoute.deleteListItem(request, response) })
 router.route('/api/lists/:list/items').delete((request, response) => { externalRoute.deleteListItem(request, response) })
+
+app.use('/', router)
 
 app.listen(app.get('port'), () => {
   logger.log('info', '*** Node app is running on port', app.get('port'))
