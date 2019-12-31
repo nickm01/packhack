@@ -104,10 +104,10 @@ const authenticatePhone = (request, response) => {
   const phoneNumber = request.params.phone
   const verificationNumber = (Math.floor * Math.random() * 90000) + 10000
   const text = verificationNumber + phrases.verification
-  logger.log('debug', '----authenticatePhone ' + text + ' ' + phoneNumber)
+  logger.log('info', '----authenticatePhone ' + text + ' ' + phoneNumber)
   smsProcessor.sendSmsPromise({}, phoneNumber, text)
     .then(() => {
-      logger.log('debug', '----authenticatePhone success')
+      logger.log('info', '----authenticatePhone success')
       response.json({'phone': phoneNumber})
     })
 }
