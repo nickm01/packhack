@@ -3,7 +3,7 @@ const lists = require('../model/lists')
 const listItems = require('../model/listitems')
 const modelConstants = require('../model/modelconstants')
 const smsProcessor = require('../src/smsprocessor')
-const phrases = require('./../phrases')
+const phrases = require('../src/phrases')
 
 const errorMessages = {
   notFound: 'Not found',
