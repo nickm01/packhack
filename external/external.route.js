@@ -4,6 +4,7 @@ const listItems = require('../model/listitems')
 const modelConstants = require('../model/modelconstants')
 const smsProcessor = require('../src/smsprocessor')
 const phrases = require('../src/phrases')
+const logger = require('winston')
 
 const errorMessages = {
   notFound: 'Not found',
@@ -103,8 +104,10 @@ const authenticatePhone = (request, response) => {
   const phoneNumber = request.params.phone
   const verificationNumber = (Math.floor * Math.random() * 90000) + 10000
   const text = verificationNumber + phrases.verification
+  logger.log('debug', '----authenticatePhone ' + text + ' ' + phoneNumber)
   smsProcessor.sendSmsPromise({}, phoneNumber, text)
     .then(() => {
+      logger.log('debug', '----authenticatePhone success')
       response.json({'phone': phoneNumber})
     })
 }
