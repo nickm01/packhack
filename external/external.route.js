@@ -102,9 +102,10 @@ const deleteListItem = (request, response) => {
 // Can handle delete and clear (delete all)
 const authenticatePhone = (request, response) => {
   const phoneNumber = request.params.phone
-  const verificationNumber = (Math.floor * Math.random() * 90000) + 10000
+  const verificationNumber = Math.floor(Math.random() * 90000) + 10000
   const text = verificationNumber + phrases.verification
   logger.log('info', '----authenticatePhone ' + text + ' ' + phoneNumber)
+  logger.log('info', request)
   smsProcessor.sendSmsPromise({}, phoneNumber, text)
     .then(() => {
       logger.log('info', '----authenticatePhone success')
