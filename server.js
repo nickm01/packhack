@@ -42,6 +42,8 @@ router.route('/api/lists/:list').post((request, response) => { externalRoute.add
 router.route('/api/lists/:list/items/:item').delete((request, response) => { externalRoute.deleteListItem(request, response) })
 router.route('/api/lists/:list/items').delete((request, response) => { externalRoute.deleteListItem(request, response) })
 
+router.route('/api/authenticate/phone').post((request, response) => { externalRoute.authenticatePhone(request, response) })
+
 app.use('/', router)
 
 app.listen(app.get('port'), () => {

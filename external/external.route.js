@@ -2,6 +2,8 @@
 const lists = require('../model/lists')
 const listItems = require('../model/listitems')
 const modelConstants = require('../model/modelconstants')
+const smsProcessor = require('../src/smsprocessor')
+const phrases = require('./../phrases')
 
 const errorMessages = {
   notFound: 'Not found',
@@ -96,11 +98,23 @@ const deleteListItem = (request, response) => {
     })
 }
 
+// Can handle delete and clear (delete all)
+const authenticatePhone = (request, response) => {
+  const phoneNumber = request.params.phone
+  const verificationNumber = (Math.floor * Math.random() * 90000) + 10000
+  const text = verificationNumber + phrases.verification
+  smsProcessor.sendSmsPromise({}, phoneNumber, text)
+    .then(() => {
+      response.json({'phone': phoneNumber})
+    })
+}
+
 module.exports = {
   getLists,
   addList,
   deleteList,
   getListItems,
   addListItem,
-  deleteListItem
+  deleteListItem,
+  authenticatePhone
 }
