@@ -101,7 +101,7 @@ const deleteListItem = (request, response) => {
 
 // Can handle delete and clear (delete all)
 const authenticatePhone = (request, response) => {
-  const phoneNumber = request.params.phone
+  const phoneNumber = request.body.phone
   const verificationNumber = Math.floor(Math.random() * 90000) + 10000
   const text = verificationNumber + phrases.verification
   logger.log('info', '----authenticatePhone ' + text + ' ' + phoneNumber)
