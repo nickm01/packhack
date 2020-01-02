@@ -15,7 +15,8 @@ const errorTypes = {
   generalError: 'generalError',
   noDateTime: 'noDateTime',
   noTitle: 'noTitle',
-  dateTimePast: 'dateTimePast'
+  dateTimePast: 'dateTimePast',
+  invalidPhoneNumber: 'invalidPhoneNumber'
 }
 
 module.exports = {
