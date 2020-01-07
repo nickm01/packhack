@@ -114,6 +114,10 @@ const authenticatePhone = (request, response) => {
       logger.log('info', '----authenticatePhone success')
       response.json({'phone': phoneNumber})
     })
+    .catch(result => {
+      logger.log('info', '----authenticatePhone FAILURE')
+      logger.log('info', result)      
+    })
 }
 
 module.exports = {
