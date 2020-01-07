@@ -108,15 +108,14 @@ const authenticatePhone = (request, response) => {
   const verificationNumber = Math.floor(Math.random() * 90000) + 10000
   const text = verificationNumber + phrases.verification
   logger.log('info', '----authenticatePhone ' + text + ' ' + phoneNumber)
-  logger.log('info', request)
   smsProcessor.sendSmsPromise({}, phoneNumber, text)
     .then(result => {
       logger.log('info', '----authenticatePhone success')
       response.json({'phone': phoneNumber})
     })
     .catch(result => {
-      logger.log('info', '----authenticatePhone FAILURE')
-      logger.log('info', result)      
+      logger.log('info', '----authenticatePhone Failure')
+      response.status(404).send(errorMessages.invalidPhoneNumber)
     })
 }
 
