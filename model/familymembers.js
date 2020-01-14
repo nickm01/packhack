@@ -51,11 +51,11 @@ const saveNewFamilyMemberPromise = (data) => {
   logger.log('debug', '___familymembers_saveNewFamilyMemberPromise', data)
   const familyMember = {
     // userId
-    familyId = data.familyId
-    name = data.name
-    description = data.description
-    phoneNumber = data.phonerNumber
-    timeZone = data.timeZone || 'America/New_York'
+    familyId = data.familyId,
+    name = data.name,
+    description = data.description,
+    phoneNumber = data.phonerNumber,
+    timeZone = data.timeZone || 'America/New_York',
     verificationNumber = data.verificationNumber
   }
   return familyMembersPromises.saveNewFamilyMemberPromise(familyMember)
