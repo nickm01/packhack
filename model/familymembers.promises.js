@@ -12,7 +12,21 @@ const findFromPhoneNumberPromise = (phoneNumber) => {
     .exec()
 }
 
+const saveNewFamilyMemberPromise = (familyMember) => {
+  var newFamilyMember  = new mongoOp.FamilyMembers(familyMember)
+  return newFamilyMember.save()
+}
+
+const updateFamilyMemberVerificationNumberPromise = (userId, verificationNumber) => {
+  const filter = { userId: userId }
+  const update = { verificationNumber: verificationNumber }
+  return mongoOp.FamilyMembers.findOneAndUpdate(filter, update)
+    .exec()
+}
+
 module.exports = {
   findFromNameFamilyPromise,
-  findFromPhoneNumberPromise
+  findFromPhoneNumberPromise,
+  saveNewFamilyMemberPromise,
+  updateFamilyMemberVerificationNumberPromise
 }

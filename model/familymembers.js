@@ -43,7 +43,34 @@ const retrievePersonFromPhoneNumberPromise = (data) => {
     })
 }
 
+const updateFamilyMemberVerificationNumberPromise = (data) => {
+  return familyMembersPromises.updateFamilyMemberVerificationNumberPromise(data.userId, data.fromPhoneNumber)
+}
+
+const saveNewFamilyMemberPromise = (data) => {
+  logger.log('debug', '___familymembers_saveNewFamilyMemberPromise', data)
+  const familyMember = {
+    // userId
+    familyId = data.familyId
+    name = data.name
+    description = data.description
+    phoneNumber = data.phonerNumber
+    timeZone = data.timeZone || 'America/New_York'
+    verificationNumber = data.verificationNumber
+  }
+  return familyMembersPromises.saveNewFamilyMemberPromise(familyMember)
+    .then(familyMember => {
+      return data
+    }, (error) => {
+      data.errorMessage = modelConstants.errorTypes.generalError
+      data.systemError = error
+      throw data
+    })
+}
+
 module.exports = {
   retrievePersonPhoneNumbersPromise,
-  retrievePersonFromPhoneNumberPromise
+  retrievePersonFromPhoneNumberPromise,
+  updateFamilyMemberVerificationNumberPromise,
+  saveNewFamilyMemberPromise
 }

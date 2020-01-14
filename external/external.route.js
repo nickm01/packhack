@@ -5,6 +5,7 @@ const modelConstants = require('../model/modelconstants')
 const smsProcessor = require('../src/smsprocessor')
 const phrases = require('../src/phrases')
 const logger = require('winston')
+const familyMembers = require('../model/familymembers')
 
 const errorMessages = {
   notFound: 'Not found',
@@ -108,9 +109,33 @@ const authenticatePhone = (request, response) => {
   const verificationNumber = Math.floor(Math.random() * 90000) + 10000
   const text = verificationNumber + phrases.verification
   logger.log('info', '----authenticatePhone ' + text + ' ' + phoneNumber)
+  data = {
+    fromPhoneNumber: phoneNumber,
+    verificationNumber: verificationNumber
+  }
+  // familyMembers.retrievePersonFromPhoneNumberPromise(data)
+  //   .then(data => {
+  //
+  //   })
+  //   .catch(data => {
+  //     logger.log('debug', 'authenticatePhone_personExists_catch', data)
+  //     if (result.errorMessage === errors.errorTypes.personNotFound) {
+  //       return familyMember.saveNewFamilyMemberPromise(data)
+  //     } else {
+  //       throw result
+  //     }
+  //   })
+  //
   smsProcessor.sendSmsPromise({}, phoneNumber, text)
     .then(result => {
-      logger.log('info', '----authenticatePhone success')
+      logger.log('info', '----authenticatePhone SMS success')
+      return data
+      //response.json({'phone': phoneNumber})
+    })
+    .then(familyMembers.retrievePersonFromPhoneNumberPromise)
+    .then(familyMembers.updateFamilyMemberVerificationNumberPromise)
+    .then(data => {
+      logger.log('info', '----authenticatePhone update success')
       response.json({'phone': phoneNumber})
     })
     .catch(result => {
