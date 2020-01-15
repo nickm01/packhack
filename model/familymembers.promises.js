@@ -1,5 +1,6 @@
 const mongoOp = require('./mongo')
 const modelConstants = require('./modelconstants')
+const logger = require('winston')
 
 const findFromNameFamilyPromise = (name, familyId) => {
   const filter = name === modelConstants.allFamilyMembersName ? {familyId} : {name, familyId}
@@ -20,6 +21,8 @@ const saveNewFamilyMemberPromise = (familyMember) => {
 const updateFamilyMemberVerificationNumberPromise = (userId, verificationNumber) => {
   const filter = { userId: userId }
   const update = { verificationNumber: verificationNumber }
+  logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise2', filter)
+  logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise2', update)
   return mongoOp.FamilyMembers.findOneAndUpdate(filter, update)
     .exec()
 }
