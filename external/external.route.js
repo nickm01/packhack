@@ -139,7 +139,7 @@ const authenticatePhone = (request, response) => {
       response.json({'phone': phoneNumber})
     })
     .catch(result => {
-      logger.log('info', '----authenticatePhone Failure')
+      logger.log('info', '----authenticatePhone Failure', result)
       response.status(404).send(errorMessages.invalidPhoneNumber)
     })
 }
