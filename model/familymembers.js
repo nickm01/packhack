@@ -23,7 +23,7 @@ const retrievePersonPhoneNumbersPromise = (data) => {
 }
 
 const retrievePersonFromPhoneNumberPromise = (data) => {
-  logger.log('debug', '___familymembers_retrievePersonFromPhoneNumberPromise', data)
+  logger.log('info', '___familymembers_retrievePersonFromPhoneNumberPromise', data)
   return familyMembersPromises.findFromPhoneNumberPromise(data.fromPhoneNumber)
     .then(familyMembers => {
       if (familyMembers.length === 0) {
@@ -44,11 +44,12 @@ const retrievePersonFromPhoneNumberPromise = (data) => {
 }
 
 const updateFamilyMemberVerificationNumberPromise = (data) => {
+  logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise', data)
   return familyMembersPromises.updateFamilyMemberVerificationNumberPromise(data.userId, data.fromPhoneNumber)
 }
 
 const saveNewFamilyMemberPromise = (data) => {
-  logger.log('debug', '___familymembers_saveNewFamilyMemberPromise', data)
+  logger.log('info', '___familymembers_saveNewFamilyMemberPromise', data)
   const familyMember = {
     // userId
     familyId: data.familyId,
