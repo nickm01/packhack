@@ -20,6 +20,7 @@ const saveNewFamilyMemberPromise = (familyMember) => {
 const updateFamilyMemberVerificationNumberPromise = (userId, verificationNumber) => {
   const filter = { userId: userId }
   const update = { verificationNumber: verificationNumber }
+  logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise2', filter, update)
   return mongoOp.FamilyMembers.findOneAndUpdate(filter, update)
     .exec()
 }

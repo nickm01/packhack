@@ -61,7 +61,8 @@ const familyMemberSchema = mongoose.Schema({
   'name': String,
   'phoneNumber': String,
   'description': String,
-  'timeZone': String
+  'timeZone': String,
+  'verificationNumber': Number
 }, { versionKey: false })
 const FamilyMembers = mongoose.model('FamilyMembers', familyMemberSchema, 'FamilyMembers')
 
