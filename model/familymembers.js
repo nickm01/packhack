@@ -32,6 +32,7 @@ const retrievePersonFromPhoneNumberPromise = (data) => {
         throw data
       }
       const foundPerson = familyMembers[0]
+      data.userId = foundPerson.userId
       data.fromPerson = foundPerson.name
       data.familyId = foundPerson.familyId
       data.timezone = foundPerson.timeZone || 'America/New_York'
