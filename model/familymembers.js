@@ -59,7 +59,7 @@ const saveNewFamilyMemberPromise = (data) => {
     familyId: data.familyId,
     name: data.name,
     description: data.description,
-    phoneNumber: data.fromPhonerNumber,
+    phoneNumber: data.fromPhoneNumber,
     timeZone: data.timeZone || 'America/New_York',
     verificationNumber: data.verificationNumber
   }
