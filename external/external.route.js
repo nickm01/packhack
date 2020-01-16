@@ -136,12 +136,18 @@ const authenticatePhone = (request, response) => {
     .catch(data => {
       logger.log('info', '----authenticatePhone retrievePersonFromPhoneNumberPromise catch')
       if (data.errorMessage === modelConstants.errorTypes.personNotFound) {
-        return familyMembers.saveNewFamilyMemberPromise(data)
+        return data
       } else {
         throw data
       }
     })
-    .then(familyMembers.updateFamilyMemberVerificationNumberPromise) // make conditional
+    .then(data => {
+      if (data.errorMessage === modelConstants.errorTypes.personNotFound) {
+        return familyMembers.saveNewFamilyMemberPromise(data)
+      } else {
+        return familyMembers.updateFamilyMemberVerificationNumberPromise(data)
+      }
+    }
     .then(data => {
       logger.log('info', '----authenticatePhone update success')
       response.json({'phone': phoneNumber})
