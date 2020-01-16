@@ -147,7 +147,7 @@ const authenticatePhone = (request, response) => {
       } else {
         return familyMembers.updateFamilyMemberVerificationNumberPromise(data)
       }
-    }
+    })
     .then(data => {
       logger.log('info', '----authenticatePhone update success')
       response.json({'phone': phoneNumber})
