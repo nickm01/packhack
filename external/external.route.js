@@ -133,6 +133,14 @@ const authenticatePhone = (request, response) => {
       //response.json({'phone': phoneNumber})
     })
     .then(familyMembers.retrievePersonFromPhoneNumberPromise)
+    .catch(data => {
+      logger.log('info', '----authenticatePhone retrievePersonFromPhoneNumberPromise catch')
+      if (data.errorMessage === modelConstants.errorTypes.personNotFound) {
+        return familyMembers.saveNewFamilyMemberPromise(data)
+      } else {
+        throw data
+      }
+    })
     .then(familyMembers.updateFamilyMemberVerificationNumberPromise)
     .then(data => {
       logger.log('info', '----authenticatePhone update success')
