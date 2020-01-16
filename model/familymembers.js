@@ -63,6 +63,7 @@ const saveNewFamilyMemberPromise = (data) => {
     timeZone: data.timeZone || 'America/New_York',
     verificationNumber: data.verificationNumber
   }
+  logger.log('info', '___familymembers_save_familyMember', familyMember)
   return familyMembersPromises.saveNewFamilyMemberPromise(familyMember)
     .then(familyMember => {
       return data

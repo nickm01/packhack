@@ -141,7 +141,7 @@ const authenticatePhone = (request, response) => {
         throw data
       }
     })
-    .then(familyMembers.updateFamilyMemberVerificationNumberPromise)
+    .then(familyMembers.updateFamilyMemberVerificationNumberPromise) // make conditional
     .then(data => {
       logger.log('info', '----authenticatePhone update success')
       response.json({'phone': phoneNumber})
