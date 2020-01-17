@@ -108,10 +108,13 @@ const authenticatePhone = (request, response) => {
   }
   const verificationNumber = Math.floor(Math.random() * 90000) + 10000
   const text = verificationNumber + phrases.verification
+  let expiryDate = new Date()
+  expiryDate.setDate(expiryDate.getDate() + 1);
   logger.log('info', '----authenticatePhone ' + text + ' ' + phoneNumber)
   data = {
     fromPhoneNumber: phoneNumber,
-    verificationNumber: verificationNumber
+    verificationNumber: verificationNumber,
+    verificationNumberExpiry: expiryDate
   }
   // familyMembers.retrievePersonFromPhoneNumberPromise(data)
   //   .then(data => {

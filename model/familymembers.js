@@ -55,13 +55,14 @@ const updateFamilyMemberVerificationNumberPromise = (data) => {
 const saveNewFamilyMemberPromise = (data) => {
   logger.log('info', '___familymembers_saveNewFamilyMemberPromise', data)
   const familyMember = {
-    // userId
+    userId: uuidv4(),
     familyId: data.familyId,
     name: data.name,
     description: data.description,
     phoneNumber: data.fromPhoneNumber,
     timeZone: data.timeZone || 'America/New_York',
-    verificationNumber: data.verificationNumber
+    verificationNumber: data.verificationNumber,
+    verificationNumberExpiry: data.verificationNumberExpiry
   }
   logger.log('info', '___familymembers_save_familyMember', familyMember)
   return familyMembersPromises.saveNewFamilyMemberPromise(familyMember)
@@ -72,6 +73,13 @@ const saveNewFamilyMemberPromise = (data) => {
       data.systemError = error
       throw data
     })
+}
+
+const uuidv4 = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
 }
 
 module.exports = {

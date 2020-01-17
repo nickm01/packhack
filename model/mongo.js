@@ -56,13 +56,14 @@ const ListItems = mongoose.model('ListItems', listItemsSchema, 'ListItems')
 
 // FamilyMembers
 const familyMemberSchema = mongoose.Schema({
-  'userId': Number,
+  'userId': { 'type': String, 'required': true },
   'familyId': Number,
   'name': String,
-  'phoneNumber': String,
+  'phoneNumber': { 'type': String, 'required': true },
   'description': String,
   'timeZone': String,
-  'verificationNumber': Number
+  'verificationNumber': Number,
+  'verificationNumberExpiry': String
 }, { versionKey: false })
 const FamilyMembers = mongoose.model('FamilyMembers', familyMemberSchema, 'FamilyMembers')
 
