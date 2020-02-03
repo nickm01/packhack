@@ -114,7 +114,7 @@ const authenticatePhone = (request, response) => {
   expiryDate.setDate(expiryDate.getDate() + 1);
   data = {
     fromPhoneNumber: phoneNumber,
-    verificationNumber: verificationNumber,
+    newVerificationNumber: verificationNumber,
     verificationNumberExpiry: expiryDate
   }
 
@@ -132,6 +132,7 @@ const authenticatePhone = (request, response) => {
       }
     })
     .then(data => {
+      data.verificationNumber = newVerificationNumber
       if (data.errorMessage === modelConstants.errorTypes.personNotFound) {
         logger.log('info', '----authenticatePhone save new')
         return familyMembers.saveNewFamilyMemberPromise(data)
@@ -169,6 +170,7 @@ const verifyPhone = (request, response) => {
     })
     .then(data => {
       if (data.verificationNumber !== verificationNumber) {
+          logger.log('info', '----verification no match', data.verificationNumber)
           data.errorMessage = errorMessages.invalidVerificationNumber
           throw data
       }
