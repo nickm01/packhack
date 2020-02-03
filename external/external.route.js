@@ -108,13 +108,12 @@ const authenticatePhone = (request, response) => {
     response.status(404).send(errorMessages.invalidPhoneNumber)
     return
   }
-  const verificationNumber = Math.floor(Math.random() * 90000) + 10000
+  const newVerificationNumber = Math.floor(Math.random() * 90000) + 10000
   const text = verificationNumber + phrases.verification
   let expiryDate = new Date()
   expiryDate.setDate(expiryDate.getDate() + 1);
   data = {
     fromPhoneNumber: phoneNumber,
-    newVerificationNumber: verificationNumber,
     verificationNumberExpiry: expiryDate
   }
 
@@ -132,7 +131,7 @@ const authenticatePhone = (request, response) => {
       }
     })
     .then(data => {
-      data.verificationNumber = data.newVerificationNumber
+      data.verificationNumber = newVerificationNumber
       if (data.errorMessage === modelConstants.errorTypes.personNotFound) {
         logger.log('info', '----authenticatePhone save new')
         return familyMembers.saveNewFamilyMemberPromise(data)
@@ -169,7 +168,7 @@ const verifyPhone = (request, response) => {
       throw data
     })
     .then(data => {
-      if (data.verificationNumber !== verificationNumber) {
+      if (data.verificationNumber != verificationNumber) {
           logger.log('info', '----verification no match', data.verificationNumber)
           data.errorMessage = errorMessages.invalidVerificationNumber
           throw data
