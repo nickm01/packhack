@@ -36,6 +36,8 @@ const retrievePersonFromPhoneNumberPromise = (data) => {
       data.fromPerson = foundPerson.name
       data.familyId = foundPerson.familyId
       data.timezone = foundPerson.timeZone || 'America/New_York'
+      data.verificationNumber = foundPerson.verificationNumber
+      data.verificationNumberExpiry = foundPerson.verificationNumberExpiry
       return data
     }, (error) => {
       data.errorMessage = modelConstants.errorTypes.generalError

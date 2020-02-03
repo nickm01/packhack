@@ -10,7 +10,9 @@ const familyMembers = require('../model/familymembers')
 const errorMessages = {
   notFound: 'Not found',
   alreadyExists: 'Already exists',
-  generalError: 'Error'
+  generalError: 'Error',
+  invalidPhoneNumber: 'invalidPhoneNumber',
+  invalidVerificationNumber: 'invalidVerificationNumber'
 }
 
 const getLists = (request, response) => {
@@ -100,44 +102,29 @@ const deleteListItem = (request, response) => {
     })
 }
 
-// Can handle delete and clear (delete all)
 const authenticatePhone = (request, response) => {
   const phoneNumber = request.body.phone
   if (smsProcessor.validatePhoneNumber(phoneNumber) === false) {
     response.status(404).send(errorMessages.invalidPhoneNumber)
+    return
   }
   const verificationNumber = Math.floor(Math.random() * 90000) + 10000
   const text = verificationNumber + phrases.verification
   let expiryDate = new Date()
   expiryDate.setDate(expiryDate.getDate() + 1);
-  logger.log('info', '----authenticatePhone ' + text + ' ' + phoneNumber)
   data = {
     fromPhoneNumber: phoneNumber,
     verificationNumber: verificationNumber,
     verificationNumberExpiry: expiryDate
   }
-  // familyMembers.retrievePersonFromPhoneNumberPromise(data)
-  //   .then(data => {
-  //
-  //   })
-  //   .catch(data => {
-  //     logger.log('debug', 'authenticatePhone_personExists_catch', data)
-  //     if (result.errorMessage === errors.errorTypes.personNotFound) {
-  //       return familyMember.saveNewFamilyMemberPromise(data)
-  //     } else {
-  //       throw result
-  //     }
-  //   })
-  //
+
   smsProcessor.sendSmsPromise({}, phoneNumber, text)
     .then(result => {
       logger.log('info', '----authenticatePhone SMS success')
       return data
-      //response.json({'phone': phoneNumber})
     })
     .then(familyMembers.retrievePersonFromPhoneNumberPromise)
     .catch(data => {
-      logger.log('info', '----authenticatePhone retrievePersonFromPhoneNumberPromise catch')
       if (data.errorMessage === modelConstants.errorTypes.personNotFound) {
         return data
       } else {
@@ -161,6 +148,35 @@ const authenticatePhone = (request, response) => {
     })
 }
 
+// verify phone
+const verifyPhone = (request, response) => {
+  const verificationNumber = request.body.verificationNumber
+  const phoneNumber = request.body.phone
+  logger.log('info', '----verification requested', request.body)
+  if (verificationNumber.lenght !==5) {
+    response.status(404).send(errorMessages.invalidVerificationNumber)
+    return
+  } else if (smsProcessor.validatePhoneNumber(phoneNumber) === false) {
+    response.status(404).send(errorMessages.invalidPhoneNumber)
+    return
+  }
+  familyMembers.retrievePersonFromPhoneNumberPromise)
+    .catch(data => {
+      data.errorMessage = errorMessages.invalidPhoneNumber
+      throw data
+    })
+    .then(data => {
+      if (data.verificationNumber !== verificationNumber) {
+          data.errorMessage = errorMessages.invalidVerificationNumber
+          throw data
+      }
+      response.json({'verified': true})
+    })
+    .catch(result => {
+      response.status(404).send(data.errorMessage)
+    })
+}
+
 module.exports = {
   getLists,
   addList,
@@ -168,5 +184,6 @@ module.exports = {
   getListItems,
   addListItem,
   deleteListItem,
-  authenticatePhone
+  authenticatePhone,
+  verifyPhone
 }
