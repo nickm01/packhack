@@ -132,7 +132,7 @@ const authenticatePhone = (request, response) => {
       }
     })
     .then(data => {
-      data.verificationNumber = newVerificationNumber
+      data.verificationNumber = data.newVerificationNumber
       if (data.errorMessage === modelConstants.errorTypes.personNotFound) {
         logger.log('info', '----authenticatePhone save new')
         return familyMembers.saveNewFamilyMemberPromise(data)
@@ -156,7 +156,7 @@ const verifyPhone = (request, response) => {
   const verificationNumber = request.body.verificationNumber
   const phoneNumber = request.body.phone
   logger.log('info', '----verification requested', request.body)
-  if (verificationNumber.lenght !==5) {
+  if (verificationNumber.length !==5) {
     response.status(404).send(errorMessages.invalidVerificationNumber)
     return
   } else if (smsProcessor.validatePhoneNumber(phoneNumber) === false) {
