@@ -133,8 +133,10 @@ const authenticatePhone = (request, response) => {
     })
     .then(data => {
       if (data.errorMessage === modelConstants.errorTypes.personNotFound) {
+        logger.log('info', '----authenticatePhone save new')
         return familyMembers.saveNewFamilyMemberPromise(data)
       } else {
+        logger.log('info', '----authenticatePhone update')
         return familyMembers.updateFamilyMemberVerificationNumberPromise(data)
       }
     })
