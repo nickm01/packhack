@@ -160,7 +160,7 @@ const verifyPhone = (request, response) => {
     response.status(404).send(errorMessages.invalidPhoneNumber)
     return
   }
-  familyMembers.retrievePersonFromPhoneNumberPromise)
+  familyMembers.retrievePersonFromPhoneNumberPromise(data)
     .catch(data => {
       data.errorMessage = errorMessages.invalidPhoneNumber
       throw data
