@@ -109,12 +109,11 @@ const authenticatePhone = (request, response) => {
     return
   }
   const newVerificationNumber = Math.floor(Math.random() * 90000) + 10000
-  const text = verificationNumber + phrases.verification
+  const text = newVerificationNumber + phrases.verification
   let expiryDate = new Date()
   expiryDate.setDate(expiryDate.getDate() + 1);
   data = {
     fromPhoneNumber: phoneNumber,
-    verificationNumberExpiry: expiryDate
   }
 
   smsProcessor.sendSmsPromise({}, phoneNumber, text)
@@ -132,6 +131,7 @@ const authenticatePhone = (request, response) => {
     })
     .then(data => {
       data.verificationNumber = newVerificationNumber
+      data.verificationNumberExpiry = expiryDate
       if (data.errorMessage === modelConstants.errorTypes.personNotFound) {
         logger.log('info', '----authenticatePhone save new')
         return familyMembers.saveNewFamilyMemberPromise(data)
