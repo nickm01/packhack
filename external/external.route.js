@@ -6,6 +6,7 @@ const smsProcessor = require('../src/smsprocessor')
 const phrases = require('../src/phrases')
 const logger = require('winston')
 const familyMembers = require('../model/familymembers')
+const jwt = require('jsonwebtoken')
 
 const errorMessages = {
   notFound: 'Not found',
@@ -111,9 +112,9 @@ const authenticatePhone = (request, response) => {
   const newVerificationNumber = Math.floor(Math.random() * 90000) + 10000
   const text = newVerificationNumber + phrases.verification
   let expiryDate = new Date()
-  expiryDate.setDate(expiryDate.getDate() + 1);
-  data = {
-    fromPhoneNumber: phoneNumber,
+  expiryDate.setDate(expiryDate.getDate() + 1)
+  let data = {
+    fromPhoneNumber: phoneNumber
   }
 
   smsProcessor.sendSmsPromise({}, phoneNumber, text)
@@ -154,8 +155,11 @@ const authenticatePhone = (request, response) => {
 const verifyPhone = (request, response) => {
   const verificationNumber = request.body.verificationNumber
   const phoneNumber = request.body.phone
+  let data = {
+    fromPhoneNumber: phoneNumber
+  }
   logger.log('info', '----verification requested', request.body)
-  if (verificationNumber.length !==5) {
+  if (verificationNumber.length !== 5) {
     response.status(404).send(errorMessages.invalidVerificationNumber)
     return
   } else if (smsProcessor.validatePhoneNumber(phoneNumber) === false) {
@@ -168,10 +172,10 @@ const verifyPhone = (request, response) => {
       throw data
     })
     .then(data => {
-      if (data.verificationNumber != verificationNumber) {
-          logger.log('info', '----verification no match', data.verificationNumber)
-          data.errorMessage = errorMessages.invalidVerificationNumber
-          throw data
+      if (data.verificationNumber !== verificationNumber) {
+        logger.log('info', '----verification no match', data.verificationNumber)
+        data.errorMessage = errorMessages.invalidVerificationNumber
+        throw data
       }
       response.json({'verified': true})
     })
