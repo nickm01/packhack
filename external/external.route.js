@@ -172,11 +172,16 @@ const verifyPhone = (request, response) => {
       throw data
     })
     .then(data => {
-      if (data.verificationNumber !== verificationNumber) {
+      if (data.verificationNumber != verificationNumber) {
         logger.log('info', '----verification no match', data.verificationNumber)
         data.errorMessage = errorMessages.invalidVerificationNumber
         throw data
       }
+      const payload = {phone: phoneNumber}
+      const options = {expiresIn: '2y', issuer: 'https://packhack.us'}
+      const secret = process.env.JWT_SECRET
+      const token = jwt.sign(payload, secret, options)
+      logger.log('info', '----verification token', token)
       response.json({'verified': true})
     })
     .catch(result => {
