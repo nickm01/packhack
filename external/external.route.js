@@ -13,8 +13,11 @@ const errorMessages = {
   alreadyExists: 'Already exists',
   generalError: 'Error',
   invalidPhoneNumber: 'invalidPhoneNumber',
-  invalidVerificationNumber: 'invalidVerificationNumber'
+  invalidVerificationNumber: 'invalidVerificationNumber',
+  invalidToken: 'invalidToken'
 }
+
+const issuer = 'https://packhack.us'
 
 const getLists = (request, response) => {
   lists.findAllPromise({familyId: 2})
@@ -145,9 +148,9 @@ const authenticatePhone = (request, response) => {
       logger.log('info', '----authenticatePhone update success')
       response.json({'phone': phoneNumber})
     })
-    .catch(result => {
-      logger.log('info', '----authenticatePhone Failure', result)
-      response.status(404).send(errorMessages.invalidPhoneNumber)
+    .catch(data => {
+      logger.log('info', '----authenticatePhone Failure', data)
+      response.status(404).send(errorMessages.invalidPhoneNumber) // ?? test
     })
 }
 
@@ -178,15 +181,44 @@ const verifyPhone = (request, response) => {
         throw data
       }
       const payload = {phone: phoneNumber}
-      const options = {expiresIn: '2y', issuer: 'https://packhack.us'}
+      const options = {expiresIn: '2y', issuer: issuer}
       const secret = process.env.JWT_SECRET
       const token = jwt.sign(payload, secret, options)
       logger.log('info', '----verification token', token)
-      response.json({'verified': true})
+      response.json({'token': token})
     })
-    .catch(result => {
-      response.status(404).send(data.errorMessage)
+    .catch(data => {
+      response.status(404).send(data.errorMessage) // ?? Test
     })
+}
+
+const validateToken = (request, response, next) => {
+  const authorizationHeaader = request.headers.authorization
+  let result
+  if (authorizationHeaader) {
+    const token = request.headers.authorization
+    const options = {
+      expiresIn: '2y',
+      issuer: issuer
+    }
+    try {
+      // verify makes sure that the token hasn't expired and has been issued by us
+      result = jwt.verify(token, process.env.JWT_SECRET, options)
+      // Let's pass back the decoded token to the request object
+      request.decoded = result
+      // We call next to pass execution to the subsequent middleware
+      next()
+    } catch (err) {
+      // Throw an error just in case anything goes wrong with verification
+      throw new Error(err) // ?? Needs testing
+    }
+  } else {
+    result = {
+      error: `Authentication error. Token required.`,
+      status: 401
+    }
+    result.status(401).send(result)
+  }
 }
 
 module.exports = {
@@ -197,5 +229,6 @@ module.exports = {
   addListItem,
   deleteListItem,
   authenticatePhone,
-  verifyPhone
+  verifyPhone,
+  validateToken
 }
