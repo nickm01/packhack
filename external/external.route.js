@@ -217,7 +217,7 @@ const validateToken = (request, response, next) => {
       error: `Authentication error. Token required.`,
       status: 401
     }
-    result.status(401).send(result)
+    response.status(401).send(result)
   }
 }
 
