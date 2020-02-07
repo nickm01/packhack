@@ -33,7 +33,7 @@ router.route('/twilio')
 
 // External API Routes
 // API Design based on https://hackernoon.com/restful-api-design-with-node-js-26ccf66eab09
-router.route('/api/lists').get(externalRoute.validateToken, (request, response) => { externalRoute.getLists(request, response) })
+router.route('/api/lists').get((request, response) => { externalRoute.getLists(request, response) })
 router.route('/api/lists/:list').get((request, response) => { externalRoute.getListItems(request, response) })
 router.route('/api/lists').post((request, response) => { externalRoute.addList(request, response) })
 router.route('/api/lists/:list').delete((request, response) => { externalRoute.deleteList(request, response) })
@@ -44,6 +44,7 @@ router.route('/api/lists/:list/items').delete((request, response) => { externalR
 
 router.route('/api/authenticate/phone').post((request, response) => { externalRoute.authenticatePhone(request, response) })
 router.route('/api/authenticate/verify').patch((request, response) => { externalRoute.verifyPhone(request, response) })
+router.route('/api/familyMembers/me').get(externalRoute.validateToken, (request, response) => { externalRoute.getFamilyMemberMe(request, response) })
 
 app.use('/', router)
 

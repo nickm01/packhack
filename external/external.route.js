@@ -216,6 +216,21 @@ const validateToken = (request, response, next) => {
   }
 }
 
+const getFamilyMemberMe = (request, response) => {
+  const phoneNumber = request.decoded.phone
+  let data = {
+    fromPhoneNumber: phoneNumber
+  }
+  familyMembers.retrievePersonFromPhoneNumberPromise(data)
+    .then(data => {
+      response.json({familyMember: data})
+    })
+    .catch(data => {
+      logger.log('info', '----authenticatePhone Failure', data)
+      response.status(404).send({error: errorMessages.invalidPhoneNumber})
+    })
+}
+
 module.exports = {
   getLists,
   addList,
@@ -225,5 +240,6 @@ module.exports = {
   deleteListItem,
   authenticatePhone,
   verifyPhone,
-  validateToken
+  validateToken,
+  getFamilyMemberMe
 }
