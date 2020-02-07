@@ -9,12 +9,12 @@ const familyMembers = require('../model/familymembers')
 const jwt = require('jsonwebtoken')
 
 const errorMessages = {
-  notFound: 'Not found',
-  alreadyExists: 'Already exists',
-  generalError: 'Error',
-  invalidPhoneNumber: 'invalidPhoneNumber',
-  invalidVerificationNumber: 'invalidVerificationNumber',
-  invalidToken: 'invalidToken'
+  notFound: 'not found',
+  alreadyExists: 'already exists',
+  generalError: 'error',
+  invalidPhoneNumber: 'invalid phone number',
+  invalidVerificationNumber: 'invalid vrification number',
+  tokenRequired: 'token required'
 }
 
 const issuer = 'https://packhack.us'
@@ -109,7 +109,7 @@ const deleteListItem = (request, response) => {
 const authenticatePhone = (request, response) => {
   const phoneNumber = request.body.phone
   if (smsProcessor.validatePhoneNumber(phoneNumber) === false) {
-    response.status(404).send(errorMessages.invalidPhoneNumber)
+    response.status(404).send({error: errorMessages.invalidPhoneNumber})
     return
   }
   const newVerificationNumber = Math.floor(Math.random() * 90000) + 10000
@@ -150,7 +150,7 @@ const authenticatePhone = (request, response) => {
     })
     .catch(data => {
       logger.log('info', '----authenticatePhone Failure', data)
-      response.status(404).send(errorMessages.invalidPhoneNumber) // ?? test
+      response.status(404).send({error: errorMessages.invalidPhoneNumber})
     })
 }
 
@@ -181,10 +181,10 @@ const verifyPhone = (request, response) => {
         throw data
       }
       const payload = {phone: phoneNumber}
-      const options = {expiresIn: '2y', issuer: issuer}
+      const options = {expiresIn: '1y', issuer: issuer}
       const secret = process.env.JWT_SECRET
       const token = jwt.sign(payload, secret, options)
-      logger.log('info', '----verification token', token)
+      logger.log('debug', '----verification token', token)
       response.json({'token': token})
     })
     .catch(data => {
@@ -198,26 +198,21 @@ const validateToken = (request, response, next) => {
   if (authorizationHeaader) {
     const token = request.headers.authorization
     const options = {
-      expiresIn: '2y',
+      expiresIn: '1y',
       issuer: issuer
     }
     try {
-      // verify makes sure that the token hasn't expired and has been issued by us
       result = jwt.verify(token, process.env.JWT_SECRET, options)
-      // Let's pass back the decoded token to the request object
       request.decoded = result
       // We call next to pass execution to the subsequent middleware
       next()
     } catch (err) {
-      // Throw an error just in case anything goes wrong with verification
-      throw new Error(err) // ?? Needs testing
+      logger.log('info', '----verification token invalid', err)
+      response.status(401).send({error: err.message}) // could say "token expired"
     }
   } else {
-    result = {
-      error: `Authentication error. Token required.`,
-      status: 401
-    }
-    response.status(401).send(result)
+    logger.log('info', '----verification token required')
+    response.status(401).send({error: errorMessages.tokenRequired})
   }
 }
 
