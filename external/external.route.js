@@ -9,12 +9,14 @@ const familyMembers = require('../model/familymembers')
 const jwt = require('jsonwebtoken')
 
 const errorMessages = {
-  notFound: 'not found',
-  alreadyExists: 'already exists',
-  generalError: 'error',
-  invalidPhoneNumber: 'invalid phone number',
-  invalidVerificationNumber: 'invalid vrification number',
-  tokenRequired: 'token required'
+  notFound: { errorCode: 1001, errorMessage: 'not found' },
+  alreadyExists: { errorCode: 1002, errorMessage: 'already exists' },
+  generalError: { errorCode: 1000, errorMessage: 'error' },
+  invalidPhoneNumber: { errorCode: 1003, errorMessage: 'invalid phone number' },
+  invalidVerificationNumber: { errorCode: 1004, errorMessage: 'invalid verification number' },
+  tokenRequired: { errorCode: 1005, errorMessage: 'token required' },
+  tokenVerificationFailure: { errorCode: 1006, errorMessage: 'token verification failed' },
+  expiredVerificationNumber: { errorCode: 1007, errorMessage: 'expired verification number' }
 }
 
 const issuer = 'https://packhack.us'
@@ -114,8 +116,12 @@ const authenticatePhone = (request, response) => {
   }
   const newVerificationNumber = Math.floor(Math.random() * 90000) + 10000
   const text = newVerificationNumber + phrases.verification
+
+  // Verification expiry - now + 5 minutes
   let expiryDate = new Date()
-  expiryDate.setDate(expiryDate.getDate() + 1)
+  expiryDate.setMinutes(expiryDate.getMinutes() + 5)
+  expiryDate = new Date(expiryDate)
+
   let data = {
     fromPhoneNumber: phoneNumber
   }
@@ -150,7 +156,7 @@ const authenticatePhone = (request, response) => {
     })
     .catch(data => {
       logger.log('info', '----authenticatePhone Failure', data)
-      response.status(404).send({error: errorMessages.invalidPhoneNumber})
+      response.status(404).send(errorMessages.invalidPhoneNumber)
     })
 }
 
@@ -175,9 +181,14 @@ const verifyPhone = (request, response) => {
       throw data
     })
     .then(data => {
-      if (data.verificationNumber != verificationNumber) {
+      if (data.verificationNumber !== parseInt(verificationNumber)) {
         logger.log('info', '----verification no match', data.verificationNumber)
         data.errorMessage = errorMessages.invalidVerificationNumber
+        throw data
+      }
+      if (new Date(data.verificationNumberExpiry) < new Date()) {
+        logger.log('info', '----verification expired', data.verificationNumberExpiry)
+        data.errorMessage = errorMessages.expiredVerificationNumber
         throw data
       }
       const payload = {phone: phoneNumber}
@@ -208,14 +219,15 @@ const validateToken = (request, response, next) => {
       next()
     } catch (err) {
       logger.log('info', '----verification token invalid', err)
-      response.status(401).send({error: err.message}) // could say "token expired"
+      response.status(401).send(errorMessages.tokenVerificationFailure)
     }
   } else {
     logger.log('info', '----verification token required')
-    response.status(401).send({error: errorMessages.tokenRequired})
+    response.status(401).send(errorMessages.tokenRequired)
   }
 }
 
+// TODO: Remove verification number, add verification expiry checking (why isn't it being returned?)
 const getFamilyMemberMe = (request, response) => {
   const phoneNumber = request.decoded.phone
   let data = {
@@ -227,7 +239,7 @@ const getFamilyMemberMe = (request, response) => {
     })
     .catch(data => {
       logger.log('info', '----authenticatePhone Failure', data)
-      response.status(404).send({error: errorMessages.invalidPhoneNumber})
+      response.status(404).send(errorMessages.invalidPhoneNumber)
     })
 }
 

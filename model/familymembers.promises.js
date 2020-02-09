@@ -14,13 +14,16 @@ const findFromPhoneNumberPromise = (phoneNumber) => {
 }
 
 const saveNewFamilyMemberPromise = (familyMember) => {
-  var newFamilyMember  = new mongoOp.FamilyMembers(familyMember)
+  var newFamilyMember = new mongoOp.FamilyMembers(familyMember)
   return newFamilyMember.save()
 }
 
-const updateFamilyMemberVerificationNumberPromise = (userId, verificationNumber) => {
+const updateFamilyMemberVerificationNumberPromise = (userId, verificationNumber, verificationNumberExpiry) => {
   const filter = { userId: userId }
-  const update = { verificationNumber: verificationNumber }
+  const update = {
+    verificationNumber: verificationNumber,
+    verificationNumberExpiry: verificationNumberExpiry
+  }
   logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise2', filter)
   logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise2', update)
   return mongoOp.FamilyMembers.findOneAndUpdate(filter, update)

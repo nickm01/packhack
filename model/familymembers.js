@@ -48,7 +48,7 @@ const retrievePersonFromPhoneNumberPromise = (data) => {
 
 const updateFamilyMemberVerificationNumberPromise = (data) => {
   logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise', data)
-  return familyMembersPromises.updateFamilyMemberVerificationNumberPromise(data.userId, data.verificationNumber)
+  return familyMembersPromises.updateFamilyMemberVerificationNumberPromise(data.userId, data.verificationNumber, data.verificationNumberExpiry)
     .then(result => {
       return data
     })
