@@ -43,7 +43,7 @@ router.route('/api/lists/:list/items/:item').delete((request, response) => { ext
 router.route('/api/lists/:list/items').delete((request, response) => { externalRoute.deleteListItem(request, response) })
 
 router.route('/api/authenticate/phone').post((request, response) => { externalRoute.authenticatePhone(request, response) })
-router.route('/api/authenticate/verify').patch((request, response) => { externalRoute.verifyPhone(request, response) })
+router.route('/api/authenticate/verify').get((request, response) => { externalRoute.verifyPhone(request, response) })
 router.route('/api/familyMembers/me').get(externalRoute.validateToken, (request, response) => { externalRoute.getFamilyMemberMe(request, response) })
 
 app.use('/', router)
