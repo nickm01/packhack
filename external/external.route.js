@@ -168,10 +168,12 @@ const verifyPhone = (request, response) => {
     fromPhoneNumber: phoneNumber
   }
   logger.log('info', '----verification requested', request.query)
-  if (verificationNumber.length !== 5) {
+  logger.log('info', '----verification requested2', verificationNumber)
+  logger.log('info', '----verification requested3', phoneNumber)
+  if (!verificationNumber || verificationNumber.length !== 5) {
     response.status(404).send(errorMessages.invalidVerificationNumber)
     return
-  } else if (smsProcessor.validatePhoneNumber(phoneNumber) === false) {
+  } else if (!phoneNumber || smsProcessor.validatePhoneNumber(phoneNumber) === false) {
     response.status(404).send(errorMessages.invalidPhoneNumber)
     return
   }
