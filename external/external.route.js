@@ -162,13 +162,12 @@ const authenticatePhone = (request, response) => {
 
 // verify phone
 const verifyPhone = (request, response) => {
-  const verificationNumber = request.params.verificationNumber
-  const phoneNumber = request.params.phone
+  const verificationNumber = request.query.verificationNumber
+  const phoneNumber = request.query.phone
   let data = {
     fromPhoneNumber: phoneNumber
   }
-  logger.log('info', '----verification requested', request.params)
-  logger.log('info', '----verification requested2', request)
+  logger.log('info', '----verification requested', request.query)
   if (verificationNumber.length !== 5) {
     response.status(404).send(errorMessages.invalidVerificationNumber)
     return
