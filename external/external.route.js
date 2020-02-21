@@ -162,8 +162,8 @@ const authenticatePhone = (request, response) => {
 
 // verify phone
 const verifyPhone = (request, response) => {
-  const verificationNumber = request.body.verificationNumber
-  const phoneNumber = request.body.phone
+  const verificationNumber = request.params.verificationNumber
+  const phoneNumber = request.params.phone
   let data = {
     fromPhoneNumber: phoneNumber
   }
