@@ -167,7 +167,7 @@ const verifyPhone = (request, response) => {
   let data = {
     fromPhoneNumber: phoneNumber
   }
-  logger.log('info', '----verification requested', request.body)
+  logger.log('info', '----verification requested', request.params)
   if (verificationNumber.length !== 5) {
     response.status(404).send(errorMessages.invalidVerificationNumber)
     return
