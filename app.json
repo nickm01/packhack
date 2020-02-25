@@ -1,6 +1,6 @@
 {
-  "name": "Flock",
-  "description": "A simple schopping list",
-  "keywords": ["shop"],
+  "name": "Packhack",
+  "description": "Optimize your pack",
+  "keywords": ["family"],
   "image": "heroku/nodejs"
 }

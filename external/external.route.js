@@ -168,8 +168,6 @@ const verifyPhone = (request, response) => {
     fromPhoneNumber: phoneNumber
   }
   logger.log('info', '----verification requested', request.query)
-  logger.log('info', '----verification requested2', verificationNumber)
-  logger.log('info', '----verification requested3', phoneNumber)
   if (!verificationNumber || verificationNumber.length !== 5) {
     response.status(404).send(errorMessages.invalidVerificationNumber)
     return
