@@ -162,8 +162,8 @@ const authenticatePhone = (request, response) => {
 
 // verify phone
 const verifyPhone = (request, response) => {
-  logger.log('info', '----verification requested-0')
   const verificationNumber = request.query.verificationNumber
+  logger.log('info', '----verification requested-X ' + request.query.verificationNumber)
   const phoneNumber = request.query.phone
   let data = {
     fromPhoneNumber: phoneNumber
