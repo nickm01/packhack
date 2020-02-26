@@ -46,6 +46,31 @@ const retrievePersonFromPhoneNumberPromise = (data) => {
     })
 }
 
+const retrieveForExternalPersonFromPhoneNumberPromise = (data) => {
+  logger.log('info', '___familymembers_retrievePersonFromPhoneNumberPromise', data)
+  return familyMembersPromises.findFromPhoneNumberPromise(data.fromPhoneNumber)
+    .then(familyMembers => {
+      if (familyMembers.length === 0) {
+        logger.log('debug', 'phone number not found')
+        data.errorMessage = modelConstants.errorTypes.personNotFound
+        throw data
+      }
+      const foundPerson = familyMembers[0]
+      return {
+        'user_id': foundPerson.userId,
+        'name': foundPerson.name,
+        'family_id': foundPerson.familyId,
+        'timezone': foundPerson.timeZone || 'America/New_York',
+        'phone_number': foundPerson.phoneNumber,
+        'description': foundPerson.description
+      }
+    }, (error) => {
+      data.errorMessage = modelConstants.errorTypes.generalError
+      data.systemError = error
+      throw data
+    })
+}
+
 const updateFamilyMemberVerificationNumberPromise = (data) => {
   logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise', data)
   return familyMembersPromises.updateFamilyMemberVerificationNumberPromise(data.userId, data.verificationNumber, data.verificationNumberExpiry)
@@ -87,6 +112,7 @@ const uuidv4 = () => {
 module.exports = {
   retrievePersonPhoneNumbersPromise,
   retrievePersonFromPhoneNumberPromise,
+  retrieveForExternalPersonFromPhoneNumberPromise,
   updateFamilyMemberVerificationNumberPromise,
   saveNewFamilyMemberPromise
 }

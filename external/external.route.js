@@ -109,9 +109,10 @@ const deleteListItem = (request, response) => {
 }
 
 const authenticatePhone = (request, response) => {
+  logger.log('info', '----authenticatePhone start', request.body)
   const phoneNumber = request.body.phone
-  if (smsProcessor.validatePhoneNumber(phoneNumber) === false) {
-    response.status(404).send({error: errorMessages.invalidPhoneNumber})
+  if (!phoneNumber || smsProcessor.validatePhoneNumber(phoneNumber) === false) {
+    response.status(404).send(errorMessages.invalidPhoneNumber)
     return
   }
   const newVerificationNumber = Math.floor(Math.random() * 90000) + 10000
@@ -162,8 +163,8 @@ const authenticatePhone = (request, response) => {
 
 // verify phone
 const verifyPhone = (request, response) => {
-  const verificationNumber = request.query.verificationNumber
-  logger.log('info', '----verification requested-X ' + request.query.verificationNumber)
+  const verificationNumber = request.query.verification_number
+  logger.log('info', '----verification requested-X ' + request.query.verification_number)
   const phoneNumber = request.query.phone
   let data = {
     fromPhoneNumber: phoneNumber
@@ -200,7 +201,7 @@ const verifyPhone = (request, response) => {
       response.json({'token': token})
     })
     .catch(data => {
-      response.status(404).send(data.errorMessage) // ?? Test
+      response.status(404).send(data.errorMessage)
     })
 }
 
@@ -234,9 +235,9 @@ const getFamilyMemberMe = (request, response) => {
   let data = {
     fromPhoneNumber: phoneNumber
   }
-  familyMembers.retrievePersonFromPhoneNumberPromise(data)
+  familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
     .then(data => {
-      response.json({familyMember: data})
+      response.json(data)
     })
     .catch(data => {
       logger.log('info', '----authenticatePhone Failure', data)

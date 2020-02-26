@@ -27,11 +27,13 @@
     "eslint-plugin-promise": "^3.3.2",
     "eslint-plugin-standard": "^2.0.1",
     "mocha": "^3.2.0",
+    "nodemon": "^2.0.2",
     "sinon": "^8.0.2"
   },
   "scripts": {
     "test": "env TZ='etc/GMT' mocha ./**/*.test.js ./**/**/*.test.js -w --recursive",
-    "start": "node server.js"
+    "start": "node server.js",
+    "devstart": "nodemon server.js"
   },
   "repository": {
     "type": "git",
