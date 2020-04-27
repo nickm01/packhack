@@ -22,10 +22,10 @@ const intialize = () => {
 const listsSchema = mongoose.Schema({
   'listKey': { 'type': String, 'required': true },
   'listDescription': String,
-  'familyId': { 'type': Number, 'required': true },
+  'familyId': { 'type': Number, 'required': true }
 }, { versionKey: false })
-listsSchema.index({ 'listKey': 1, 'familyId': 1}, { 'unique': true })
-listsSchema.post('save', function(error, doc, next) {
+listsSchema.index({'listKey': 1, 'familyId': 1}, { 'unique': true })
+listsSchema.post('save', function (error, doc, next) {
   if (error.name === 'MongoError' && error.code === 11000) {
     next(new Error(modelConstants.errorTypes.duplicateList))
   } else {
@@ -38,14 +38,14 @@ const Lists = mongoose.model('Lists', listsSchema, 'Lists')
 const listItemsSchema = mongoose.Schema({
   'listKey': { 'type': String, 'required': true },
   'listItemName': { 'type': String, 'required': true },
-  'familyId':  { 'type': Number, 'required': true },
+  'familyId': { 'type': Number, 'required': true },
   'reminderWhen': String,
   'reminderUserId': String,
   'reminderTitle': String,
   'reminderListKey': String
 }, { versionKey: false })
-listItemsSchema.index({ 'listKey': 1, 'listItemName': 1, 'familyId': 1}, { 'unique': true })
-listItemsSchema.post('save', function(error, doc, next) {
+listItemsSchema.index({'listKey': 1, 'listItemName': 1, 'familyId': 1}, { 'unique': true })
+listItemsSchema.post('save', function (error, doc, next) {
   if (error.name === 'MongoError' && error.code === 11000) {
     next(new Error(modelConstants.errorTypes.duplicateListItem))
   } else {
@@ -67,6 +67,15 @@ const familyMemberSchema = mongoose.Schema({
 }, { versionKey: false })
 const FamilyMembers = mongoose.model('FamilyMembers', familyMemberSchema, 'FamilyMembers')
 
+// FamilyMembers
+const familySchema = mongoose.Schema({
+  'userId': { 'type': String, 'required': true },
+  'name': { 'type': String, 'required': true },
+  'description': { 'type': String, 'required': true },
+  'timeZone': String
+}, { versionKey: false })
+const Families = mongoose.model('Families', familySchema, 'Families')
+
 // Logs
 const logsSchema = mongoose.Schema({
   'phoneNumber': String,
@@ -83,5 +92,6 @@ module.exports = {
   Lists,
   ListItems,
   FamilyMembers,
+  Families,
   Logs
 }
