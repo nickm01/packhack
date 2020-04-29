@@ -7,6 +7,7 @@ const phrases = require('../src/phrases')
 const logger = require('winston')
 const familyMembers = require('../model/familymembers')
 const jwt = require('jsonwebtoken')
+const families = require('../model/families')
 
 const errorMessages = {
   notFound: { errorCode: 1001, errorMessage: 'not found' },
@@ -236,6 +237,7 @@ const getFamilyMemberMe = (request, response) => {
     fromPhoneNumber: phoneNumber
   }
   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
+    .then(families.retrieveFamilyPromise)
     .then(data => {
       response.json(data)
     })
