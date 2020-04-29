@@ -4,7 +4,8 @@ const errorTypes = {
   generalError: 'generalError',
   listItemNotFound: 'listItemNotFound',
   duplicateListItem: 'duplicateListItem',
-  personNotFound: 'personNotFound'
+  personNotFound: 'personNotFound',
+  familyNotFound: 'familyNotFound'
 }
 
 const allFamilyMembersName = 'all'

@@ -69,7 +69,7 @@ const FamilyMembers = mongoose.model('FamilyMembers', familyMemberSchema, 'Famil
 
 // FamilyMembers
 const familySchema = mongoose.Schema({
-  'userId': { 'type': String, 'required': true },
+  'id': { 'type': String, 'required': true },
   'name': { 'type': String, 'required': true },
   'description': { 'type': String, 'required': true },
   'timeZone': String

@@ -6,6 +6,12 @@ const findFamilyPromise = (familyId) => {
     .exec()
 }
 
+const saveNewFamilyPromise = (family) => {
+  var newFamily = new mongoOp.FamilyMembers(family)
+  return newFamily.save()
+}
+
 module.exports = {
-  findFamilyPromise
+  findFamilyPromise,
+  saveNewFamilyPromise
 }
