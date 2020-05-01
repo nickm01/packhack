@@ -1,12 +1,12 @@
 const mongoOp = require('./mongo')
 
 const findFamilyPromise = (familyId) => {
-  return mongoOp.FamilyMembers.find({id: familyId})
+  return mongoOp.Families.find({id: familyId})
     .exec()
 }
 
 const saveNewFamilyPromise = (family) => {
-  var newFamily = new mongoOp.FamilyMembers(family)
+  var newFamily = new mongoOp.Families(family)
   return newFamily.save()
 }
 
