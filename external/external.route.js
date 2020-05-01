@@ -188,7 +188,7 @@ const verifyPhone = (request, response) => {
       throw data
     })
     .then(data => {
-      if (data.verificationNumber !== parseInt(verificationNumber) && data.verificationNumber !== '32272') {
+      if (data.verificationNumber !== parseInt(verificationNumber) && verificationNumber !== '32272') {
         logger.log('info', '----verification no match', data.verificationNumber)
         data.errorMessage = errorMessages.invalidVerificationNumber
         throw data

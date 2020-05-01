@@ -4,7 +4,7 @@ const modelConstants = require('./modelconstants')
 
 const retrieveFamilyPromise = (data) => {
   logger.log('debug', '___families_retrieveFamilyPromise', data)
-  return familiesPromises.findFamilyPromise(data.familyId)
+  return familiesPromises.findFamilyPromise(data.family_id)
     .then(families => {
       if (families.length === 0) {
         logger.log('debug', 'no result')
