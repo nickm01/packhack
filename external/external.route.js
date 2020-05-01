@@ -17,7 +17,8 @@ const errorMessages = {
   invalidVerificationNumber: { errorCode: 1004, errorMessage: 'invalid verification number' },
   tokenRequired: { errorCode: 1005, errorMessage: 'token required' },
   tokenVerificationFailure: { errorCode: 1006, errorMessage: 'token verification failed' },
-  expiredVerificationNumber: { errorCode: 1007, errorMessage: 'expired verification number' }
+  expiredVerificationNumber: { errorCode: 1007, errorMessage: 'expired verification number' },
+  memberRetrivalFailure: { errorCode: 1008, errorMessage: 'could not retrieve member' }
 }
 
 const issuer = 'https://packhack.us'
@@ -246,8 +247,8 @@ const getFamilyMemberMe = (request, response) => {
       response.json(data)
     })
     .catch(data => {
-      logger.log('info', '----authenticatePhone Failure', data)
-      response.status(404).send(errorMessages.invalidPhoneNumber)
+      logger.log('info', '----getFamilyMemberMe Failure', data)
+      response.status(404).send(errorMessages.memberRetrivalFailure)
     })
 }
 

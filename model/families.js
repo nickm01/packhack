@@ -3,16 +3,15 @@ const logger = require('winston')
 const modelConstants = require('./modelconstants')
 
 const retrieveFamilyPromise = (data) => {
-  logger.log('debug', '___families_retrieveFamilyPromise', data)
+  logger.log('info', '___families_retrieveFamilyPromise', data)
   return familiesPromises.findFamilyPromise(data.family_id)
     .then(families => {
       if (families.length === 0) {
-        logger.log('debug', 'no result')
+        logger.log('info', 'no result')
         data.errorMessage = modelConstants.errorTypes.familyNotFound
         throw data
       }
       const foundFamily = families[0]
-      data.family_name = foundFamily.name
       data.family_description = foundFamily.description
       logger.log('info', '___families_retrieveFamilyPromise success', data)
       return data
