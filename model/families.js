@@ -12,8 +12,9 @@ const retrieveFamilyPromise = (data) => {
         throw data
       }
       const foundFamily = families[0]
-      data.familyName = foundFamily.name
-      data.familyDescription = foundFamily.description
+      data.family_name = foundFamily.name
+      data.family_description = foundFamily.description
+      logger.log('info', '___families_retrieveFamilyPromise success', data)
       return data
     }, (error) => {
       data.errorMessage = modelConstants.errorTypes.generalError
