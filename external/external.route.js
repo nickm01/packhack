@@ -8,6 +8,7 @@ const logger = require('winston')
 const familyMembers = require('../model/familymembers')
 const jwt = require('jsonwebtoken')
 const families = require('../model/families')
+const snakeCaseKeys = require('snakecase-keys')
 
 const errorMessages = {
   notFound: { errorCode: 1001, errorMessage: 'not found' },
@@ -244,7 +245,7 @@ const getFamilyMemberMe = (request, response) => {
   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
     .then(families.retrieveFamilyPromise)
     .then(data => {
-      response.json(data)
+      response.json(snakeCaseKeys(data))
     })
     .catch(data => {
       logger.log('info', '----getFamilyMemberMe Failure', data)

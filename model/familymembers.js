@@ -57,12 +57,12 @@ const retrieveForExternalPersonFromPhoneNumberPromise = (data) => {
       }
       const foundPerson = familyMembers[0]
       return {
-        'user_id': foundPerson.userId,
-        'name': foundPerson.name,
-        'family_id': foundPerson.familyId,
-        'timezone': foundPerson.timeZone || 'America/New_York',
-        'phone_number': foundPerson.phoneNumber,
-        'description': foundPerson.description
+        userId: foundPerson.userId,
+        name: foundPerson.name,
+        familyId: foundPerson.familyId,
+        timezone: foundPerson.timeZone || 'America/New_York',
+        phoneNumber: foundPerson.phoneNumber,
+        description: foundPerson.description
       }
     }, (error) => {
       data.errorMessage = modelConstants.errorTypes.generalError
