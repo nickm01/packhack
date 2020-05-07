@@ -17,7 +17,7 @@
     "mongodb": "^2.1.18",
     "mongoose": "^4.5.3",
     "q": "^1.4.1",
-    "snakecase-keys": "^3.2.0",
+    "snakecase-keys-object": "^1.0.2",
     "twilio": "^2.8.0",
     "winston": "^2.3.1"
   },
