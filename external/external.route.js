@@ -8,7 +8,7 @@ const logger = require('winston')
 const familyMembers = require('../model/familymembers')
 const jwt = require('jsonwebtoken')
 const families = require('../model/families')
-const snakeCaseKeys = require('snakecase-keys')
+const snakeKeys = require('snakecase-keys-object');
 
 const errorMessages = {
   notFound: { errorCode: 1001, errorMessage: 'not found' },
