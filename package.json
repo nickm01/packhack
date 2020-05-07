@@ -4,7 +4,8 @@
   "description": "The Family Facilitor",
   "main": "server.js",
   "engines": {
-    "node": "6.11.1"
+    "node": "6.12.x",
+    "npm": "6.x"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
