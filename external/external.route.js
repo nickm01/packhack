@@ -236,14 +236,21 @@ const validateToken = (request, response, next) => {
   }
 }
 
-// TODO: Remove verification number, add verification expiry checking (why isn't it being returned?)
 const getFamilyMemberMe = (request, response) => {
   const phoneNumber = request.decoded.phone
   let data = {
     fromPhoneNumber: phoneNumber
   }
   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
-    .then(families.retrieveFamilyPromise)
+    .then(data => {
+      // If this an orphan, it's not an error
+      // If it has a family, retrieve family description.
+      if (data.familyId == null) {
+        throw data
+      } else {
+        return families.retrieveFamilyPromise
+      }
+    })
     .then(data => {
       response.json(snakeKeys(data))
     })
