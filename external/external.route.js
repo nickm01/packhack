@@ -248,7 +248,7 @@ const getFamilyMemberMe = (request, response) => {
       if (data.familyId == null) {
         response.json(snakeKeys(data))
       } else {
-        return families.retrieveFamilyPromise
+        return families.retrieveFamilyPromise(data)
           .then(data => {
             response.json(snakeKeys(data))
           })
