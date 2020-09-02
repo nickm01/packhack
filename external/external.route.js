@@ -246,7 +246,7 @@ const getFamilyMemberMe = (request, response) => {
       // If this an orphan, it's not an error
       // If it has a family, retrieve family description.
       if (data.familyId == null) {
-        throw data
+        response.json(snakeKeys(data))
       } else {
         return families.retrieveFamilyPromise
           .then(data => {
@@ -257,9 +257,6 @@ const getFamilyMemberMe = (request, response) => {
             response.status(404).send(errorMessages.memberRetrivalFailure)
           })
       }
-    })
-    .then(data => {
-      response.json(snakeKeys(data))
     })
     .catch(data => {
       logger.log('info', '----getFamilyMemberMe Failure', data)
