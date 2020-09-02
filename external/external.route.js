@@ -249,6 +249,13 @@ const getFamilyMemberMe = (request, response) => {
         throw data
       } else {
         return families.retrieveFamilyPromise
+          .then(data => {
+            response.json(snakeKeys(data))
+          })
+          .catch(data => {
+            logger.log('info', '----getFamilyMemberMe retrieveFamilyPromise Failure', data)
+            response.status(404).send(errorMessages.memberRetrivalFailure)
+          })
       }
     })
     .then(data => {
