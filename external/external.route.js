@@ -267,8 +267,8 @@ const getFamilyMemberMe = (request, response) => {
 
 const patchFamilyMemberMe = (request, response) => {
   let updateData = {
-    name: request.body.name,
-    description: request.body.description,
+    name: request.body.name.toLowerCase(),
+    description: request.body.name + ' ' + request.body.familyName,
     familyId: request.body.familyId,
     timeZone: request.body.timeZone
   }
@@ -282,7 +282,7 @@ const patchFamilyMemberMe = (request, response) => {
       logger.log('info', '----patchFamilyMemberMe userId', data.userId)
       return familyMembers.updateFamilyMemberPromise(data.userId, updateData)
         .then(data => {
-          response.json(snakeKeys(data))
+          response.json(snakeKeys(request.body))
         })
         .catch(data => {
           logger.log('info', '----patchFamilyMemberMe patch Failure', data)
