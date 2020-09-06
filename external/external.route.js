@@ -271,11 +271,11 @@ const patchFamilyMemberMe = (request, response) => {
     familyId: request.body.familyId,
     timeZone: request.body.timeZone
   }
-  const phoneNumber = request.decoded.phone
   let keyData = {
-    fromPhoneNumber: phoneNumber
+    fromPhoneNumber: request.decoded.phone
   }
   logger.log('info', '----patchFamilyMemberMe updateData', updateData)
+  logger.log('info', '----patchFamilyMemberMe keyData', keyData)
   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(keyData)
     .then(data => {
       logger.log('info', '----patchFamilyMemberMe userId', data.userId)
