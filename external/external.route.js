@@ -19,7 +19,8 @@ const errorMessages = {
   tokenRequired: { errorCode: 1005, errorMessage: 'token required' },
   tokenVerificationFailure: { errorCode: 1006, errorMessage: 'token verification failed' },
   expiredVerificationNumber: { errorCode: 1007, errorMessage: 'expired verification number' },
-  memberRetrivalFailure: { errorCode: 1008, errorMessage: 'could not retrieve member' }
+  memberRetrivalFailure: { errorCode: 1008, errorMessage: 'could not retrieve member' },
+  memberUpdateFailyre: { errorCode: 1009, errorMessage: 'could not update member' }
 }
 
 const issuer = 'https://packhack.us'
