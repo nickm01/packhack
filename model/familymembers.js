@@ -102,6 +102,14 @@ const saveNewFamilyMemberPromise = (data) => {
     })
 }
 
+const updateFamilyMemberPromise = (userId, data) => {
+  logger.log('info', '___familymembers_updateFamilyMemberPromise', data)
+  return familyMembersPromises.updateFamilyMemberPromise(userId, data)
+    .then(result => {
+      return data
+    })
+}
+
 const uuidv4 = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
@@ -114,5 +122,6 @@ module.exports = {
   retrievePersonFromPhoneNumberPromise,
   retrieveForExternalPersonFromPhoneNumberPromise,
   updateFamilyMemberVerificationNumberPromise,
-  saveNewFamilyMemberPromise
+  saveNewFamilyMemberPromise,
+  updateFamilyMemberPromise
 }

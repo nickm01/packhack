@@ -264,6 +264,36 @@ const getFamilyMemberMe = (request, response) => {
     })
 }
 
+const patchFamilyMemberMe = (request, response) => {
+  let updateData = {
+    name: request.body.name,
+    description: request.body.description,
+    familyId: request.body.familyId,
+    timeZone: request.body.timeZone
+  }
+  const phoneNumber = request.decoded.phone
+  let keyData = {
+    fromPhoneNumber: phoneNumber
+  }
+  logger.log('info', '----patchFamilyMemberMe updateData', updateData)
+  familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(keyData)
+    .then(data => {
+      logger.log('info', '----patchFamilyMemberMe userId', data.userId)
+      return familyMembers.updateFamilyMemberPromise(data.userId, updateData)
+        .then(data => {
+          response.json(snakeKeys(data))
+        })
+        .catch(data => {
+          logger.log('info', '----patchFamilyMemberMe patch Failure', data)
+          response.status(404).send(errorMessages.memberRetrivalFailure)
+        })
+    })
+    .catch(data => {
+      logger.log('info', '----patchFamilyMemberMe get Failure', data)
+      response.status(404).send(errorMessages.memberRetrivalFailure)
+    })
+}
+
 module.exports = {
   getLists,
   addList,
@@ -274,5 +304,6 @@ module.exports = {
   authenticatePhone,
   verifyPhone,
   validateToken,
-  getFamilyMemberMe
+  getFamilyMemberMe,
+  patchFamilyMemberMe
 }

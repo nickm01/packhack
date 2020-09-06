@@ -40,6 +40,7 @@ router.route('/api/lists/:list/items').delete((request, response) => { externalR
 router.route('/api/authenticate/phone').post((request, response) => { externalRoute.authenticatePhone(request, response) })
 router.route('/api/authenticate/verify').get((request, response) => { externalRoute.verifyPhone(request, response) })
 router.route('/api/familymembers/me').get(externalRoute.validateToken, (request, response) => { externalRoute.getFamilyMemberMe(request, response) })
+router.route('/api/familymembers/me').patch(externalRoute.validateToken, (request, response) => { externalRoute.patchFamilyMemberMe(request, response) })
 
 app.use('/', router)
 

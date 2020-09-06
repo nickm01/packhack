@@ -24,9 +24,30 @@ const updateFamilyMemberVerificationNumberPromise = (userId, verificationNumber,
     verificationNumber: verificationNumber,
     verificationNumberExpiry: verificationNumberExpiry
   }
-  logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise2', filter)
-  logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise2', update)
+  logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise filter:', filter)
+  logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise update:', update)
   return mongoOp.FamilyMembers.findOneAndUpdate(filter, update)
+    .exec()
+}
+
+// only updates specific data
+const updateFamilyMemberPromise = (userId, data) => {
+  const updateData = { }
+  if (data.name) {
+    updateData.name = data.name
+  }
+  if (data.descripton) {
+    updateData.description = data.description
+  }
+  if (data.familyId) {
+    updateData.familyId = data.familyId
+  }
+  if (data.timeZone) {
+    updateData.timeZone = data.timeZone
+  }
+  logger.log('info', '___familymembers_updateFamilyMemberPromise filter:', filter)
+  logger.log('info', '___familymembers_updateFamilyMemberPromise update', updateData)
+  return mongoOp.FamilyMembers.findOneAndUpdate(userId, updateData)
     .exec()
 }
 
@@ -34,5 +55,6 @@ module.exports = {
   findFromNameFamilyPromise,
   findFromPhoneNumberPromise,
   saveNewFamilyMemberPromise,
-  updateFamilyMemberVerificationNumberPromise
+  updateFamilyMemberVerificationNumberPromise,
+  updateFamilyMemberPromise
 }
