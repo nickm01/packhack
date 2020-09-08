@@ -32,11 +32,12 @@ const updateFamilyMemberVerificationNumberPromise = (userId, verificationNumber,
 
 // only updates specific data
 const updateFamilyMemberPromise = (userId, data) => {
+  const filter = { userId: userId }
   const updateData = { }
   if (data.name) {
     updateData.name = data.name
   }
-  if (data.descripton) {
+  if (data.description) {
     updateData.description = data.description
   }
   if (data.familyId) {
@@ -47,7 +48,7 @@ const updateFamilyMemberPromise = (userId, data) => {
   }
   logger.log('info', '___familymembers_updateFamilyMemberPromise filter:', filter)
   logger.log('info', '___familymembers_updateFamilyMemberPromise update', updateData)
-  return mongoOp.FamilyMembers.findOneAndUpdate(userId, updateData)
+  return mongoOp.FamilyMembers.findOneAndUpdate(filter, updateData)
     .exec()
 }
 
