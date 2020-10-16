@@ -14,7 +14,7 @@
     "express": "^4.13.3",
     "jsonwebtoken": "^8.5.1",
     "moment-timezone": "^0.5.9",
-    "mongodb": "^2.1.18",
+    "mongodb": "^3.0.0",
     "mongoose": "^4.5.3",
     "q": "^1.4.1",
     "snakecase-keys-object": "^1.0.2",
