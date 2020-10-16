@@ -9,7 +9,9 @@ mongoose.modelSchemas = {}
 
 const intialize = () => {
   mongoose.connect(config.mongodbUri, {
-    useMongoClient: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
   })
   const db = mongoose.connection
   db.on('error', console.error.bind(console, 'connection error:'))

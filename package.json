@@ -15,7 +15,7 @@
     "jsonwebtoken": "^8.5.1",
     "moment-timezone": "^0.5.9",
     "mongodb": "^3.0.0",
-    "mongoose": "^4.5.3",
+    "mongoose": "^5.0.0",
     "q": "^1.4.1",
     "snakecase-keys-object": "^1.0.2",
     "twilio": "^2.8.0",
