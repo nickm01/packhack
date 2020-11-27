@@ -2,7 +2,7 @@ const mongoOp = require('../model/mongo')
 const logger = require('winston')
 
 function deleteListItemByName (familyId, listKey, listItemName, callback) {
-  mongoOp.ListItems.remove({'listKey': listKey, 'listItemName': listItemName, 'familyId': familyId}, function (err, removeResult) {
+  mongoOp.ListItems.deleteMany({'listKey': listKey, 'listItemName': listItemName, 'familyId': familyId}, function (err, removeResult) {
     if (err) {
       callback('Error removing ' + listItemName + ' 😦')
       return
