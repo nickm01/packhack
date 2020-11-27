@@ -51,9 +51,10 @@ function allListItemsPromise (listItems) {
 }
 
 function deleteListItemByNamePromise (listItem) {
-  const promise = mongoOp.ListItems.remove(listItem)
+  const promise = mongoOp.ListItems.deleteOne(listItem)
     .exec()
     .then(removeResult => {
+      logger.log('info','--- deleteListItemByNamePromise' + removeResult)
       if (removeResult.result.n !== 1) {
         throw new Error('Error in completing the reminder 😦.')
       } else {
