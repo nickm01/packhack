@@ -54,4 +54,4 @@ Note: [person] could be the name of the person or "all" or "me"
 - Set/view timezone
 - View family members
 - Auto-categorization of groceries for shopping lists (smartly split out into fruit&veg, meats, frozen, diary, bakery etc)
-- Improved on-boarding (a little manual right now)
+- Improved on-boarding (a little manual right now).
