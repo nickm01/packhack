@@ -57,7 +57,7 @@ function deleteListItemByNamePromise (listItem) {
       if (removeResult.deletedCount !== 1) {
         throw new Error('Error in completing the reminder 😦.')
       } else {
-        logger.log('debug', '---- Removed ' + listItem.listItemName + ' ' + removeResult.result.n)
+        logger.log('debug', '---- Removed ' + listItem.listItemName + ' ' + removeResult.deletedCount)
         return listItem
       }
     })
