@@ -24,7 +24,7 @@ const intialize = () => {
 const listsSchema = mongoose.Schema({
   'listKey': { 'type': String, 'required': true },
   'listDescription': String,
-  'familyId': { 'type': Number, 'required': true }
+  'familyId': { 'type': String, 'required': true }
 }, { versionKey: false })
 listsSchema.index({'listKey': 1, 'familyId': 1}, { 'unique': true })
 listsSchema.post('save', function (error, doc, next) {
@@ -40,7 +40,7 @@ const Lists = mongoose.model('Lists', listsSchema, 'Lists')
 const listItemsSchema = mongoose.Schema({
   'listKey': { 'type': String, 'required': true },
   'listItemName': { 'type': String, 'required': true },
-  'familyId': { 'type': Number, 'required': true },
+  'familyId': { 'type': String, 'required': true },
   'reminderWhen': String,
   'reminderUserId': String,
   'reminderTitle': String,
@@ -59,7 +59,7 @@ const ListItems = mongoose.model('ListItems', listItemsSchema, 'ListItems')
 // FamilyMembers
 const familyMemberSchema = mongoose.Schema({
   'userId': { 'type': String, 'required': true },
-  'familyId': Number,
+  'familyId': String,
   'name': String,
   'phoneNumber': { 'type': String, 'required': true },
   'description': String,
@@ -81,7 +81,7 @@ const Families = mongoose.model('Families', familySchema, 'Families')
 // Logs
 const logsSchema = mongoose.Schema({
   'phoneNumber': String,
-  'familyId': Number,
+  'familyId': String,
   'message': String,
   'dateTime': String,
   'type': String,
