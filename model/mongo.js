@@ -57,23 +57,24 @@ listItemsSchema.post('save', function (error, doc, next) {
 const ListItems = mongoose.model('ListItems', listItemsSchema, 'ListItems')
 
 // FamilyMembers
+// Note: Description = what you show (capitalized), Name = what internally the name is (not capitalized)
 const familyMemberSchema = mongoose.Schema({
   'userId': { 'type': String, 'required': true },
   'familyId': String,
-  'name': String,
+  'name': String, // first name, lower-cased
   'phoneNumber': { 'type': String, 'required': true },
-  'description': String,
+  'description': String, // full name with family name, capitalized
   'timeZone': String,
   'verificationNumber': Number,
   'verificationNumberExpiry': String
 }, { versionKey: false })
 const FamilyMembers = mongoose.model('FamilyMembers', familyMemberSchema, 'FamilyMembers')
 
-// FamilyMembers
+// Families
 const familySchema = mongoose.Schema({
-  'id': { 'type': Number, 'required': true },
-  'name': { 'type': String, 'required': true },
-  'description': { 'type': String, 'required': true },
+  'id': { 'type': String, 'required': true },
+  'name': { 'type': String, 'required': true }, // internal, lower-cased
+  'description': { 'type': String, 'required': true }, // external, capitalized
   'timeZone': String
 }, { versionKey: false })
 const Families = mongoose.model('Families', familySchema, 'Families')

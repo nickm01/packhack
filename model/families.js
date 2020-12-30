@@ -27,15 +27,14 @@ const saveNewFamilyPromise = (data) => {
   const id = uuidv4()
   const family = {
     id: id,
-    name: data.familyName,
-    description: data.familyDescription,
+    name: data.name,
+    description: data.description,
     timeZone: data.timeZone || 'America/New_York'
   }
   logger.log('info', '___familymembers_save_family', family)
   return familiesPromises.saveNewFamilyPromise(family)
-    .then(family => {
-      data.familyId = id
-      return data
+    .then(result => {
+      return family
     }, (error) => {
       data.errorMessage = modelConstants.errorTypes.generalError
       data.systemError = error

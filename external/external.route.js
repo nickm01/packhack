@@ -6,8 +6,8 @@ const smsProcessor = require('../src/smsprocessor')
 const phrases = require('../src/phrases')
 const logger = require('winston')
 const familyMembers = require('../model/familymembers')
-const jwt = require('jsonwebtoken')
 const families = require('../model/families')
+const jwt = require('jsonwebtoken')
 const snakeKeys = require('snakecase-keys-object')
 
 const errorMessages = {
@@ -20,7 +20,8 @@ const errorMessages = {
   tokenVerificationFailure: { errorCode: 1006, errorMessage: 'token verification failed' },
   expiredVerificationNumber: { errorCode: 1007, errorMessage: 'expired verification number' },
   memberRetrivalFailure: { errorCode: 1008, errorMessage: 'could not retrieve member' },
-  memberUpdateFailyre: { errorCode: 1009, errorMessage: 'could not update member' }
+  memberUpdateFailure: { errorCode: 1009, errorMessage: 'could not update member' },
+  familyUpdateFailure: { errorCode: 1010, errorMessage: 'could not update family' },
 }
 
 const issuer = 'https://packhack.us'
@@ -114,7 +115,7 @@ const deleteListItem = (request, response) => {
 
 // This will first check if phone already already exists
 // If so, will just update the verification Number.
-// If not, will create new family + member.
+// If not, will create new member.
 const authenticatePhone = (request, response) => {
   logger.log('info', '----authenticatePhone start', request.body)
   const phoneNumber = request.body.phone
@@ -151,9 +152,8 @@ const authenticatePhone = (request, response) => {
       data.verificationNumber = newVerificationNumber
       data.verificationNumberExpiry = expiryDate
       if (data.errorMessage === modelConstants.errorTypes.personNotFound) {
-        logger.log('info', '----authenticatePhone save new family + member')
-        return families.saveNewFamilyPromise(data)
-          .then(familyMembers.saveNewFamilyMemberPromise)
+        logger.log('info', '----authenticatePhone save new family member')
+        return familyMembers.saveNewFamilyMemberPromise(data)
       } else {
         logger.log('info', '----authenticatePhone update')
         return familyMembers.updateFamilyMemberVerificationNumberPromise(data)
@@ -281,17 +281,38 @@ const patchFamilyMemberMe = (request, response) => {
     .then(data => {
       logger.log('info', '----patchFamilyMemberMe userId', data.userId)
       return familyMembers.updateFamilyMemberPromise(data.userId, updateData)
-        .then(data => {
-          response.json(snakeKeys(request.body))
+        .then(result => {
+          let responseData = updateData
+          responseData.phoneNumber = keyData.fromPhoneNumber
+          responseData.userId = data.userId
+          response.json(snakeKeys(responseData))
         })
         .catch(data => {
           logger.log('info', '----patchFamilyMemberMe patch Failure', data)
-          response.status(404).send(errorMessages.memberRetrivalFailure)
+          response.status(404).send(errorMessages.memberUpdateFailure)
         })
     })
     .catch(data => {
       logger.log('info', '----patchFamilyMemberMe get Failure', data)
       response.status(404).send(errorMessages.memberRetrivalFailure)
+    })
+}
+
+const postFamily = (request, response) => {
+  let data = {
+    name: request.body.description.toLowerCase(),
+    description: request.body.description,
+    timeZone: request.body.timeZone
+  }
+  logger.log('info', '----postFamily data', data)
+  families.saveNewFamilyPromise(data)
+    .then(family => {
+      logger.log('info', '----postFamily success', family)
+      response.json(snakeKeys(family))
+    })
+    .catch(data => {
+      logger.log('info', '----postFamily Failure', data)
+      response.status(404).send(errorMessages.familyUpdateFailure)
     })
 }
 
@@ -306,5 +327,6 @@ module.exports = {
   verifyPhone,
   validateToken,
   getFamilyMemberMe,
-  patchFamilyMemberMe
+  patchFamilyMemberMe,
+  postFamily
 }

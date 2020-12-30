@@ -93,9 +93,9 @@ const saveNewFamilyMemberPromise = (data) => {
   }
   logger.log('info', '___familymembers_save_familyMember', familyMember)
   return familyMembersPromises.saveNewFamilyMemberPromise(familyMember)
-    .then(familyMember => {
-      return data
-    }, (error) => {
+    .then(data => {
+      return familyMember
+    }, (error) => { 
       data.errorMessage = modelConstants.errorTypes.generalError
       data.systemError = error
       throw data
@@ -106,7 +106,7 @@ const updateFamilyMemberPromise = (userId, data) => {
   logger.log('info', '___familymembers_updateFamilyMemberPromise', data)
   return familyMembersPromises.updateFamilyMemberPromise(userId, data)
     .then(result => {
-      return data
+      return result
     })
 }
 
