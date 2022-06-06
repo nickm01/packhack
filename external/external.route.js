@@ -21,6 +21,7 @@ const errorMessages = {
   expiredVerificationNumber: { errorCode: 1007, errorMessage: 'expired verification number' },
   memberRetrivalFailure: { errorCode: 1008, errorMessage: 'could not retrieve member' },
   memberUpdateFailure: { errorCode: 1009, errorMessage: 'could not update member' },
+  memberCreateFailure: { errorCode: 1009, errorMessage: 'could not create member' },
   familyUpdateFailure: { errorCode: 1010, errorMessage: 'could not update family' },
 }
 
@@ -298,6 +299,50 @@ const patchFamilyMemberMe = (request, response) => {
     })
 }
 
+const postFamilyMember = (request, response) => {
+  //TODO: NEED TO CHECK DECODED PHONE NUMBER IT MATCHES FAMILY ID
+  let keyData = {
+    fromPhoneNumber: request.decoded.phone
+  }
+  logger.log('info', '----postFamilyMember keyData', keyData)
+  familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(keyData)
+  .then(user => {
+    let familyKey = {
+      id: user.familyId
+    }
+    logger.log('info', '----postFamilyMember familyID', familyKeyd)
+    return families.retrieveFamilyPromise(familyKey)
+    .then(family => {
+      logger.log('info', '----postFamilyMember family', family)
+      let data = {
+        familyId: family.familyId,
+        name: request.body.name.toLowerCase(),
+        description: request.body.name + ' ' + family.familyName,
+        phoneNumber: request.body.phoneNumber,
+        timeZone: request.body.timeZone
+      }
+      return families.saveNewFamilyMemberPromise(data)
+      .then(familyMember => {
+        logger.log('info', '----postFamilyMember save success', familyMember)
+        response.json(snakeKeys(family))
+      })
+      .catch(data => {
+        logger.log('info', '----postFamilyMember Failure', data)
+        response.status(404).send(errorMessages.memberCreateFailure)
+      })
+    })
+    .catch(data => {
+      logger.log('info', '----postFamilyMember retrieveFamilyPromise Failure', data)
+      response.status(404).send(errorMessages.memberRetrivalFailure)
+    })
+  })
+  .catch(data => {
+    logger.log('info', '----postFamilyMember Failure', data)
+    response.status(404).send(errorMessages.memberRetrivalFailure)
+  })
+  
+}
+
 const postFamily = (request, response) => {
   let data = {
     name: request.body.description.toLowerCase(),
@@ -328,5 +373,6 @@ module.exports = {
   validateToken,
   getFamilyMemberMe,
   patchFamilyMemberMe,
+  postFamilyMember,
   postFamily
 }

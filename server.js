@@ -41,6 +41,7 @@ router.route('/api/authenticate/phone').post((request, response) => { externalRo
 router.route('/api/authenticate/verify').get((request, response) => { externalRoute.verifyPhone(request, response) })
 router.route('/api/familymembers/me').get(externalRoute.validateToken, (request, response) => { externalRoute.getFamilyMemberMe(request, response) })
 router.route('/api/familymembers/me').patch(externalRoute.validateToken, (request, response) => { externalRoute.patchFamilyMemberMe(request, response) })
+router.route('/api/familymembers').post(externalRoute.validateToken, (request, response) => { externalRoute.postFamilyMember(request, response) })
 router.route('/api/families').post(externalRoute.validateToken, (request, response) => { externalRoute.postFamily(request, response) })
 
 app.use('/', router)
