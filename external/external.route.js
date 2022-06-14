@@ -319,7 +319,7 @@ const postFamilyMember = (request, response) => {
         familyId: family.familyId,
         name: request.body.name.toLowerCase(),
         description: request.body.name + ' ' + family.familyName,
-        phoneNumber: request.body.phoneNumber,
+        fromPhoneNumber: request.body.phoneNumber,
         timeZone: request.body.timeZone
       }
       return familyMembers.saveNewFamilyMemberPromise(data)
