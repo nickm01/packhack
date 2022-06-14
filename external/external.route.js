@@ -325,7 +325,7 @@ const postFamilyMember = (request, response) => {
       return familyMembers.saveNewFamilyMemberPromise(data)
       .then(familyMember => {
         logger.log('info', '----postFamilyMember save success', familyMember)
-        response.json(snakeKeys(family))
+        response.json(snakeKeys(familyMember))
       })
       .catch(data => {
         logger.log('info', '----postFamilyMember Failure', data)
