@@ -310,7 +310,7 @@ const postFamilyMember = (request, response) => {
     let familyKey = {
       id: user.familyId
     }
-    logger.log('info', '----postFamilyMember familyID', familyKeyd)
+    logger.log('info', '----postFamilyMember familyID', familyKey)
     return families.retrieveFamilyPromise(familyKey)
     .then(family => {
       logger.log('info', '----postFamilyMember family', family)
