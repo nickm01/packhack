@@ -321,7 +321,7 @@ const postFamilyMember = (request, response) => {
         phoneNumber: request.body.phoneNumber,
         timeZone: request.body.timeZone
       }
-      return families.saveNewFamilyMemberPromise(data)
+      return familyMembers.saveNewFamilyMemberPromise(data)
       .then(familyMember => {
         logger.log('info', '----postFamilyMember save success', familyMember)
         response.json(snakeKeys(family))
