@@ -308,7 +308,7 @@ const postFamilyMember = (request, response) => {
   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(keyData)
   .then(user => {
     let familyKey = {
-      id: user.familyId
+      familyId: user.familyId
     }
     logger.log('info', '----postFamilyMember familyID', familyKey)
     return families.retrieveFamilyPromise(familyKey)
