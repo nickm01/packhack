@@ -331,7 +331,7 @@ const postFamilyMember = (request, response) => {
 
         let phoneNumber = data.fromPhoneNumber
         let textData = {
-          fromPerson: user.name,
+          fromPerson: user.name.toUpperCase(),
           familyDescription: family.familyDescription  
         }
         let text = finalResponseTextProcessor.replaceDynamicText(textData, phrases.addNewMember)
