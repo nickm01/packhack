@@ -318,10 +318,11 @@ const postFamilyMember = (request, response) => {
     return families.retrieveFamilyPromise(familyKey)
     .then(family => {
       logger.log('info', '----postFamilyMember family', family)
+      let description = request.body.name + ' ' + family.familyDescription
       let data = {
         familyId: family.familyId,
         name: request.body.name.toLowerCase(),
-        description: request.body.name.toUpperCase() + ' ' + family.familyDescription,
+        description: description,
         fromPhoneNumber: request.body.phoneNumber,
         timeZone: request.body.timeZone
       }
@@ -331,7 +332,7 @@ const postFamilyMember = (request, response) => {
 
         let phoneNumber = data.fromPhoneNumber
         let textData = {
-          fromPerson: user.name.toUpperCase(),
+          fromPerson: user.description,
           familyDescription: family.familyDescription  
         }
         let text = finalResponseTextProcessor.replaceDynamicText(textData, phrases.addNewMember)
