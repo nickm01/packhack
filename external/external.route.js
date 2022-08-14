@@ -321,7 +321,7 @@ const postFamilyMember = (request, response) => {
       let data = {
         familyId: family.familyId,
         name: request.body.name.toLowerCase(),
-        description: request.body.name + ' ' + family.familyDescription,
+        description: request.body.name.toUpperCase() + ' ' + family.familyDescription,
         fromPhoneNumber: request.body.phoneNumber,
         timeZone: request.body.timeZone
       }

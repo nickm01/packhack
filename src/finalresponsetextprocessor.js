@@ -15,7 +15,10 @@ const replaceDynamicText = (data, str) => {
     finalText = finalText.replace('%@fromPerson', '@' + data.fromPerson)
   }
   if (data.familyDescription) {
-    finalText = finalText.replace('%@familyDescription', '@' + data.familyDescription)
+    finalText = finalText.replace('%familyDescription', data.familyDescription)
+  }
+  if (data.familyDescription) {
+    finalText = finalText.replace('%fromPerson', data.fromPerson)
   }
   if (data.reminderUserDateText) {
     finalText = finalText.replace('%%date', data.reminderUserDateText)
