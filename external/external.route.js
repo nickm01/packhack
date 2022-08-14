@@ -332,7 +332,7 @@ const postFamilyMember = (request, response) => {
         let phoneNumber = data.fromPhoneNumber
         let textData = {
           fromPerson: user.name,
-          familyDescription = family.familyDescription  
+          familyDescription: family.familyDescription  
         }
         let text = finalResponseTextProcessor.replaceDynamicText(textData, phrases.addNewMember)
         smsProcessor.sendSmsPromise({}, phoneNumber, text)
