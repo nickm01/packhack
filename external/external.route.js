@@ -9,6 +9,9 @@ const familyMembers = require('../model/familymembers')
 const families = require('../model/families')
 const jwt = require('jsonwebtoken')
 const snakeKeys = require('snakecase-keys-object')
+const finalResponseTextProcessor = require('./finalresponsetextprocessor')
+const { dateTimePast } = require('../src/phrases')
+
 
 const errorMessages = {
   notFound: { errorCode: 1001, errorMessage: 'not found' },
@@ -300,7 +303,7 @@ const patchFamilyMemberMe = (request, response) => {
 }
 
 const postFamilyMember = (request, response) => {
-  //TODO: NEED TO CHECK DECODED PHONE NUMBER IT MATCHES FAMILY ID
+  //TODO: CHECK IF PHONE NUMBER HAS BEEN USED BEFORE
   let keyData = {
     fromPhoneNumber: request.decoded.phone
   }
@@ -325,7 +328,23 @@ const postFamilyMember = (request, response) => {
       return familyMembers.saveNewFamilyMemberPromise(data)
       .then(familyMember => {
         logger.log('info', '----postFamilyMember save success', familyMember)
-        response.json(snakeKeys(familyMember))
+
+        let phoneNumber = data.fromPhoneNumber
+        let textData = {
+          fromPerson: user.name,
+          familyDescription = family.familyDescription  
+        }
+        let text = finalResponseTextProcessor.replaceDynamicText(textData, phrases.addNewMember)
+        smsProcessor.sendSmsPromise({}, phoneNumber, text)
+        .then(result => {
+          logger.log('info', '----add new SMS success')
+          response.json(snakeKeys(familyMember))
+          return data
+        })
+        .catch(data => {
+          logger.log('info', '----postFamilyMember Failure', data)
+          response.status(404).send(errorMessages.memberCreateFailure)  
+        })
       })
       .catch(data => {
         logger.log('info', '----postFamilyMember Failure', data)
