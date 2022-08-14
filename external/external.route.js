@@ -9,7 +9,7 @@ const familyMembers = require('../model/familymembers')
 const families = require('../model/families')
 const jwt = require('jsonwebtoken')
 const snakeKeys = require('snakecase-keys-object')
-const finalResponseTextProcessor = require('./finalresponsetextprocessor')
+const finalResponseTextProcessor = require('../src/finalresponsetextprocessor')
 const { dateTimePast } = require('../src/phrases')
 
 
