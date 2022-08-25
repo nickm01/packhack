@@ -270,9 +270,11 @@ const getFamilyMemberMe = (request, response) => {
 }
 
 const patchFamilyMemberMe = (request, response) => {
+  let fullDescription = request.body.name + ' ' + family.familyDescription
   let updateData = {
     name: request.body.name.toLowerCase(),
-    description: request.body.name + ' ' + request.body.familyName,
+    description: request.body.name,
+    fullDescription: fullDescription,
     familyId: request.body.familyId,
     timeZone: request.body.timeZone
   }
@@ -318,11 +320,12 @@ const postFamilyMember = (request, response) => {
     return families.retrieveFamilyPromise(familyKey)
     .then(family => {
       logger.log('info', '----postFamilyMember family', family)
-      let description = request.body.name + ' ' + family.familyDescription
+      let fullDescription = request.body.name + ' ' + family.familyDescription
       let data = {
         familyId: family.familyId,
         name: request.body.name.toLowerCase(),
-        description: description,
+        description: request.body.name,
+        fullDescription: fullDescription,
         fromPhoneNumber: request.body.phoneNumber,
         timeZone: request.body.timeZone
       }

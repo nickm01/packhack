@@ -63,7 +63,8 @@ const familyMemberSchema = mongoose.Schema({
   'familyId': String,
   'name': String, // first name, lower-cased
   'phoneNumber': { 'type': String, 'required': true },
-  'description': String, // full name with family name, capitalized
+  'description': String, // capitalized
+  'fullDescription': String // capitalized, including last name
   'timeZone': String,
   'verificationNumber': Number,
   'verificationNumberExpiry': String
