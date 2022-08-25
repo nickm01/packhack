@@ -270,12 +270,9 @@ const getFamilyMemberMe = (request, response) => {
 }
 
 const patchFamilyMemberMe = (request, response) => {
-  let fullDescription = request.body.name + ' ' + family.familyDescription
   let updateData = {
     name: request.body.name.toLowerCase(),
     description: request.body.name,
-    fullDescription: fullDescription,
-    familyId: request.body.familyId,
     timeZone: request.body.timeZone
   }
   let keyData = {
@@ -284,24 +281,37 @@ const patchFamilyMemberMe = (request, response) => {
   logger.log('info', '----patchFamilyMemberMe updateData', updateData)
   logger.log('info', '----patchFamilyMemberMe keyData', keyData)
   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(keyData)
-    .then(data => {
+  .then(data => {
+    let familyKey = {
+      familyId: data.familyId
+    }
+    updateData.familyId = data.familyId
+    logger.log('info', '----patchFamilyMemberMe familyID', familyKey)
+    return families.retrieveFamilyPromise(familyKey)
+    .then(family => {
       logger.log('info', '----patchFamilyMemberMe userId', data.userId)
       return familyMembers.updateFamilyMemberPromise(data.userId, updateData)
-        .then(result => {
-          let responseData = updateData
-          responseData.phoneNumber = keyData.fromPhoneNumber
-          responseData.userId = data.userId
-          response.json(snakeKeys(responseData))
-        })
-        .catch(data => {
-          logger.log('info', '----patchFamilyMemberMe patch Failure', data)
-          response.status(404).send(errorMessages.memberUpdateFailure)
-        })
+      .then(result => {
+        updateData.fullDescription = updateData.description + ' ' + family.familyDescription
+        let responseData = updateData
+        responseData.phoneNumber = keyData.fromPhoneNumber
+        responseData.userId = data.userId
+        response.json(snakeKeys(responseData))
+      })
+      .catch(data => {
+        logger.log('info', '----patchFamilyMemberMe patch Failure', data)
+        response.status(404).send(errorMessages.memberUpdateFailure)
+      })
     })
     .catch(data => {
-      logger.log('info', '----patchFamilyMemberMe get Failure', data)
-      response.status(404).send(errorMessages.memberRetrivalFailure)
+      logger.log('info', '----patchFamilyMemberMe retrieveFamilyPromise Failure', data)
+      response.status(404).send(errorMessages.memberRetrivalFailure)  
     })
+  })
+  .catch(data => {
+    logger.log('info', '----patchFamilyMemberMe get Failure', data)
+    response.status(404).send(errorMessages.memberRetrivalFailure)
+  })
 }
 
 const postFamilyMember = (request, response) => {
