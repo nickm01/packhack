@@ -284,9 +284,9 @@ const patchFamilyMemberMe = (request, response) => {
   .then(data => {
     logger.log('info', '----patchFamilyMemberMe externalPerson', data)
     let familyKey = {
-      familyId: data.familyId
+      familyId: request.body.familyId
     }
-    updateData.familyId = data.familyId
+    updateData.familyId = request.body.familyId
     logger.log('info', '----patchFamilyMemberMe familyID', familyKey)
     return families.retrieveFamilyPromise(familyKey)
     .then(family => {
