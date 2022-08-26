@@ -273,7 +273,8 @@ const patchFamilyMemberMe = (request, response) => {
   let updateData = {
     name: request.body.name.toLowerCase(),
     description: request.body.name,
-    timeZone: request.body.timeZone
+    timeZone: request.body.timeZone,
+    familyId: request.body.familyId
   }
   let keyData = {
     fromPhoneNumber: request.decoded.phone
@@ -284,9 +285,8 @@ const patchFamilyMemberMe = (request, response) => {
   .then(data => {
     logger.log('info', '----patchFamilyMemberMe externalPerson', data)
     let familyKey = {
-      familyId: request.body.familyId
+      familyId: updateData.familyId
     }
-    updateData.familyId = request.body.familyId
     logger.log('info', '----patchFamilyMemberMe familyID', familyKey)
     return families.retrieveFamilyPromise(familyKey)
     .then(family => {
