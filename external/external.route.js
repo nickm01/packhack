@@ -282,6 +282,7 @@ const patchFamilyMemberMe = (request, response) => {
   logger.log('info', '----patchFamilyMemberMe keyData', keyData)
   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(keyData)
   .then(data => {
+    logger.log('info', '----patchFamilyMemberMe externalPerson', data)
     let familyKey = {
       familyId: data.familyId
     }
