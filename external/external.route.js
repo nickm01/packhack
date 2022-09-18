@@ -409,7 +409,7 @@ const getFamilyMembers = (request, response) => {
       if (data.familyId == null) {
         response.json(snakeKeys(data))
       } else {
-        return families.retrieveAllForFamilyId(data.familyId)
+        return familyMembers.retrieveAllForFamilyId(data.familyId)
           .then(data => {
             response.json(snakeKeys(data))
           })
