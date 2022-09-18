@@ -134,6 +134,7 @@ module.exports = {
   retrievePersonPhoneNumbersPromise,
   retrievePersonFromPhoneNumberPromise,
   retrieveForExternalPersonFromPhoneNumberPromise,
+  retrieveAllForFamilyId,
   updateFamilyMemberVerificationNumberPromise,
   saveNewFamilyMemberPromise,
   updateFamilyMemberPromise
