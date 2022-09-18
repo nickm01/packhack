@@ -396,28 +396,23 @@ const postFamily = (request, response) => {
     })
 }
 
-// TODO NEED TO TEST THIS (ADD TO IOS) AND ADDITIONAL OF NEW MEMBERS FROM IOD
 const getFamilyMembers = (request, response) => {
   const phoneNumber = request.decoded.phone
   let data = {
     fromPhoneNumber: phoneNumber
   }
+  logger.log('info', '----getFamilyMembers start', data)
   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
     .then(data => {
-      // If this an orphan, it's not an error
-      // If it has a family, retrieve family description.
-      if (data.familyId == null) {
-        response.json(snakeKeys(data))
-      } else {
-        return familyMembers.retrieveAllForFamilyId(data.familyId)
-          .then(data => {
-            response.json(snakeKeys(data))
-          })
-          .catch(data => {
-            logger.log('info', '----getFamilyMembers retrieveAll Failure', data)
-            response.status(404).send(errorMessages.memberRetrivalFailure)
-          })
-      }
+      logger.log('info', '----getFamilyMembers retrieve user', data)
+      return familyMembers.retrieveAllForFamilyId(data.familyId)
+        .then(data => {
+          response.json(snakeKeys(data))
+        })
+        .catch(data => {
+          logger.log('info', '----getFamilyMembers retrieveAll Failure', data)
+          response.status(404).send(errorMessages.memberRetrivalFailure)
+        })
     })
     .catch(data => {
       logger.log('info', '----getFamilyMembers Failure', data)
