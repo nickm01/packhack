@@ -71,6 +71,18 @@ const retrieveForExternalPersonFromPhoneNumberPromise = (data) => {
     })
 }
 
+const retrieveAllForFamilyId = (familyId) => {
+  logger.log('info', '___familymembers_familyId', familyId)
+  return familyMembersPromises.findAll(familyId)
+    .then(familyMembers => {
+      return familyMembers
+    }, (error) => {
+      data.errorMessage = modelConstants.errorTypes.generalError
+      data.systemError = error
+      throw data
+    })
+}
+
 const updateFamilyMemberVerificationNumberPromise = (data) => {
   logger.log('info', '___familymembers_updateFamilyMemberVerificationNumberPromise', data)
   return familyMembersPromises.updateFamilyMemberVerificationNumberPromise(data.userId, data.verificationNumber, data.verificationNumberExpiry)
@@ -86,6 +98,7 @@ const saveNewFamilyMemberPromise = (data) => {
     familyId: data.familyId,
     name: data.name,
     description: data.description,
+    fullDescription:  data.fullDescription,
     phoneNumber: data.fromPhoneNumber,
     timeZone: data.timeZone || 'America/New_York',
     verificationNumber: data.verificationNumber,

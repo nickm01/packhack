@@ -396,6 +396,35 @@ const postFamily = (request, response) => {
     })
 }
 
+// TODO NEED TO TEST THIS (ADD TO IOS) AND ADDITIONAL OF NEW MEMBERS FROM IOD
+const getFamilyMembers = (request, response) => {
+  const phoneNumber = request.decoded.phone
+  let data = {
+    fromPhoneNumber: phoneNumber
+  }
+  familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
+    .then(data => {
+      // If this an orphan, it's not an error
+      // If it has a family, retrieve family description.
+      if (data.familyId == null) {
+        response.json(snakeKeys(data))
+      } else {
+        return families.retrieveAllForFamilyId(data.familyId)
+          .then(data => {
+            response.json(snakeKeys(data))
+          })
+          .catch(data => {
+            logger.log('info', '----getFamilyMembers retrieveAll Failure', data)
+            response.status(404).send(errorMessages.memberRetrivalFailure)
+          })
+      }
+    })
+    .catch(data => {
+      logger.log('info', '----getFamilyMembers Failure', data)
+      response.status(404).send(errorMessages.memberRetrivalFailure)
+    })
+}
+
 module.exports = {
   getLists,
   addList,
@@ -409,5 +438,6 @@ module.exports = {
   getFamilyMemberMe,
   patchFamilyMemberMe,
   postFamilyMember,
+  getFamilyMembers,
   postFamily
 }
