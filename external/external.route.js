@@ -406,8 +406,22 @@ const getFamilyMembers = (request, response) => {
     .then(data => {
       logger.log('info', '----getFamilyMembers retrieve user', data)
       return familyMembers.retrieveAllForFamilyId(data.familyId)
-        .then(data => {
-          response.json(snakeKeys(data))
+        .then(members => {
+          logger.log('info', '----getFamilyMembers success', data)
+          var resultArr = []
+          for(var member in members){
+            let cleanMember = {
+              familyId: member.familyId,
+              name: member.name,
+              description: member.description,
+              fullDescription: member.description,
+              phoneNumber: member.phoneNumber,
+              timeZone: member.timeZone
+            }
+            logger.log('info', '----getFamilyMembers success processed', resultArr)
+            resultArr.push(snakeKeys(cleanMember));
+        }
+          response.json(resultArr)
         })
         .catch(data => {
           logger.log('info', '----getFamilyMembers retrieveAll Failure', data)
