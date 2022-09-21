@@ -397,19 +397,17 @@ const postFamily = (request, response) => {
 }
 
 const getFamilyMembers = (request, response) => {
-  const phoneNumber = request.decoded.phone
   let data = {
-    fromPhoneNumber: phoneNumber
+    fromPhoneNumber: request.decoded.phone
   }
   logger.log('info', '----getFamilyMembers start', data)
   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
-    .then(data => {
-      logger.log('info', '----getFamilyMembers retrieve user', data)
-      return familyMembers.retrieveAllForFamilyId(data.familyId)
+    .then(user => {
+      return familyMembers.retrieveAllForFamilyId(user.familyId)
         .then(members => {
-          logger.log('info', '----getFamilyMembers success', data)
+          logger.log('info', '----getFamilyMembers success', members)
           var resultArr = []
-          for(var member in members){
+          for(const member of members){
             let cleanMember = {
               familyId: member.familyId,
               name: member.name,
@@ -418,9 +416,9 @@ const getFamilyMembers = (request, response) => {
               phoneNumber: member.phoneNumber,
               timeZone: member.timeZone
             }
-            logger.log('info', '----getFamilyMembers success processed', resultArr)
             resultArr.push(snakeKeys(cleanMember));
-        }
+          }
+          logger.log('info', '----getFamilyMembers success processed', resultArr)
           response.json(resultArr)
         })
         .catch(data => {

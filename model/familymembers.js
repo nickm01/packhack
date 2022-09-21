@@ -72,8 +72,8 @@ const retrieveForExternalPersonFromPhoneNumberPromise = (data) => {
 }
 
 const retrieveAllForFamilyId = (familyId) => {
-  logger.log('info', '___familymembers_familyId', familyId)
-  return familyMembersPromises.findAll(familyId)
+  logger.log('info', '___retrieveAllForFamilyId_familyId', familyId)
+  return familyMembersPromises.findAllPromise(familyId)
     .then(familyMembers => {
       return familyMembers
     }, (error) => {
