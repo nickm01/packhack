@@ -409,6 +409,7 @@ const getFamilyMembers = (request, response) => {
           var resultArr = []
           for(const member of members){
             let cleanMember = {
+              userId: member.userId,
               familyId: member.familyId,
               name: member.name,
               description: member.description,
