@@ -304,7 +304,7 @@ const patchFamilyMemberMe = (request, response) => {
         let responseData = updateData
         responseData.phoneNumber = keyData.fromPhoneNumber
         responseData.userId = data.userId
-        response.json(snakeKeys(responseData))
+        response.json(snakeKeys(responseData))x
       })
       .catch(data => {
         logger.log('info', '----patchFamilyMemberMe patch Failure', data)
