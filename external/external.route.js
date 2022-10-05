@@ -229,10 +229,25 @@ const validateToken = (request, response, next) => {
     try {
       result = jwt.verify(token, process.env.JWT_SECRET, options)
       request.decoded = result
-      // We call next to pass execution to the subsequent middleware
-      next()
-    } catch (err) {
-      logger.log('info', '----verification token invalid', err)
+
+      // Now we get family Id, it if exists and then call next.
+      let data = {
+        fromPhoneNumber: request.decoded.phone
+      }
+      logger.log('info', '=================== verification success', data)
+      familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
+        .then(user => {
+          request.user = user
+          logger.log('info', '----verification retrieval success', user)
+          next()
+        })
+        .catch(data => {
+          logger.log('info', '----verification retrieval fail')
+          next()
+        })
+
+    } catch (data) {
+      logger.log('info', '----verification token invalid', data)
       response.status(401).send(errorMessages.tokenVerificationFailure)
     }
   } else {
@@ -242,31 +257,23 @@ const validateToken = (request, response, next) => {
 }
 
 const getFamilyMemberMe = (request, response) => {
-  const phoneNumber = request.decoded.phone
-  let data = {
-    fromPhoneNumber: phoneNumber
-  }
-  familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
-    .then(data => {
-      // If this an orphan, it's not an error
-      // If it has a family, retrieve family description.
-      if (data.familyId == null) {
+  let data = request.user
+  logger.log('info', '----getFamilyMemberMe start', request)
+  // If this an orphan, it's not an error
+  // If it has a family, retrieve family description.
+  if (!data.familyId) {
+    response.json(snakeKeys(data))
+  } else {
+    return families.retrieveFamilyPromise(data)
+      .then(data => {
+        logger.log('info', '----getFamilyMemberMe retrieveFamilyPromise Success', data)
         response.json(snakeKeys(data))
-      } else {
-        return families.retrieveFamilyPromise(data)
-          .then(data => {
-            response.json(snakeKeys(data))
-          })
-          .catch(data => {
-            logger.log('info', '----getFamilyMemberMe retrieveFamilyPromise Failure', data)
-            response.status(404).send(errorMessages.memberRetrivalFailure)
-          })
-      }
-    })
-    .catch(data => {
-      logger.log('info', '----getFamilyMemberMe Failure', data)
-      response.status(404).send(errorMessages.memberRetrivalFailure)
-    })
+      })
+      .catch(data => {
+        logger.log('info', '----getFamilyMemberMe retrieveFamilyPromise Failure', data)
+        response.status(404).send(errorMessages.memberRetrivalFailure)
+      })
+    }
 }
 
 const patchFamilyMemberMe = (request, response) => {
@@ -290,10 +297,10 @@ const patchFamilyMemberMe = (request, response) => {
     logger.log('info', '----patchFamilyMemberMe familyID', familyKey)
     return families.retrieveFamilyPromise(familyKey)
     .then(family => {
-      logger.log('info', '----patchFamilyMemberMe userId', data.userId)
+      updateData.fullDescription = updateData.description + ' ' + family.familyDescription
+      logger.log('info', '----patchFamilyMemberMe updateData', updateData)
       return familyMembers.updateFamilyMemberPromise(data.userId, updateData)
       .then(result => {
-        updateData.fullDescription = updateData.description + ' ' + family.familyDescription
         let responseData = updateData
         responseData.phoneNumber = keyData.fromPhoneNumber
         responseData.userId = data.userId
@@ -413,7 +420,7 @@ const getFamilyMembers = (request, response) => {
               familyId: member.familyId,
               name: member.name,
               description: member.description,
-              fullDescription: member.description,
+              fullDescription: member.fullDescription,
               phoneNumber: member.phoneNumber,
               timeZone: member.timeZone
             }
@@ -432,6 +439,43 @@ const getFamilyMembers = (request, response) => {
       response.status(404).send(errorMessages.memberRetrivalFailure)
     })
 }
+
+// const getFamily = (request, response) => {
+//   let data = {
+//     fromPhoneNumber: request.decoded.phone
+//   }
+//   logger.log('info', '----getFamilyMembers start', data)
+//   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
+//     .then(user => {
+//       return familyMembers.retrieveAllForFamilyId(user.familyId)
+//         .then(members => {
+//           logger.log('info', '----getFamilyMembers success', members)
+//           var resultArr = []
+//           for(const member of members){
+//             let cleanMember = {
+//               userId: member.userId,
+//               familyId: member.familyId,
+//               name: member.name,
+//               description: member.description,
+//               fullDescription: member.fullDescription,
+//               phoneNumber: member.phoneNumber,
+//               timeZone: member.timeZone
+//             }
+//             resultArr.push(snakeKeys(cleanMember));
+//           }
+//           logger.log('info', '----getFamilyMembers success processed', resultArr)
+//           response.json(resultArr)
+//         })
+//         .catch(data => {
+//           logger.log('info', '----getFamilyMembers retrieveAll Failure', data)
+//           response.status(404).send(errorMessages.memberRetrivalFailure)
+//         })
+//     })
+//     .catch(data => {
+//       logger.log('info', '----getFamilyMembers Failure', data)
+//       response.status(404).send(errorMessages.memberRetrivalFailure)
+//     })
+// }
 
 module.exports = {
   getLists,

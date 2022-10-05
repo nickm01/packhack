@@ -51,6 +51,9 @@ const updateFamilyMemberPromise = (userId, data) => {
   if (data.timeZone) {
     updateData.timeZone = data.timeZone
   }
+  if (data.fullDescription) {
+    updateData.fullDescription = data.fullDescription
+  }
   logger.log('info', '___familymembers_updateFamilyMemberPromise filter:', filter)
   logger.log('info', '___familymembers_updateFamilyMemberPromise update', updateData)
   return mongoOp.FamilyMembers.findOneAndUpdate(filter, updateData)
