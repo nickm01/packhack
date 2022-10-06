@@ -31,23 +31,23 @@ const errorMessages = {
 const issuer = 'https://packhack.us'
 
 const getLists = (request, response) => {
-  lists.findAllPromise({familyId: 2})
+  lists.findAllPromise({ familyId: 2 })
     .then(result => {
       const listNames = result.lists.map(list => {
-        return {name: list.listKey}
+        return { name: list.listKey }
       })
       response.json(listNames)
     }, result => {
       response.status(404).send(errorMessages.generalError)
     }
-  )
+    )
 }
 
 const addList = (request, response) => {
   let list = request.body.name
-  lists.saveNewPromise({list, familyId: 2})
+  lists.saveNewPromise({ list, familyId: 2 })
     .then(result => {
-      response.json({name: list})
+      response.json({ name: list })
     }, result => {
       if (result.errorMessage === modelConstants.errorTypes.duplicateList) {
         response.status(409).send(errorMessages.alreadyExists)
@@ -55,14 +55,14 @@ const addList = (request, response) => {
         response.status(404).send(errorMessages.generalError)
       }
     }
-  )
+    )
 }
 
 const deleteList = (request, response) => {
   let list = request.params.list
-  lists.deletePromise({list, familyId: 2})
+  lists.deletePromise({ list, familyId: 2 })
     .then(result => {
-      response.json({name: list})
+      response.json({ name: list })
     }, result => {
       if (result.errorMessage === modelConstants.errorTypes.listNotFound) {
         response.status(404).send(errorMessages.notFound)
@@ -70,28 +70,28 @@ const deleteList = (request, response) => {
         response.status(404).send(errorMessages.generalError)
       }
     }
-  )
+    )
 }
 
 const getListItems = (request, response) => {
-  listItems.findPromise({list: request.params.list, familyId: 2})
+  listItems.findPromise({ list: request.params.list, familyId: 2 })
     .then(result => {
       const listItemNames = result.listItems.map(listItem => {
-        return {name: listItem.listItemName}
+        return { name: listItem.listItemName }
       })
       response.json(listItemNames)
     }, result => {
       response.status(404).send(errorMessages.generalError)
     }
-  )
+    )
 }
 
 const addListItem = (request, response) => {
   let listItemName = request.body.name
   // TODO: deal with duplicates
-  listItems.saveNewPromise({list: request.params.list, familyId: 2, listItemName: listItemName})
+  listItems.saveNewPromise({ list: request.params.list, familyId: 2, listItemName: listItemName })
     .then(result => {
-      response.json({name: listItemName})
+      response.json({ name: listItemName })
     }, result => {
       if (result.errorMessage === modelConstants.errorTypes.duplicateListItem) {
         response.status(409).send(errorMessages.alreadyExists)
@@ -99,15 +99,15 @@ const addListItem = (request, response) => {
         response.status(404).send(errorMessages.generalError)
       }
     }
-  )
+    )
 }
 
 // Can handle delete and clear (delete all)
 const deleteListItem = (request, response) => {
   let listItemName = request.params.item
-  listItems.deletePromise({list: request.params.list, familyId: 2}, listItemName)
+  listItems.deletePromise({ list: request.params.list, familyId: 2 }, listItemName)
     .then(result => {
-      response.json({name: listItemName})
+      response.json({ name: listItemName })
     }, result => {
       if (result.errorMessage === modelConstants.errorTypes.listItemNotFound) {
         response.status(404).send(errorMessages.notFound)
@@ -165,7 +165,7 @@ const authenticatePhone = (request, response) => {
     })
     .then(data => {
       logger.log('info', '----authenticatePhone update success')
-      response.json({'phone': phoneNumber})
+      response.json({ 'phone': phoneNumber })
     })
     .catch(data => {
       logger.log('info', '----authenticatePhone Failure', data)
@@ -205,12 +205,12 @@ const verifyPhone = (request, response) => {
         data.errorMessage = errorMessages.expiredVerificationNumber
         throw data
       }
-      const payload = {phone: phoneNumber}
-      const options = {expiresIn: '1y', issuer: issuer}
+      const payload = { phone: phoneNumber }
+      const options = { expiresIn: '1y', issuer: issuer }
       const secret = process.env.JWT_SECRET
       const token = jwt.sign(payload, secret, options)
       logger.log('debug', '----verification token', token)
-      response.json({'token': token})
+      response.json({ 'token': token })
     })
     .catch(data => {
       response.status(404).send(data.errorMessage)
@@ -239,10 +239,11 @@ const validateToken = (request, response, next) => {
         .then(user => {
           request.user = user
           logger.log('info', '----verification retrieval success', user)
-          next()
         })
         .catch(data => {
-          logger.log('info', '----verification retrieval fail')
+          logger.log('info', '----verification retrieval fail', data)
+        })
+        .then(ignore => {
           next()
         })
 
@@ -273,7 +274,7 @@ const getFamilyMemberMe = (request, response) => {
         logger.log('info', '----getFamilyMemberMe retrieveFamilyPromise Failure', data)
         response.status(404).send(errorMessages.memberRetrivalFailure)
       })
-    }
+  }
 }
 
 const patchFamilyMemberMe = (request, response) => {
@@ -283,59 +284,42 @@ const patchFamilyMemberMe = (request, response) => {
     timeZone: request.body.timeZone,
     familyId: request.body.familyId
   }
-  let keyData = {
-    fromPhoneNumber: request.decoded.phone
-  }
+  let userId = request.user.userId
+  logger.log('info', '----patchFamilyMemberMe updateData user', request.user)
   logger.log('info', '----patchFamilyMemberMe updateData', updateData)
-  logger.log('info', '----patchFamilyMemberMe keyData', keyData)
-  familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(keyData)
-  .then(data => {
-    logger.log('info', '----patchFamilyMemberMe externalPerson', data)
-    let familyKey = {
-      familyId: updateData.familyId
-    }
-    logger.log('info', '----patchFamilyMemberMe familyID', familyKey)
-    return families.retrieveFamilyPromise(familyKey)
+  let familyKey = {
+    familyId: updateData.familyId
+  }
+  logger.log('info', '----patchFamilyMemberMe familyID', familyKey)
+  return families.retrieveFamilyPromise(familyKey)
     .then(family => {
       updateData.fullDescription = updateData.description + ' ' + family.familyDescription
       logger.log('info', '----patchFamilyMemberMe updateData', updateData)
-      return familyMembers.updateFamilyMemberPromise(data.userId, updateData)
-      .then(result => {
-        let responseData = updateData
-        responseData.phoneNumber = keyData.fromPhoneNumber
-        responseData.userId = data.userId
-        response.json(snakeKeys(responseData))x
-      })
-      .catch(data => {
-        logger.log('info', '----patchFamilyMemberMe patch Failure', data)
-        response.status(404).send(errorMessages.memberUpdateFailure)
-      })
+      return familyMembers.updateFamilyMemberPromise(userId, updateData)
+        .then(result => {
+          let responseData = updateData
+          responseData.phoneNumber = request.decoded.phone
+          responseData.userId = userId
+          response.json(snakeKeys(responseData))
+        })
+        .catch(data => {
+          logger.log('info', '----patchFamilyMemberMe patch Failure', data)
+          response.status(404).send(errorMessages.memberUpdateFailure)
+        })
     })
     .catch(data => {
       logger.log('info', '----patchFamilyMemberMe retrieveFamilyPromise Failure', data)
-      response.status(404).send(errorMessages.memberRetrivalFailure)  
+      response.status(404).send(errorMessages.memberRetrivalFailure)
     })
-  })
-  .catch(data => {
-    logger.log('info', '----patchFamilyMemberMe get Failure', data)
-    response.status(404).send(errorMessages.memberRetrivalFailure)
-  })
 }
 
 const postFamilyMember = (request, response) => {
   //TODO: CHECK IF PHONE NUMBER HAS BEEN USED BEFORE
-  let keyData = {
-    fromPhoneNumber: request.decoded.phone
+  let familyKey = {
+    familyId: request.user.familyId
   }
-  logger.log('info', '----postFamilyMember keyData', keyData)
-  logger.log('info', '----postFamilyMember request', request.body)
-  familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(keyData)
-  .then(user => {
-    let familyKey = {
-      familyId: user.familyId
-    }
-    logger.log('info', '----postFamilyMember familyID', familyKey)
-    return families.retrieveFamilyPromise(familyKey)
+  logger.log('info', '----postFamilyMember familyID', familyKey)
+  return families.retrieveFamilyPromise(familyKey)
     .then(family => {
       logger.log('info', '----postFamilyMember family', family)
       let fullDescription = request.body.name + ' ' + family.familyDescription
@@ -348,41 +332,36 @@ const postFamilyMember = (request, response) => {
         timeZone: request.body.timeZone
       }
       return familyMembers.saveNewFamilyMemberPromise(data)
-      .then(familyMember => {
-        logger.log('info', '----postFamilyMember save success', familyMember)
+        .then(familyMember => {
+          logger.log('info', '----postFamilyMember save success', familyMember)
 
-        let phoneNumber = data.fromPhoneNumber
-        let textData = {
-          fromPerson: user.description,
-          familyDescription: family.familyDescription  
-        }
-        let text = finalResponseTextProcessor.replaceDynamicText(textData, phrases.addNewMember)
-        smsProcessor.sendSmsPromise({}, phoneNumber, text)
-        .then(result => {
-          logger.log('info', '----add new SMS success')
-          response.json(snakeKeys(familyMember))
-          return data
+          let phoneNumber = data.fromPhoneNumber
+          let textData = {
+            fromPerson: request.user.description,
+            familyDescription: family.familyDescription
+          }
+          let text = finalResponseTextProcessor.replaceDynamicText(textData, phrases.addNewMember)
+          smsProcessor.sendSmsPromise({}, phoneNumber, text)
+            .then(result => {
+              logger.log('info', '----add new SMS success')
+              response.json(snakeKeys(familyMember))
+              return data
+            })
+            .catch(data => {
+              logger.log('info', '----postFamilyMember Failure', data)
+              response.status(404).send(errorMessages.memberCreateFailure)
+            })
         })
         .catch(data => {
           logger.log('info', '----postFamilyMember Failure', data)
-          response.status(404).send(errorMessages.memberCreateFailure)  
+          response.status(404).send(errorMessages.memberCreateFailure)
         })
-      })
-      .catch(data => {
-        logger.log('info', '----postFamilyMember Failure', data)
-        response.status(404).send(errorMessages.memberCreateFailure)
-      })
     })
     .catch(data => {
       logger.log('info', '----postFamilyMember retrieveFamilyPromise Failure', data)
       response.status(404).send(errorMessages.memberRetrivalFailure)
     })
-  })
-  .catch(data => {
-    logger.log('info', '----postFamilyMember Failure', data)
-    response.status(404).send(errorMessages.memberRetrivalFailure)
-  })
-  
+
 }
 
 const postFamily = (request, response) => {
@@ -404,38 +383,28 @@ const postFamily = (request, response) => {
 }
 
 const getFamilyMembers = (request, response) => {
-  let data = {
-    fromPhoneNumber: request.decoded.phone
-  }
-  logger.log('info', '----getFamilyMembers start', data)
-  familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
-    .then(user => {
-      return familyMembers.retrieveAllForFamilyId(user.familyId)
-        .then(members => {
-          logger.log('info', '----getFamilyMembers success', members)
-          var resultArr = []
-          for(const member of members){
-            let cleanMember = {
-              userId: member.userId,
-              familyId: member.familyId,
-              name: member.name,
-              description: member.description,
-              fullDescription: member.fullDescription,
-              phoneNumber: member.phoneNumber,
-              timeZone: member.timeZone
-            }
-            resultArr.push(snakeKeys(cleanMember));
-          }
-          logger.log('info', '----getFamilyMembers success processed', resultArr)
-          response.json(resultArr)
-        })
-        .catch(data => {
-          logger.log('info', '----getFamilyMembers retrieveAll Failure', data)
-          response.status(404).send(errorMessages.memberRetrivalFailure)
-        })
+  logger.log('info', '----getFamilyMembers start')
+  familyMembers.retrieveAllForFamilyId(request.user.familyId)
+    .then(members => {
+      logger.log('info', '----getFamilyMembers success', members)
+      var resultArr = []
+      for (const member of members) {
+        let cleanMember = {
+          userId: member.userId,
+          familyId: member.familyId,
+          name: member.name,
+          description: member.description,
+          fullDescription: member.fullDescription,
+          phoneNumber: member.phoneNumber,
+          timeZone: member.timeZone
+        }
+        resultArr.push(snakeKeys(cleanMember));
+      }
+      logger.log('info', '----getFamilyMembers success processed', resultArr)
+      response.json(resultArr)
     })
     .catch(data => {
-      logger.log('info', '----getFamilyMembers Failure', data)
+      logger.log('info', '----getFamilyMembers retrieveAll Failure', data)
       response.status(404).send(errorMessages.memberRetrivalFailure)
     })
 }
