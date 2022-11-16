@@ -384,7 +384,7 @@ const postFamily = (request, response) => {
 
 const getFamilyMembers = (request, response) => {
   logger.log('info', '----getFamilyMembers start')
-  familyMembers.retrieveAllForFamilyId(request.user.familyId)
+  familyMembers.retrieveAllForFamilyIdPromise(request.user.familyId)
     .then(members => {
       logger.log('info', '----getFamilyMembers success', members)
       var resultArr = []
@@ -411,12 +411,10 @@ const getFamilyMembers = (request, response) => {
 
 // const getFamily = (request, response) => {
 //   let data = {
-//     fromPhoneNumber: request.decoded.phone
+//     familyId: request.user.familyId
 //   }
-//   logger.log('info', '----getFamilyMembers start', data)
-//   familyMembers.retrieveForExternalPersonFromPhoneNumberPromise(data)
-//     .then(user => {
-//       return familyMembers.retrieveAllForFamilyId(user.familyId)
+//   logger.log('info', '----getFamily start', data)
+//       return families.retrieveFamilyPromise(data)
 //         .then(members => {
 //           logger.log('info', '----getFamilyMembers success', members)
 //           var resultArr = []

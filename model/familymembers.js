@@ -62,7 +62,8 @@ const retrieveForExternalPersonFromPhoneNumberPromise = (data) => {
         familyId: foundPerson.familyId,
         timezone: foundPerson.timeZone || 'America/New_York',
         phoneNumber: foundPerson.phoneNumber,
-        description: foundPerson.description
+        description: foundPerson.description,
+        fullDescription: foundPerson.fullDescription
       }
     }, (error) => {
       data.errorMessage = modelConstants.errorTypes.generalError
@@ -71,7 +72,7 @@ const retrieveForExternalPersonFromPhoneNumberPromise = (data) => {
     })
 }
 
-const retrieveAllForFamilyId = (familyId) => {
+const retrieveAllForFamilyIdPromise = (familyId) => {
   logger.log('info', '___retrieveAllForFamilyId_familyId', familyId)
   return familyMembersPromises.findAllPromise(familyId)
     .then(familyMembers => {
@@ -134,7 +135,7 @@ module.exports = {
   retrievePersonPhoneNumbersPromise,
   retrievePersonFromPhoneNumberPromise,
   retrieveForExternalPersonFromPhoneNumberPromise,
-  retrieveAllForFamilyId,
+  retrieveAllForFamilyIdPromise,
   updateFamilyMemberVerificationNumberPromise,
   saveNewFamilyMemberPromise,
   updateFamilyMemberPromise
