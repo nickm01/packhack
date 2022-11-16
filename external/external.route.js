@@ -259,7 +259,7 @@ const validateToken = (request, response, next) => {
 
 const getFamilyMemberMe = (request, response) => {
   let data = request.user
-  logger.log('info', '----getFamilyMemberMe start', request)
+  logger.log('info', '----getFamilyMemberMe start', data)
   // If this an orphan, it's not an error
   // If it has a family, retrieve family description.
   if (!data.familyId) {
