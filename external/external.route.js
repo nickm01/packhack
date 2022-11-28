@@ -31,7 +31,7 @@ const errorMessages = {
 const issuer = 'https://packhack.us'
 
 const getLists = (request, response) => {
-  lists.findAllPromise({ familyId: 2 })
+  lists.findAllPromise({ familyId: request.user.familyId })
     .then(result => {
       const listNames = result.lists.map(list => {
         return { name: list.listKey }
@@ -45,7 +45,7 @@ const getLists = (request, response) => {
 
 const addList = (request, response) => {
   let list = request.body.name
-  lists.saveNewPromise({ list, familyId: 2 })
+  lists.saveNewPromise({ list, familyId: request.user.familyId })
     .then(result => {
       response.json({ name: list })
     }, result => {
@@ -60,7 +60,7 @@ const addList = (request, response) => {
 
 const deleteList = (request, response) => {
   let list = request.params.list
-  lists.deletePromise({ list, familyId: 2 })
+  lists.deletePromise({ list, familyId: request.user.familyId })
     .then(result => {
       response.json({ name: list })
     }, result => {
@@ -74,7 +74,7 @@ const deleteList = (request, response) => {
 }
 
 const getListItems = (request, response) => {
-  listItems.findPromise({ list: request.params.list, familyId: 2 })
+  listItems.findPromise({ list: request.params.list, familyId: request.user.familyId })
     .then(result => {
       const listItemNames = result.listItems.map(listItem => {
         return { name: listItem.listItemName }
@@ -89,7 +89,7 @@ const getListItems = (request, response) => {
 const addListItem = (request, response) => {
   let listItemName = request.body.name
   // TODO: deal with duplicates
-  listItems.saveNewPromise({ list: request.params.list, familyId: 2, listItemName: listItemName })
+  listItems.saveNewPromise({ list: request.params.list, familyId: request.user.familyId, listItemName: listItemName })
     .then(result => {
       response.json({ name: listItemName })
     }, result => {
@@ -105,7 +105,7 @@ const addListItem = (request, response) => {
 // Can handle delete and clear (delete all)
 const deleteListItem = (request, response) => {
   let listItemName = request.params.item
-  listItems.deletePromise({ list: request.params.list, familyId: 2 }, listItemName)
+  listItems.deletePromise({ list: request.params.list, familyId: request.user.familyId }, listItemName)
     .then(result => {
       response.json({ name: listItemName })
     }, result => {
@@ -217,6 +217,7 @@ const verifyPhone = (request, response) => {
     })
 }
 
+// This also adds user to the request
 const validateToken = (request, response, next) => {
   const authorizationHeaader = request.headers.authorization
   let result
