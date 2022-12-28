@@ -124,9 +124,9 @@ const updateFamilyMemberPromise = (userId, data) => {
     })
 }
 
-const softDeleteFamilyMember = (userId, familyId) => {
-  logger.log('info', '___familymembers_softDeleteFamilyMember', userId)
-  return familyMembersPromises.softDeleteFamilyMember(userId, familyId)
+const softDeleteFamilyMember = (user) => {
+  logger.log('info', '___familymembers_softDeleteFamilyMember', user)
+  return familyMembersPromises.softDeleteFamilyMemberPromise(user)
     .then(result => {
       return result
     })

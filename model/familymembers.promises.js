@@ -60,11 +60,12 @@ const updateFamilyMemberPromise = (userId, data) => {
     .exec()
 }
 
-const softDeleteFamilyMemberPromise = (userId, familyId) => {
-  const filter = { userId: userId }
+const softDeleteFamilyMemberPromise = (user) => {
+  const filter = { userId: user.userId }
   const updateData = { 
-    userId: 'X-' + userId,
-    familyId: 'X-' + familyId
+    userId: 'X-' + user.userId,
+    familyId: 'X-' + user.familyId,
+    phoneNumber: 'X-' + user.phoneNumber
   }
   return mongoOp.FamilyMembers.findOneAndUpdate(filter, updateData)
   .exec()

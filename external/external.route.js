@@ -413,9 +413,10 @@ const getFamilyMembers = (request, response) => {
 
 const deleteMe = (request, response) => {
   logger.log('info', '----deleteMe start')
-  return familyMembers.softDeleteFamilyMember(request.user.userId, request.user.familyId)
-    .then(member => {
-      logger.log('info', '----deleteMe success', member)
+  return familyMembers.softDeleteFamilyMember(request.user)
+    .then(result => {
+      logger.log('info', '----deleteMe success')
+      response.json(request.user)
     })
     .catch(data => {
       logger.log('info', '----deleteMe Failure', data)
