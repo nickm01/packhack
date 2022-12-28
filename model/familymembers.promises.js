@@ -60,11 +60,22 @@ const updateFamilyMemberPromise = (userId, data) => {
     .exec()
 }
 
+const softDeleteFamilyMemberPromise = (userId, familyId) => {
+  const filter = { userId: userId }
+  const updateData = { 
+    userId: 'X-' + userId,
+    familyId: 'X-' + familyId
+  }
+  return mongoOp.FamilyMembers.findOneAndUpdate(filter, updateData)
+  .exec()
+}
+
 module.exports = {
   findFromNameFamilyPromise,
   findAllPromise,
   findFromPhoneNumberPromise,
   saveNewFamilyMemberPromise,
   updateFamilyMemberVerificationNumberPromise,
-  updateFamilyMemberPromise
+  updateFamilyMemberPromise,
+  softDeleteFamilyMemberPromise
 }

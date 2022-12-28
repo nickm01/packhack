@@ -124,6 +124,14 @@ const updateFamilyMemberPromise = (userId, data) => {
     })
 }
 
+const softDeleteFamilyMember = (userId, familyId) => {
+  logger.log('info', '___familymembers_softDeleteFamilyMember', userId)
+  return familyMembersPromises.softDeleteFamilyMember(userId, familyId)
+    .then(result => {
+      return result
+    })
+}
+
 const uuidv4 = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
@@ -138,5 +146,6 @@ module.exports = {
   retrieveAllForFamilyIdPromise,
   updateFamilyMemberVerificationNumberPromise,
   saveNewFamilyMemberPromise,
-  updateFamilyMemberPromise
+  updateFamilyMemberPromise,
+  softDeleteFamilyMember
 }

@@ -44,6 +44,7 @@ router.route('/api/familymembers/me').patch(externalRoute.validateToken, (reques
 router.route('/api/familymembers').post(externalRoute.validateToken, (request, response) => { externalRoute.postFamilyMember(request, response) })
 router.route('/api/familymembers').get(externalRoute.validateToken, (request, response) => { externalRoute.getFamilyMembers(request, response) })
 router.route('/api/families').post(externalRoute.validateToken, (request, response) => { externalRoute.postFamily(request, response) })
+router.route('/api/familymembers/me').delete(externalRoute.validateToken, (request, response) => { externalRoute.deleteMe(request, response) })
 
 app.use('/', router)
 

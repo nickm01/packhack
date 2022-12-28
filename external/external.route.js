@@ -26,6 +26,7 @@ const errorMessages = {
   memberUpdateFailure: { errorCode: 1009, errorMessage: 'could not update member' },
   memberCreateFailure: { errorCode: 1009, errorMessage: 'could not create member' },
   familyUpdateFailure: { errorCode: 1010, errorMessage: 'could not update family' },
+  memberDeleteFailure: { errorCode: 1011, errorMessage: 'could not delete member' },
 }
 
 const issuer = 'https://packhack.us'
@@ -410,40 +411,17 @@ const getFamilyMembers = (request, response) => {
     })
 }
 
-// const getFamily = (request, response) => {
-//   let data = {
-//     familyId: request.user.familyId
-//   }
-//   logger.log('info', '----getFamily start', data)
-//       return families.retrieveFamilyPromise(data)
-//         .then(members => {
-//           logger.log('info', '----getFamilyMembers success', members)
-//           var resultArr = []
-//           for(const member of members){
-//             let cleanMember = {
-//               userId: member.userId,
-//               familyId: member.familyId,
-//               name: member.name,
-//               description: member.description,
-//               fullDescription: member.fullDescription,
-//               phoneNumber: member.phoneNumber,
-//               timeZone: member.timeZone
-//             }
-//             resultArr.push(snakeKeys(cleanMember));
-//           }
-//           logger.log('info', '----getFamilyMembers success processed', resultArr)
-//           response.json(resultArr)
-//         })
-//         .catch(data => {
-//           logger.log('info', '----getFamilyMembers retrieveAll Failure', data)
-//           response.status(404).send(errorMessages.memberRetrivalFailure)
-//         })
-//     })
-//     .catch(data => {
-//       logger.log('info', '----getFamilyMembers Failure', data)
-//       response.status(404).send(errorMessages.memberRetrivalFailure)
-//     })
-// }
+const deleteMe = (request, response) => {
+  logger.log('info', '----deleteMe start')
+  return familyMembers.softDeleteFamilyMember(request.user.userId, request.user.familyId)
+    .then(member => {
+      logger.log('info', '----deleteMe success', member)
+    })
+    .catch(data => {
+      logger.log('info', '----deleteMe Failure', data)
+      response.status(404).send(errorMessages.memberDeleteFailure)
+    })
+}
 
 module.exports = {
   getLists,
@@ -459,5 +437,6 @@ module.exports = {
   patchFamilyMemberMe,
   postFamilyMember,
   getFamilyMembers,
-  postFamily
+  postFamily,
+  deleteMe
 }
