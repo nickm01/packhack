@@ -1,4 +1,4 @@
-// Default dummy values exist in order to allow unit tests to run
+// Default dummy values exist in order to allow unit tests to run.
 const logger = require('winston')
 logger.remove(logger.transports.Console)
 logger.add(logger.transports.Console, {
