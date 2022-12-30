@@ -37,6 +37,7 @@ const checkValidPhoneNumber = (data) => {
       } else {
         logger.log('info', 'checkValidPhoneNumber_found_noAccess', result)
         data.errorMessage = errors.errorTypes.noAccess
+        data.responseText = phrases.noAccess
         throw data
       }
       return data
