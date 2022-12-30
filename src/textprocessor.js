@@ -31,6 +31,7 @@ const checkValidPhoneNumber = (data) => {
   return familyMembers.retrievePersonFromPhoneNumberPromise(data)
     .then(data => {
       logger.log('debug', 'checkValidPhoneNumber_found', data)
+      // This blocks SMS access for app users
       if (data.fullAccess === true) {
         logger.log('debug', 'checkValidPhoneNumber_found_fullAccess', data)
         return data
