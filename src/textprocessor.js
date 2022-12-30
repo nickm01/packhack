@@ -30,9 +30,9 @@ const processTextPromise = data => {
 const checkValidPhoneNumber = (data) => {
   return familyMembers.retrievePersonFromPhoneNumberPromise(data)
     .then(data => {
-      logger.log('info', 'checkValidPhoneNumber_found', data)
+      logger.log('debug', 'checkValidPhoneNumber_found', data)
       if (data.fullAccess === true) {
-        logger.log('info', 'checkValidPhoneNumber_found_fullAccess', data)
+        logger.log('debug', 'checkValidPhoneNumber_found_fullAccess', data)
         return data
       } else {
         logger.log('info', 'checkValidPhoneNumber_found_noAccess', data)
