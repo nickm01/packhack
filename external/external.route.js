@@ -243,7 +243,14 @@ const validateToken = (request, response, next) => {
           logger.log('info', '----verification retrieval success', user)
         })
         .catch(data => {
-          logger.log('info', '----verification retrieval fail', data)
+          if (data.errorMessage == modelConstants.errorTypes.personNotFound) {
+            logger.log('info', '----verification retrieval fail person does not exist', data)
+            response.status(401).send(errorMessages.memberRetrivalFailure)
+          } else {
+            logger.log('info', '----verification retrieval fail', data)
+            response.status(404).send(errorMessages.memberRetrivalFailure)
+          }
+          throw data
         })
         .then(ignore => {
           next()
