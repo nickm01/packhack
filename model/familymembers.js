@@ -38,6 +38,7 @@ const retrievePersonFromPhoneNumberPromise = (data) => {
       data.timezone = foundPerson.timeZone || 'America/New_York'
       data.verificationNumber = foundPerson.verificationNumber
       data.verificationNumberExpiry = foundPerson.verificationNumberExpiry
+      data.fullAccess = foundPerson.fullAccess
       return data
     }, (error) => {
       data.errorMessage = modelConstants.errorTypes.generalError

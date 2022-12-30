@@ -29,6 +29,18 @@ const processTextPromise = data => {
 
 const checkValidPhoneNumber = (data) => {
   return familyMembers.retrievePersonFromPhoneNumberPromise(data)
+    .then(data => {
+      logger.log('info', 'checkValidPhoneNumber_found', result)
+      if (data.fullAccess === true) {
+        logger.log('info', 'checkValidPhoneNumber_found_fullAccess', result)
+        return data
+      } else {
+        logger.log('info', 'checkValidPhoneNumber_found_noAccess', result)
+        data.errorMessage = errors.errorTypes.noAccess
+        throw data
+      }
+      return data
+    })
     .catch(result => {
       logger.log('debug', 'checkValidPhoneNumber_catch', result)
       if (result.errorMessage === errors.errorTypes.personNotFound) {

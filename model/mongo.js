@@ -67,7 +67,8 @@ const familyMemberSchema = mongoose.Schema({
   'fullDescription': String, // capitalized, including last name
   'timeZone': String,
   'verificationNumber': Number,
-  'verificationNumberExpiry': String
+  'verificationNumberExpiry': String,
+  'fullAccess': Boolean
 }, { versionKey: false })
 const FamilyMembers = mongoose.model('FamilyMembers', familyMemberSchema, 'FamilyMembers')
 
