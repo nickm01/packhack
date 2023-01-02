@@ -47,6 +47,18 @@ const retrievePersonFromPhoneNumberPromise = (data) => {
     })
 }
 
+const checkPhoneNumberExistsPromise = (phoneNumber) => {
+  logger.log('info', '___familymembers_checkPhoneNumberNotUserPromise', phoneNumber)
+  return familyMembersPromises.findFromPhoneNumberPromise(phoneNumber)
+    .then(familyMembers => {
+      if (familyMembers.length === 0) {
+        return false
+      } else {
+        return true
+      }
+    })
+}
+
 const retrieveForExternalPersonFromPhoneNumberPromise = (data) => {
   logger.log('info', '___familymembers_retrievePersonFromPhoneNumberPromise', data)
   return familyMembersPromises.findFromPhoneNumberPromise(data.fromPhoneNumber)
@@ -148,5 +160,6 @@ module.exports = {
   updateFamilyMemberVerificationNumberPromise,
   saveNewFamilyMemberPromise,
   updateFamilyMemberPromise,
-  softDeleteFamilyMember
+  softDeleteFamilyMember,
+  checkPhoneNumberExistsPromise
 }

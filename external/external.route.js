@@ -11,6 +11,7 @@ const jwt = require('jsonwebtoken')
 const snakeKeys = require('snakecase-keys-object')
 const finalResponseTextProcessor = require('../src/finalresponsetextprocessor')
 const { dateTimePast } = require('../src/phrases')
+const e = require('express')
 
 
 const errorMessages = {
@@ -328,7 +329,17 @@ const postFamilyMember = (request, response) => {
     familyId: request.user.familyId
   }
   logger.log('info', '----postFamilyMember familyID', familyKey)
-  return families.retrieveFamilyPromise(familyKey)
+  // firstly make sure there's no existing person with that phone number
+  return familyMembers.checkPhoneNumberExistsPromise(request.body.phoneNumber)
+    .then(exists => {
+      if (exists === true) {
+        logger.log('info', '----postFamilyMember exists already', familyKey)
+        throw exists
+      }
+      logger.log('info', '----postFamilyMember does not exist', familyKey)
+      return exists
+    })
+    .then(families.retrieveFamilyPromise(familyKey))
     .then(family => {
       logger.log('info', '----postFamilyMember family', family)
       let fullDescription = request.body.name + ' ' + family.familyDescription
