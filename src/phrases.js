@@ -45,7 +45,7 @@ module.exports = {
   pushIntro: 'Congrats - you\'ve just been signed up for PackHack!\nA better way to co-ordinate your pack.\nType \'hack\' for help',
   // command specific exmaples
   verification: ' is your PackHack verification code.',
-  addNewMember: 'You\'ve been invited by %fromPerson to join the %familyDescription Pack! Download app and register with this phone number.',
+  addNewMember: 'You\'ve been invited by %fromPerson to join the %familyDescription Pack! Download the PackHack app and register with this phone number.',
   createListExample: 'e.g. \'create shopping\'',
   getListExample: 'e.g. \'get shopping\', or simply \'shopping\'',
   editListExample: 'e.g. \'edit shopping\'',
