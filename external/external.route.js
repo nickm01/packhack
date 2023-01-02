@@ -25,9 +25,10 @@ const errorMessages = {
   expiredVerificationNumber: { errorCode: 1007, errorMessage: 'expired verification number' },
   memberRetrivalFailure: { errorCode: 1008, errorMessage: 'could not retrieve member' },
   memberUpdateFailure: { errorCode: 1009, errorMessage: 'could not update member' },
-  memberCreateFailure: { errorCode: 1009, errorMessage: 'could not create member' },
-  familyUpdateFailure: { errorCode: 1010, errorMessage: 'could not update family' },
-  memberDeleteFailure: { errorCode: 1011, errorMessage: 'could not delete member' },
+  memberCreateFailure: { errorCode: 1010, errorMessage: 'could not create member' },
+  familyUpdateFailure: { errorCode: 1011, errorMessage: 'could not update family' },
+  memberDeleteFailure: { errorCode: 1012, errorMessage: 'could not delete member' },
+  memberAlreadyExists: { errorCode: 1013, errorMessage: 'Phone number already associated with another family.' }
 }
 
 const issuer = 'https://packhack.us'
@@ -324,7 +325,6 @@ const patchFamilyMemberMe = (request, response) => {
 }
 
 const postFamilyMember = (request, response) => {
-  //TODO: CHECK IF PHONE NUMBER HAS BEEN USED BEFORE
   let familyKey = {
     familyId: request.user.familyId
   }
@@ -334,12 +334,16 @@ const postFamilyMember = (request, response) => {
     .then(exists => {
       if (exists === true) {
         logger.log('info', '----postFamilyMember exists already', familyKey)
-        throw exists
+        const data = {
+          errorMessage: errorMessages.memberAlreadyExists
+        }
+        throw data
+      } else {
+        logger.log('info', '----postFamilyMember does not exist', familyKey)
+        return familyKey  
       }
-      logger.log('info', '----postFamilyMember does not exist', familyKey)
-      return exists
     })
-    .then(families.retrieveFamilyPromise(familyKey))
+    .then(families.retrieveFamilyPromise)
     .then(family => {
       logger.log('info', '----postFamilyMember family', family)
       let fullDescription = request.body.name + ' ' + family.familyDescription
@@ -379,7 +383,11 @@ const postFamilyMember = (request, response) => {
     })
     .catch(data => {
       logger.log('info', '----postFamilyMember retrieveFamilyPromise Failure', data)
-      response.status(404).send(errorMessages.memberRetrivalFailure)
+      if (data.errorMessage !== null) {
+        response.status(404).send(data.errorMessage)
+      } else {
+        response.status(404).send(errorMessages.memberRetrivalFailure)
+      }
     })
 
 }
