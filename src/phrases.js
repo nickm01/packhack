@@ -44,8 +44,8 @@ module.exports = {
   // push intro
   pushIntro: 'Congrats - you\'ve just been signed up for PackHack!\nA better way to co-ordinate your pack.\nType \'hack\' for help',
   // command specific exmaples
-  verification: ' is your PackHack verification code.',
-  addNewMember: 'You\'ve been invited by %fromPerson to join the %familyDescription Pack! Download the PackHackApp here https://apps.apple.com/us/app/packhackapp/id1663138116 and register with this phone number.',
+  verification: ' is your PackHack verification code. Email help@packhack.us if this was not requested by you.',
+  addNewMember: 'You\'ve been invited by %fromPerson to join the %familyDescription Pack! Download the PackHackApp here https://apps.apple.com/us/app/packhackapp/id1663138116 and register with this phone number. Email help@packhack.us if you do not recognize this.',
   createListExample: 'e.g. \'create shopping\'',
   getListExample: 'e.g. \'get shopping\', or simply \'shopping\'',
   editListExample: 'e.g. \'edit shopping\'',
