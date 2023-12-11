@@ -30,6 +30,7 @@ router.route('/twilio')
 // API Design based on https://hackernoon.com/restful-api-design-with-node-js-26ccf66eab09
 router.route('/api/lists').get(externalRoute.validateToken, (request, response) => { externalRoute.getLists(request, response) })
 router.route('/api/lists/:list').get(externalRoute.validateToken, (request, response) => { externalRoute.getListItems(request, response) })
+router.route('/api/reminders').get(externalRoute.validateToken, (request, response) => { externalRoute.getReminders(request, response) })
 router.route('/api/lists').post(externalRoute.validateToken, (request, response) => { externalRoute.addList(request, response) })
 router.route('/api/lists/:list').delete(externalRoute.validateToken, (request, response) => { externalRoute.deleteList(request, response) })
 // TODO: Need to add /items on the end of these 2

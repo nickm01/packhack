@@ -86,7 +86,26 @@ const getListItems = (request, response) => {
     }, result => {
       response.status(404).send(errorMessages.generalError)
     }
-    )
+  )
+}
+
+const getReminders = (request, response) => {
+  listItems.findPromise({ list: "reminders", familyId: request.user.familyId })
+    .then(result => {
+      const listItemNames = result.listItems.map(listItem => {
+        return {
+          name: listItem.listItemName,
+          reminderWhen: listItem.reminderWhen,
+          reminderUserId: listItem.reminderUserId,
+          reminderTitle: listItem.reminderUserId,
+          reminderListKey: listItem.reminderListKey
+        }
+      })
+      response.json(listItemNames)
+    }, result => {
+      response.status(404).send(errorMessages.generalError)
+    }
+  )
 }
 
 const addListItem = (request, response) => {
