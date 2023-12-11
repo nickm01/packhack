@@ -97,7 +97,7 @@ const getReminders = (request, response) => {
           name: listItem.listItemName,
           reminderWhen: listItem.reminderWhen,
           reminderUserId: listItem.reminderUserId,
-          reminderTitle: listItem.reminderUserId,
+          reminderTitle: listItem.reminderTitle,
           reminderListKey: listItem.reminderListKey
         }
       })
