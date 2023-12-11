@@ -474,6 +474,7 @@ module.exports = {
   addList,
   deleteList,
   getListItems,
+  getReminders,
   addListItem,
   deleteListItem,
   authenticatePhone,
